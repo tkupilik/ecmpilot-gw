@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>eCMPilot Gateway</title>
+<style>
+:root{font:16px system-ui;color:#e3ecf3;background:#101820;color-scheme:dark}
+body{max-width:780px;margin:32px auto;padding:0 18px}h1{margin-bottom:4px}h2{font-size:1.25rem}
+section{background:#1b2935;border:1px solid #344858;border-radius:14px;padding:20px;margin:20px 0}
+button,input{font:inherit;padding:9px;border-radius:7px;border:1px solid #526878}
+button{cursor:pointer;background:#284454;color:inherit}button.primary{background:#16715f}button:disabled{opacity:.5;cursor:wait}
+.profile{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:12px 0}.profile input{min-width:0;width:100%;box-sizing:border-box}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.muted{color:#aebfce}#message{white-space:pre-wrap}pre{white-space:pre-wrap;line-height:1.7}
+@media(max-width:560px){.profile{grid-template-columns:1fr auto}.profile input[type=password]{grid-row:2;grid-column:1}.profile button{grid-column:2;grid-row:1/3}}
+</style>
+<h1>eCMPilot Gateway</h1><div class="muted">Local setup · ESP32-S3</div>
+<section><h2>Gateway status</h2><pre id="status">Loading…</pre><button id="refresh">Refresh</button></section>
+<section><h2>Known Wi-Fi networks</h2>
+<p class="muted">Up to eight networks, highest priority first. The gateway connects to an available network and retries after a connection loss. Hidden networks are not supported yet.</p>
+<div id="profiles"></div>
+<div class="actions"><button id="add">Add network</button><button class="primary" id="save">Save and reconnect</button></div>
+<p class="muted">For a saved network, leave its password blank to keep it. Select “Open network” to remove its password. Saving an empty list enables the setup access point.</p>
+</section>
+<section><h2>Firmware update</h2>
+<p class="muted">Choose <code>ecmpilot_gw.bin</code> from an ESP-IDF build. The gateway writes the inactive OTA slot, validates the image and restarts.</p>
+<input id="firmware" type="file" accept=".bin"><p><button id="upload" class="primary">Upload firmware</button></p>
+<progress id="progress" value="0" max="100" hidden></progress>
+</section>
+<p id="message" role="status" aria-live="polite"></p>
+<p class="muted">Experimental development firmware. Not approved for use on public roads. No vehicle control is implemented in this build.</p>
+<script>
+'use strict';
+const byId=id=>document.getElementById(id);
+const message=text=>{byId('message').textContent=text;};
+async function api(path,options){const r=await fetch(path,options);if(!r.ok)throw new Error(await r.text());return r.json();}
+function addProfile(profile={ssid:'',has_password:false}){
+  if(document.querySelectorAll('.profile').length>=8){message('A maximum of eight networks can be saved.');return;}
+  const row=document.createElement('div');row.className='profile';row.dataset.savedSsid=profile.ssid;row.dataset.savedPassword=String(profile.has_password);
+  const ssid=document.createElement('input');ssid.placeholder='Wi-Fi name (SSID)';ssid.value=profile.ssid;ssid.autocomplete='off';ssid.setAttribute('aria-label','Wi-Fi name');
+  const password=document.createElement('input');password.type='password';password.placeholder=profile.has_password?'Saved password (unchanged)':'Password';password.maxLength=64;password.autocomplete='new-password';password.setAttribute('aria-label','Wi-Fi password');
+  const actions=document.createElement('div');actions.className='actions';
+  const up=document.createElement('button');up.textContent='↑';up.setAttribute('aria-label','Higher priority');up.onclick=()=>{if(row.previousElementSibling)row.parentNode.insertBefore(row,row.previousElementSibling);};
+  const down=document.createElement('button');down.textContent='↓';down.setAttribute('aria-label','Lower priority');down.onclick=()=>{if(row.nextElementSibling)row.parentNode.insertBefore(row.nextElementSibling,row);};
+  const remove=document.createElement('button');remove.textContent='Remove';remove.onclick=()=>row.remove();actions.append(up,down,remove);
+  const label=document.createElement('label');const open=document.createElement('input');open.type='checkbox';open.style.width='auto';open.checked=!!profile.ssid&&!profile.has_password;label.append(open,' Open network');
+  row.append(ssid,password,actions,label);byId('profiles').append(row);
+}
+async function refresh(){const s=await api('/api/status');byId('status').textContent=
+  `Firmware: ${s.version} · ${s.partition}\nUptime: ${s.uptime_s}s · free heap: ${s.free_heap} bytes\nWi-Fi: ${s.connected?s.ssid+' · '+s.ip+' · '+s.rssi+' dBm':'offline'}\nSetup AP: ${s.setup_ap?s.ap_ssid+' · 192.168.4.1':'inactive'}\nCPU0: network · CPU1: application · heartbeat: ${s.heartbeat}`;}
+byId('refresh').onclick=()=>refresh().catch(e=>message(e.message));
+byId('add').onclick=()=>addProfile();
+byId('save').onclick=async()=>{
+  const button=byId('save');button.disabled=true;
+  try{
+    const networks=[...document.querySelectorAll('.profile')].map(row=>{
+      const inputs=row.querySelectorAll('input');const ssid=inputs[0].value;const password=inputs[1].value;const open=inputs[2].checked;
+      if(!ssid)throw new Error('Enter a Wi-Fi name or remove its row.');
+      const p={ssid};
+      if(open)p.password='';else if(password)p.password=password;
+      else if(ssid!==row.dataset.savedSsid||row.dataset.savedPassword!=='true')throw new Error('Enter a password or select Open network.');
+      return p;
+    });
+    await api('/api/wifi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({networks})});
+    message('Saved. Reconnecting; the gateway may get a different IP address.');
+    await loadProfiles();
+  }catch(e){message(e.message);}finally{button.disabled=false;}
+};
+byId('upload').onclick=()=>{
+  const file=byId('firmware').files[0];if(!file){message('Choose an application .bin first.');return;}
+  byId('upload').disabled=true;byId('save').disabled=true;byId('progress').hidden=false;
+  const xhr=new XMLHttpRequest();xhr.open('POST','/api/ota');xhr.setRequestHeader('Content-Type','application/octet-stream');xhr.timeout=180000;
+  xhr.upload.onprogress=e=>{if(e.lengthComputable)byId('progress').value=100*e.loaded/e.total;};
+  xhr.onload=()=>{message(xhr.status===200?'Firmware accepted. The gateway is restarting.':xhr.responseText);byId('upload').disabled=false;byId('save').disabled=false;};
+  xhr.onerror=xhr.ontimeout=()=>{message('Connection lost. Check gateway status before retrying the update.');byId('upload').disabled=false;byId('save').disabled=false;};
+  message('Uploading firmware…');xhr.send(file);
+};
+async function loadProfiles(){const data=await api('/api/wifi');byId('profiles').replaceChildren();data.networks.forEach(addProfile);}
+Promise.all([refresh(),loadProfiles()]).catch(e=>message(e.message));
+</script>
+</html>
