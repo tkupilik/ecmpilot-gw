@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "gateway.h"
+#include "process_data.h"
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
@@ -28,6 +29,8 @@ class Network final : public Rntm::Process {
     QueueHandle_t events = nullptr;
     Rntm::Timer timer{this};
     gw_settings_t settings{};
+    esp_netif_t *station = nullptr;
+    esp_netif_t *access_point = nullptr;
     int selected = -1;
     bool scanning = false;
     bool connecting = false;
@@ -59,13 +62,27 @@ class Network final : public Rntm::Process {
         } else self->SendSig(SIG_USER);
     }
 
+    esp_err_t ApplyHostname()
+    {
+        char hostname[GW_HOSTNAME_SIZE];
+        gw_hostname_get(hostname);
+        ESP_RETURN_ON_ERROR(esp_netif_set_hostname(station, hostname), "network", "station hostname");
+        ESP_RETURN_ON_ERROR(esp_netif_set_hostname(access_point, hostname), "network", "AP hostname");
+        portENTER_CRITICAL(&status_lock);
+        strlcpy(status.hostname, hostname, sizeof(status.hostname));
+        portEXIT_CRITICAL(&status_lock);
+        return ESP_OK;
+    }
+
     esp_err_t InitWifi()
     {
         configASSERT(xPortGetCoreID() == GW_NETWORK_CORE);
         ESP_RETURN_ON_ERROR(esp_netif_init(), "network", "netif init");
         ESP_RETURN_ON_ERROR(esp_event_loop_create_default(), "network", "event loop");
-        if (!esp_netif_create_default_wifi_sta() || !esp_netif_create_default_wifi_ap())
-            return ESP_ERR_NO_MEM;
+        station = esp_netif_create_default_wifi_sta();
+        access_point = esp_netif_create_default_wifi_ap();
+        if (!station || !access_point) return ESP_ERR_NO_MEM;
+        ESP_RETURN_ON_ERROR(ApplyHostname(), "network", "startup hostname");
         wifi_init_config_t init = WIFI_INIT_CONFIG_DEFAULT();
         init.wifi_task_core_id = GW_NETWORK_CORE;
         ESP_RETURN_ON_ERROR(esp_wifi_init(&init), "network", "wifi init");
@@ -77,7 +94,7 @@ class Network final : public Rntm::Process {
         wifi_config_t ap{};
         snprintf(reinterpret_cast<char *>(ap.ap.ssid), sizeof(ap.ap.ssid),
                  "eCMPilot-%02X%02X%02X", mac[3], mac[4], mac[5]);
-        char password[17]{};
+        char password[GW_AP_PASSWORD_SIZE]{};
         nvs_handle_t nvs;
         ESP_RETURN_ON_ERROR(nvs_open("gateway", NVS_READWRITE, &nvs), "network", "ap nvs");
         size_t size = sizeof(password);
@@ -90,6 +107,7 @@ class Network final : public Rntm::Process {
         }
         nvs_close(nvs);
         if (err != ESP_OK) return err;
+        if (!gw_ap_password_valid(password)) return ESP_ERR_INVALID_STATE;
         memcpy(ap.ap.password, password, strlen(password));
         ap.ap.authmode = WIFI_AUTH_WPA2_PSK;
         ap.ap.max_connection = 2;
@@ -99,7 +117,9 @@ class Network final : public Rntm::Process {
         portENTER_CRITICAL(&status_lock);
         strlcpy(status.ap_ssid, reinterpret_cast<char *>(ap.ap.ssid), sizeof(status.ap_ssid));
         portEXIT_CRITICAL(&status_lock);
-        ESP_LOGI("network", "Setup AP: %s, password: %s", ap.ap.ssid, password);
+        ESP_LOGI("network", "Setup AP: %s", ap.ap.ssid);
+        // Keep the serial credential announcement outside the web log capture.
+        printf("Setup AP password: %s\n", password);
         gw_settings_get(&settings);
         setup_ap = settings.count == 0;
         ESP_RETURN_ON_ERROR(esp_wifi_set_mode(setup_ap ? WIFI_MODE_APSTA : WIFI_MODE_STA), "network", "startup mode");
@@ -109,7 +129,8 @@ class Network final : public Rntm::Process {
         status.setup_ap = setup_ap;
         portEXIT_CRITICAL(&status_lock);
         offline_since = esp_timer_get_time();
-        return gw_web_start();
+        ESP_RETURN_ON_ERROR(gw_web_start(), "network", "web start");
+        return gw_udp_start();
     }
 
     void EnableSetupAp()
@@ -192,6 +213,8 @@ class Network final : public Rntm::Process {
         gw_settings_get(&settings);
         scan_at = esp_timer_get_time() + 1000000;
         offline_since = esp_timer_get_time();
+        const esp_err_t hostname_error = ApplyHostname();
+        if (hostname_error != ESP_OK) ESP_LOGE("network", "Hostname update: %s", esp_err_to_name(hostname_error));
         portENTER_CRITICAL(&status_lock);
         status.connected = false;
         status.ip[0] = 0;
@@ -255,8 +278,12 @@ class Network final : public Rntm::Process {
                     portENTER_CRITICAL(&status_lock);
                     status.rssi = ap.rssi;
                     portEXIT_CRITICAL(&status_lock);
+                    (void)varstore_write(GW_VAR_WIFI_RSSI_DBM, ap.rssi);
                 }
+            } else {
+                (void)varstore_invalidate(GW_VAR_WIFI_RSSI_DBM);
             }
+            (void)varstore_write(GW_VAR_WIFI_CONNECTED, connected ? 1 : 0);
         }
         return Process::Main(signal);
     }

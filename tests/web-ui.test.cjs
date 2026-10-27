@@ -6,11 +6,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
-const script = fs.readFileSync(path.join(__dirname, '../main/web/index.html'), 'utf8').match(/<script>([\s\S]*?)<\/script>/)[1];
+const script = [...fs.readFileSync(path.join(__dirname, '../main/web/index.html'), 'utf8').matchAll(/<script>([\s\S]*?)<\/script>/g)].map(match=>match[1]).join('\n');
 
 class Element {
   constructor(tag = 'div') {this.tag = tag;this.children = [];this.dataset = {};this.value = '';this.checked = false;this.textContent = '';this.disabled = false;this.style = {};}
   setAttribute(name, value) {this[name] = value;}
+  focus() {this.focused = true;}
   append(...children) {for (const child of children) {if (typeof child === 'string') continue;child.parentNode = this;this.children.push(child);}}
   remove() {if (this.parentNode) this.parentNode.children.splice(this.parentNode.children.indexOf(this), 1);}
   replaceChildren() {this.children = [];}
@@ -20,9 +21,11 @@ class Element {
   querySelectorAll(tag) {return this.children.flatMap(c => [...(c.tag === tag ? [c] : []), ...c.querySelectorAll(tag)]);}
 }
 
-async function page() {
-  const ids = Object.fromEntries(['status','refresh','profiles','add','save','firmware','upload','progress','message'].map(id => [id, new Element()]));
+async function page(hash='') {
+  const tabNames=['home','varstore','wifi','ota','log','tasks'];
+  const ids = Object.fromEntries([...['auto','refresh','dump','summary','message','rows'].map(name=>'tasks-'+name),...['auto','follow','refresh','clear','download','message','output'].map(name=>'log-'+name),'status','hostname','ap-ssid','ap-password','ap-password-show','refresh','profiles','add','save','firmware','upload','progress','message',...['filter','auto','refresh','dump','summary','message','signals'].map(name=>'vars-'+name),...tabNames.flatMap(name=>['tab-'+name,'panel-'+name])].map(id => [id, new Element()]));
   const requests = [], uploads = [];
+  let restart=false;
   const profiles = [{ssid:'Home',has_password:true},{ssid:'Workshop',has_password:false}];
   class Upload {
     constructor() {this.upload = {};uploads.push(this);}
@@ -32,19 +35,62 @@ async function page() {
   }
   const fetch = async (url, options) => {
     requests.push({url, options});
-    return {ok:true, json:async () => url === '/api/status' ? {version:'test',partition:'ota_0',uptime_s:1,free_heap:100000,heartbeat:2,connected:false,setup_ap:true,ap_ssid:'eCMPilot-TEST'} : options ? {saved:true} : {networks:profiles}};
+    return {ok:true, json:async () => url === '/api/status' ? {version:'test',partition:'ota_0',uptime_s:1,free_heap:100000,heartbeat:2,connected:false,setup_ap:true,ap_ssid:'eCMPilot-TEST'} : url === '/api/vars' ? {signals:[]} : url==='/api/tasks' ? {boot:'0'.repeat(32),sampled_us:1000000,cores:2,tasks:[]} : url.startsWith('/api/log') ? {boot:'0'.repeat(32),latest:0,next:0,lost:0,entries:[]} : options ? {saved:true,restarting:restart} : {hostname:'ecmpilot-gw',ap_ssid:'eCMPilot-TEST',ap_password:'APpassword123',networks:profiles}};
   };
-  const context = vm.createContext({document:{getElementById:id => ids[id],createElement:tag => new Element(tag),querySelectorAll:selector => {assert.equal(selector,'.profile');return ids.profiles.children;}},fetch,XMLHttpRequest:Upload,console});
+  const location={hash};const listeners={};
+  const context = vm.createContext({setInterval:()=>{},location,history:{replaceState:(_state,_title,url)=>{location.hash=url;}},window:{addEventListener:(name,fn)=>{listeners[name]=fn;}},document:{getElementById:id => ids[id],createElement:tag => new Element(tag),querySelectorAll:selector => {assert.equal(selector,'.profile');return ids.profiles.children;}},fetch,XMLHttpRequest:Upload,console});
   vm.runInContext(script, context);
   await new Promise(resolve => setImmediate(resolve));
-  return {ids, requests, uploads, rows:ids.profiles.children};
+  return {ids, requests, uploads, location, listeners, rows:ids.profiles.children, restart:()=>{restart=true;}};
 }
+
+test('tabs show the requested panel and preserve unfinished Wi-Fi edits', async()=>{
+  const p=await page();
+  assert.equal(p.ids['panel-home'].hidden,false);
+  for(const name of ['varstore','wifi','ota','log','tasks'])assert.equal(p.ids['panel-'+name].hidden,true);
+  p.ids['tab-wifi'].onclick();p.ids.hostname.value='my-corsa';p.rows[0].querySelectorAll('input')[0].value='Unfinished edit';
+  p.ids['tab-ota'].onclick();
+  assert.equal(p.ids['panel-wifi'].hidden,true);assert.equal(p.ids['panel-ota'].hidden,false);
+  assert.equal(p.ids['tab-ota']['aria-selected'],'true');assert.equal(p.location.hash,'#ota');
+  p.ids['tab-wifi'].onclick();assert.equal(p.ids.hostname.value,'my-corsa');assert.equal(p.rows[0].querySelectorAll('input')[0].value,'Unfinished edit');
+});
+
+test('tab links restore a selected panel and unknown fragments fall back to Home',async()=>{
+  const p=await page('#varstore');assert.equal(p.ids['panel-varstore'].hidden,false);
+  p.location.hash='#wifi';p.listeners.hashchange();assert.equal(p.ids['panel-wifi'].hidden,false);
+  p.location.hash='#unknown';p.listeners.hashchange();assert.equal(p.ids['panel-home'].hidden,false);
+});
+
+test('tabs support keyboard navigation and move focus to the selected tab',async()=>{
+  const p=await page();let prevented=false;
+  p.ids['tab-home'].onkeydown({key:'ArrowLeft',preventDefault:()=>{prevented=true;}});
+  assert.equal(prevented,true);assert.equal(p.ids['panel-tasks'].hidden,false);
+  assert.equal(p.ids['tab-tasks'].focused,true);assert.equal(p.ids['tab-tasks'].tabIndex,0);
+  p.ids['tab-ota'].onkeydown({key:'Home',preventDefault:()=>{}});
+  assert.equal(p.ids['panel-home'].hidden,false);
+});
 
 test('saved credentials are kept when saving unchanged profiles', async () => {
   const p = await page();
   await p.ids.save.onclick();
   const post = p.requests.find(r => r.options?.method === 'POST');
-  assert.deepEqual(JSON.parse(post.options.body), {networks:[{ssid:'Home'},{ssid:'Workshop',password:''}]});
+  assert.deepEqual(JSON.parse(post.options.body), {hostname:'ecmpilot-gw',networks:[{ssid:'Home'},{ssid:'Workshop',password:''}]});
+});
+
+test('hostname is loaded, normalized and saved with Wi-Fi settings',async()=>{
+  const p=await page();assert.equal(p.ids.hostname.value,'ecmpilot-gw');
+  p.ids.hostname.value='  My-Corsa  ';await p.ids.save.onclick();
+  const post=p.requests.find(r=>r.options?.method==='POST');
+  assert.equal(JSON.parse(post.options.body).hostname,'my-corsa');
+});
+test('invalid DNS labels are rejected before changing network settings',async()=>{
+  const p=await page();
+  for(const name of ['', '-corsa','corsa-','my_corsa','corsa.lan','my corsa','a'.repeat(33)]){
+    p.ids.hostname.value=name;await p.ids.save.onclick();
+    assert.equal(p.requests.filter(r=>r.options).length,0);assert.match(p.ids.message.textContent,/Hostname/);
+  }
+  p.ids.hostname.value='a'.repeat(32);await p.ids.save.onclick();
+  assert.equal(p.requests.filter(r=>r.options).length,1);
 });
 
 test('priority arrows determine the order sent to the gateway', async () => {
@@ -96,4 +142,24 @@ test('OTA sends the raw file with the required content type and reports acceptan
   upload.status = 400;upload.responseText = 'Invalid image';upload.onload();
   assert.equal(p.ids.message.textContent, 'Invalid image');
   assert.equal(p.ids.upload.disabled, false);
+});
+
+
+test('AP password is displayed, revealable, editable and preserved across tabs',async()=>{
+  const p=await page();assert.equal(p.ids['ap-ssid'].textContent,'eCMPilot-TEST');
+  assert.equal(p.ids['ap-password'].value,'APpassword123');p.ids['ap-password-show'].checked=true;p.ids['ap-password-show'].onchange();
+  assert.equal(p.ids['ap-password'].type,'text');
+  p.ids['ap-password'].value='new AP password';p.ids['tab-log'].onclick();p.ids['tab-wifi'].onclick();
+  assert.equal(p.ids['ap-password'].value,'new AP password');p.restart();await p.ids.save.onclick();
+  const post=p.requests.find(r=>r.options?.method==='POST');assert.equal(JSON.parse(post.options.body).ap_password,'new AP password');
+  assert.match(p.ids.message.textContent,/restarting/);
+});
+
+test('invalid AP passwords are rejected; blank keeps the saved password',async()=>{
+  const p=await page();
+  for(const value of ['short','a'.repeat(64),'bad\npassword','neplatnéheslo']){
+    p.ids['ap-password'].value=value;await p.ids.save.onclick();assert.equal(p.requests.filter(r=>r.options).length,0);assert.match(p.ids.message.textContent,/AP password/);
+  }
+  p.ids['ap-password'].value='';await p.ids.save.onclick();
+  assert.equal(JSON.parse(p.requests.find(r=>r.options).options.body).ap_password,undefined);
 });

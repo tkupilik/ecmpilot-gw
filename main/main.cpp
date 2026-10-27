@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "gateway.h"
+#include "process_data.h"
+#include "log_buffer.h"
 #include <atomic>
 #include "esp_log.h"
 #include "esp_system.h"
@@ -10,6 +12,8 @@
 #include "runtime.h"
 
 static std::atomic<uint32_t> heartbeat_count;
+static_assert(configTIMER_TASK_PRIORITY == configMAX_PRIORITIES - 1,
+              "Tmr Svc must have the highest FreeRTOS priority");
 static std::atomic<int64_t> restart_at;
 
 class Application final : public Rntm::Process {
@@ -24,6 +28,9 @@ class Application final : public Rntm::Process {
             next_heartbeat = esp_timer_get_time() + 1000000;
             PT_WAIT_UNTIL(&heartbeat_pt, esp_timer_get_time() >= next_heartbeat);
             ++heartbeat_count;
+            (void)varstore_write(GW_VAR_HEARTBEAT, (int32_t)heartbeat_count.load());
+            (void)varstore_write(GW_VAR_UPTIME_S, (int32_t)(esp_timer_get_time() / 1000000));
+            (void)varstore_write(GW_VAR_FREE_HEAP_BYTES, (int32_t)esp_get_free_heap_size());
         }
         PT_END(&heartbeat_pt);
     }
@@ -55,10 +62,13 @@ extern "C" void gw_restart_soon(void) { restart_at = esp_timer_get_time() + 1500
 
 extern "C" void app_main(void)
 {
+    gw_log_start();
+    ESP_LOGI("app", "Web log capture ready: %u entries, %u bytes per entry", GW_LOG_CAPACITY, GW_LOG_TEXT_SIZE);
     configASSERT(xPortGetCoreID() == GW_APP_CORE);
     // Do not silently erase saved credentials on an NVS error.
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(gw_settings_init());
+    ESP_ERROR_CHECK(gw_process_data_init());
     ESP_ERROR_CHECK(application.Start("application", 4, application_stack,
                                     sizeof(application_stack), GW_APP_CORE));
     ESP_ERROR_CHECK(gw_network_start());

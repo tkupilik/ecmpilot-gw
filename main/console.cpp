@@ -28,6 +28,7 @@ static int Status(int, char **)
            esp_get_free_heap_size(), gw_heartbeat_count(), esp_ota_get_running_partition()->label);
     printf("Wi-Fi: %s; SSID: %s; IP: %s; RSSI: %d; disconnect reason: %d\n",
            s.connected ? "connected" : "offline", s.ssid, s.ip, s.rssi, s.last_disconnect_reason);
+    printf("Hostname: %s\n", s.hostname);
     printf("Setup AP: %s (%s); web: http://192.168.4.1/ while AP is active\n",
            s.setup_ap ? "active" : "inactive", s.ap_ssid);
     return 0;
@@ -37,6 +38,13 @@ static int Wifi(int argc, char **argv)
 {
     gw_settings_t settings;
     gw_settings_get(&settings);
+    if ((argc == 2 || argc == 3) && !strcmp(argv[1], "hostname")) {
+        char hostname[GW_HOSTNAME_SIZE];
+        if (argc == 2) { gw_hostname_get(hostname); puts(hostname); return 0; }
+        const esp_err_t err = gw_settings_save_network(&settings, argv[2]);
+        if (err != ESP_OK) { printf("Save failed: %s\n", esp_err_to_name(err)); return 1; }
+        gw_network_reconfigure(); puts("Hostname saved; reconnect scheduled"); return 0;
+    }
     if (argc == 1 || (argc == 2 && !strcmp(argv[1], "list"))) {
         for (unsigned i = 0; i < settings.count; ++i)
             printf("%u: %s (%s)\n", i + 1, settings.networks[i].ssid,
@@ -62,7 +70,7 @@ static int Wifi(int argc, char **argv)
         memset(&settings, 0, sizeof(settings));
         settings.version = 1;
     } else {
-        puts("wifi list | wifi add <ssid> [password] | wifi remove <ssid> | wifi clear");
+        puts("wifi list | wifi add <ssid> [password] | wifi remove <ssid> | wifi clear | wifi hostname [name]");
         return 1;
     }
     const esp_err_t err = gw_settings_save(&settings);
@@ -97,7 +105,7 @@ extern "C" esp_err_t gw_console_start(void)
     const esp_console_cmd_t commands[] = {
         {.command="hello", .help="Hello world and CPU affinity", .hint=nullptr, .func=Hello, .argtable=nullptr, .func_w_context=nullptr, .context=nullptr},
         {.command="status", .help="Firmware, runtime, Wi-Fi and OTA status", .hint=nullptr, .func=Status, .argtable=nullptr, .func_w_context=nullptr, .context=nullptr},
-        {.command="wifi", .help="Saved Wi-Fi: list/add/remove/clear; quote SSIDs with spaces", .hint=nullptr, .func=Wifi, .argtable=nullptr, .func_w_context=nullptr, .context=nullptr},
+        {.command="wifi", .help="Wi-Fi: list/add/remove/clear/hostname; quote SSIDs with spaces", .hint=nullptr, .func=Wifi, .argtable=nullptr, .func_w_context=nullptr, .context=nullptr},
         {.command="restart", .help="Restart in 1.5 seconds", .hint=nullptr, .func=Restart, .argtable=nullptr, .func_w_context=nullptr, .context=nullptr},
     };
     for (const auto &command : commands) ESP_ERROR_CHECK(esp_console_cmd_register(&command));

@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: BSD-2-Clause
+#pragma once
+#include "varstore.h"
+#include "esp_err.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef enum {
+    GW_VAR_HEARTBEAT,
+    GW_VAR_UPTIME_S,
+    GW_VAR_FREE_HEAP_BYTES,
+    GW_VAR_WIFI_CONNECTED,
+    GW_VAR_WIFI_RSSI_DBM,
+    GW_VAR_DEMO_VALUE,
+    GW_VAR_TEST_ENABLED,
+    GW_VAR_VEHICLE_AWAKE,
+    GW_VAR_VEHICLE_PARKED,
+    GW_VAR_SOC_PCT_X10,
+    GW_VAR_RANGE_KM_X10,
+    GW_VAR_CABIN_C_X10,
+    GW_VAR_OUTSIDE_C_X10,
+    GW_VAR_BATTERY_MIN_C_X10,
+    GW_VAR_BATTERY_MAX_C_X10,
+    GW_VAR_ODOMETER_KM,
+    GW_VAR_VOLTAGE_V_X10,
+    GW_VAR_CURRENT_A_X10,
+    GW_VAR_CLIMATE_STATE,
+    GW_VAR_CHARGE_STATE,
+    GW_VAR_CHARGE_MODE,
+    GW_VAR_CHARGE_CONNECTED,
+    GW_VAR_CHARGE_POWER_W,
+    GW_VAR_CHARGE_REMAINING_MIN,
+    GW_VAR_CHARGE_START_MINUTE,
+    GW_VAR_REQUEST_CLIMATE_ENABLED,
+    GW_VAR_REQUEST_CLIMATE_GENERATION,
+    GW_VAR_REQUEST_CHARGE_MODE,
+    GW_VAR_REQUEST_CHARGE_START_MINUTE,
+    GW_VAR_REQUEST_CHARGE_GENERATION,
+    GW_VAR_UDP_RX_COUNT,
+    GW_VAR_UDP_TX_COUNT,
+    GW_VAR_UDP_DROP_COUNT,
+    GW_VAR_UDP_COMMAND_COUNT,
+    GW_VAR_COUNT,
+} gw_variable_id_t;
+
+esp_err_t gw_process_data_init(void);
+bool gw_process_data_manual(size_t id);
+#ifdef __cplusplus
+}
+#endif

@@ -5,32 +5,121 @@
 <title>eCMPilot Gateway</title>
 <style>
 :root{font:16px system-ui;color:#e3ecf3;background:#101820;color-scheme:dark}
-body{max-width:780px;margin:32px auto;padding:0 18px}h1{margin-bottom:4px}h2{font-size:1.25rem}
+body{max-width:1380px;margin:32px auto;padding:0 18px}h1{margin-bottom:4px}h2{font-size:1.25rem}
+[hidden]{display:none!important}
 section{background:#1b2935;border:1px solid #344858;border-radius:14px;padding:20px;margin:20px 0}
 button,input{font:inherit;padding:9px;border-radius:7px;border:1px solid #526878}
 button{cursor:pointer;background:#284454;color:inherit}button.primary{background:#16715f}button:disabled{opacity:.5;cursor:wait}
 .profile{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin:12px 0}.profile input{min-width:0;width:100%;box-sizing:border-box}
 .actions{display:flex;gap:8px;flex-wrap:wrap}.muted{color:#aebfce}#message{white-space:pre-wrap}pre{white-space:pre-wrap;line-height:1.7}
 @media(max-width:560px){.profile{grid-template-columns:1fr auto}.profile input[type=password]{grid-row:2;grid-column:1}.profile button{grid-column:2;grid-row:1/3}}
+
+.tabs{display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid #344858;margin:24px 0 8px;padding-bottom:8px}
+.tabs button{white-space:nowrap;background:transparent;border-color:transparent;color:#aebfce}
+.tabs button[aria-selected=true]{background:#284454;border-color:#526878;color:#e3ecf3}
+button:focus-visible,input:focus-visible,[role=tabpanel]:focus-visible{outline:2px solid #79cfc1;outline-offset:3px}
+#panel-home,#panel-wifi,#panel-ota{max-width:780px}
+input[type=number]{width:130px}input[type=search]{min-width:230px}
+.toolbar,.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.toolbar{margin:20px 0}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;background:#1b2935}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #344858;vertical-align:top}
+th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88rem}
+#panel-varstore th,#panel-varstore td,#panel-tasks th,#panel-tasks td{padding:8px 10px;vertical-align:middle;white-space:nowrap}
+#panel-varstore table,#panel-tasks table{font-size:14px}
+#panel-varstore .actions{flex-wrap:nowrap;gap:6px}
+#panel-varstore .actions button,#panel-varstore .actions input{font-size:13px;padding:6px}
+#panel-varstore .actions input{width:84px;box-sizing:border-box}
+.value{font-variant-numeric:tabular-nums;white-space:nowrap}
+.state{display:inline-block;border-radius:5px;padding:3px 7px;font-size:.88rem;background:#536477}
+.valid{background:#165b49}.invalid{background:#754336}.forced{background:#775e19}
+#vars-message{white-space:pre-wrap;min-height:24px}.notice{padding:12px;background:#1b2935;border-left:3px solid #c1a454}
+#log-output{height:55vh;min-height:260px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#101820;padding:14px;border-radius:8px;font:13px/1.5 ui-monospace,monospace}#log-message{min-height:24px;white-space:pre-wrap}
 </style>
 <h1>eCMPilot Gateway</h1><div class="muted">Local setup · ESP32-S3</div>
+<nav class="tabs" role="tablist" aria-label="Gateway pages">
+<button id="tab-home" type="button" role="tab" aria-controls="panel-home" aria-selected="true" tabindex="0">Home</button>
+<button id="tab-varstore" type="button" role="tab" aria-controls="panel-varstore" aria-selected="false" tabindex="-1">Varstore</button>
+<button id="tab-wifi" type="button" role="tab" aria-controls="panel-wifi" aria-selected="false" tabindex="-1">Wi-Fi setup</button>
+<button id="tab-ota" type="button" role="tab" aria-controls="panel-ota" aria-selected="false" tabindex="-1">OTA</button>
+<button id="tab-log" type="button" role="tab" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log</button>
+<button id="tab-tasks" type="button" role="tab" aria-controls="panel-tasks" aria-selected="false" tabindex="-1">Tasks</button>
+</nav>
+<main>
+<div id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
 <section><h2>Gateway status</h2><pre id="status">Loading…</pre><button id="refresh">Refresh</button></section>
-<section><h2>Known Wi-Fi networks</h2>
+</div>
+<div id="panel-wifi" role="tabpanel" aria-labelledby="tab-wifi" tabindex="0" hidden>
+<section><h2>Wi-Fi setup</h2>
+<p><label for="hostname">Hostname</label><br><input id="hostname" type="text" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ecmpilot-gw"></p>
+<p class="muted">1–32 letters, digits or hyphens; start and end with a letter or digit. Saved in the gateway and applied when reconnecting. Your router provides the DNS suffix and record (for example <code>ecmpilot-gw.lan</code>); local DNS availability depends on its configuration.</p>
+<h3>Setup access point</h3>
+<p class="muted">SSID: <code id="ap-ssid"></code></p>
+<p><label for="ap-password">AP password</label><br><input id="ap-password" type="password" minlength="8" maxlength="63" autocomplete="new-password" autocapitalize="none" spellcheck="false"> <label><input id="ap-password-show" type="checkbox"> Show password</label></p>
+<p class="muted">8–63 printable ASCII characters. Leave blank to keep the current password. Changing it restarts the gateway; reconnect the setup AP with the new password.</p>
+<h3>Known Wi-Fi networks</h3>
 <p class="muted">Up to eight networks, highest priority first. The gateway connects to an available network and retries after a connection loss. Hidden networks are not supported yet.</p>
 <div id="profiles"></div>
 <div class="actions"><button id="add">Add network</button><button class="primary" id="save">Save and reconnect</button></div>
 <p class="muted">For a saved network, leave its password blank to keep it. Select “Open network” to remove its password. Saving an empty list enables the setup access point.</p>
 </section>
+</div>
+<div id="panel-ota" role="tabpanel" aria-labelledby="tab-ota" tabindex="0" hidden>
 <section><h2>Firmware update</h2>
 <p class="muted">Choose <code>ecmpilot_gw.bin</code> from an ESP-IDF build. The gateway writes the inactive OTA slot, validates the image and restarts.</p>
 <input id="firmware" type="file" accept=".bin"><p><button id="upload" class="primary">Upload firmware</button></p>
 <progress id="progress" value="0" max="100" hidden></progress>
 </section>
+</div>
+<div id="panel-varstore" role="tabpanel" aria-labelledby="tab-varstore" tabindex="0" hidden>
+<h2>Process signals</h2>
+<p class="muted">Vehicle signals are manual test inputs until CAN is implemented. Set <code>test.enabled</code> to 1 to enable UDP test controls. Incoming targets appear under <code>request.*</code>; set the matching observed climate/charge value to confirm a test command.</p>
+<p class="notice">Force overrides the value returned to consumers. Real producer data keeps updating underneath. Forces stay active until Release or reboot. Direct Write and Touch are available only for manual signals.</p>
+<div class="toolbar"><input id="vars-filter" type="search" placeholder="Filter name or description" aria-label="Filter signals"><label><input id="vars-auto" type="checkbox" checked> Refresh every second</label><button id="vars-refresh">Refresh</button><button id="vars-dump">Download JSON</button><span id="vars-summary" class="muted"></span></div>
+<p id="vars-message" role="status" aria-live="polite"></p>
+<div class="scroll"><table><thead><tr><th>Signal</th><th>Effective value</th><th>State</th><th>Age (ms)</th><th>Real producer data</th><th>Edit / force (int32)</th></tr></thead><tbody id="vars-signals"></tbody></table></div>
+</div>
+<div id="panel-log" role="tabpanel" aria-labelledby="tab-log" tabindex="0" hidden>
+<section><h2>ESP log</h2>
+<p class="muted">Recent application logs from a RAM ring buffer. Older entries are overwritten when full; the serial console remains active.</p>
+<div class="toolbar"><label><input id="log-auto" type="checkbox" checked> Live updates</label><label><input id="log-follow" type="checkbox" checked> Follow output</label><button id="log-refresh">Refresh</button><button id="log-clear">Clear view</button><button id="log-download">Download log</button></div>
+<p id="log-message" role="status" aria-live="polite"></p>
+<pre id="log-output" aria-label="ESP application log"></pre>
+</section>
+</div>
+<div id="panel-tasks" role="tabpanel" aria-labelledby="tab-tasks" tabindex="0" hidden>
+<h2>FreeRTOS tasks</h2>
+<p class="muted">CPU load is measured between samples; 100% equals one full core. Core affinity shows CPU0, CPU1 or Any (not the currently executing core). Stack minimum free is the smallest unused stack reserve since task creation, in bytes.</p>
+<div class="toolbar"><label><input id="tasks-auto" type="checkbox" checked> Refresh every 2 seconds</label><button id="tasks-refresh">Refresh</button><button id="tasks-dump">Download JSON</button></div>
+<p id="tasks-summary"></p><p id="tasks-message" role="status" aria-live="polite"></p>
+<div class="scroll"><table><thead><tr><th>Task</th><th>ID</th><th>State</th><th>Priority / base</th><th>Core affinity</th><th>CPU time (s)</th><th>CPU load (%)</th><th>Stack min free (B)</th><th>Stack base</th></tr></thead><tbody id="tasks-rows"></tbody></table></div>
+</div>
+</main>
 <p id="message" role="status" aria-live="polite"></p>
 <p class="muted">Experimental development firmware. Not approved for use on public roads. No vehicle control is implemented in this build.</p>
 <script>
 'use strict';
 const byId=id=>document.getElementById(id);
+const tabNames=['home','varstore','wifi','ota','log','tasks'];
+const tabListeners=[];
+function onTabChange(listener){tabListeners.push(listener);}
+function selectTab(name,remember=true){
+  const selected=tabNames.includes(name)?name:'home';
+  for(const tab of tabNames){const active=tab===selected;byId('panel-'+tab).hidden=!active;byId('tab-'+tab).setAttribute('aria-selected',String(active));byId('tab-'+tab).tabIndex=active?0:-1;}
+  if(remember&&location.hash!=='#'+selected)history.replaceState(null,'','#'+selected);
+  for(const listener of tabListeners)listener(selected);
+}
+for(const [index,name] of tabNames.entries()){
+  const button=byId('tab-'+name);button.onclick=()=>selectTab(name);
+  button.onkeydown=event=>{
+    let next;
+    if(event.key==='ArrowRight')next=(index+1)%tabNames.length;
+    else if(event.key==='ArrowLeft')next=(index+tabNames.length-1)%tabNames.length;
+    else if(event.key==='Home')next=0;else if(event.key==='End')next=tabNames.length-1;else return;
+    event.preventDefault();selectTab(tabNames[next]);byId('tab-'+tabNames[next]).focus();
+  };
+}
+window.addEventListener('hashchange',()=>selectTab(location.hash.slice(1),false));
+selectTab(location.hash.slice(1),false);
 const message=text=>{byId('message').textContent=text;};
 async function api(path,options){const r=await fetch(path,options);if(!r.ok)throw new Error(await r.text());return r.json();}
 function addProfile(profile={ssid:'',has_password:false}){
@@ -46,12 +135,18 @@ function addProfile(profile={ssid:'',has_password:false}){
   row.append(ssid,password,actions,label);byId('profiles').append(row);
 }
 async function refresh(){const s=await api('/api/status');byId('status').textContent=
-  `Firmware: ${s.version} · ${s.partition}\nUptime: ${s.uptime_s}s · free heap: ${s.free_heap} bytes\nWi-Fi: ${s.connected?s.ssid+' · '+s.ip+' · '+s.rssi+' dBm':'offline'}\nSetup AP: ${s.setup_ap?s.ap_ssid+' · 192.168.4.1':'inactive'}\nCPU0: network · CPU1: application · heartbeat: ${s.heartbeat}`;}
+  `Firmware: ${s.version} · ${s.partition}\nUptime: ${s.uptime_s}s · free heap: ${s.free_heap} bytes\nWi-Fi: ${s.connected?s.ssid+' · '+s.ip+' · '+s.rssi+' dBm':'offline'}\nHostname: ${s.hostname ?? "ecmpilot-gw"}\nSetup AP: ${s.setup_ap?s.ap_ssid+' · 192.168.4.1':'inactive'}\nCPU0: network · CPU1: application · heartbeat: ${s.heartbeat}\nUDP: ${s.udp_port ?? 42840} · ${s.udp_test_mode?"varstore test controls":"monitoring only"}`;}
 byId('refresh').onclick=()=>refresh().catch(e=>message(e.message));
+onTabChange(tab=>{if(tab==='home')refresh().catch(e=>message(e.message));});
 byId('add').onclick=()=>addProfile();
+byId('ap-password-show').onchange=()=>{byId('ap-password').type=byId('ap-password-show').checked?'text':'password';};
 byId('save').onclick=async()=>{
   const button=byId('save');button.disabled=true;
   try{
+    const hostname=byId('hostname').value.trim().toLowerCase();
+    if(hostname.length>32||!/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/.test(hostname))throw new Error('Hostname must be 1–32 letters, digits or hyphens, starting and ending with a letter or digit.');
+    const apPassword=byId('ap-password').value;
+    if(apPassword&&!/^[\x20-\x7e]{8,63}$/.test(apPassword))throw new Error('AP password must be 8–63 printable ASCII characters.');
     const networks=[...document.querySelectorAll('.profile')].map(row=>{
       const inputs=row.querySelectorAll('input');const ssid=inputs[0].value;const password=inputs[1].value;const open=inputs[2].checked;
       if(!ssid)throw new Error('Enter a Wi-Fi name or remove its row.');
@@ -60,8 +155,10 @@ byId('save').onclick=async()=>{
       else if(ssid!==row.dataset.savedSsid||row.dataset.savedPassword!=='true')throw new Error('Enter a password or select Open network.');
       return p;
     });
-    await api('/api/wifi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({networks})});
-    message('Saved. Reconnecting; the gateway may get a different IP address.');
+    const payload={hostname,networks};if(apPassword&&apPassword!==byId('ap-password').dataset.savedPassword)payload.ap_password=apPassword;
+    const result=await api('/api/wifi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(result.restarting){message('Saved. Gateway restarting; reconnect the setup AP with the new password.');return;}
+    message('Saved. Reconnecting with hostname '+hostname+'; the IP address may change and your router may need time to update DNS.');
     await loadProfiles();
   }catch(e){message(e.message);}finally{button.disabled=false;}
 };
@@ -74,7 +171,154 @@ byId('upload').onclick=()=>{
   xhr.onerror=xhr.ontimeout=()=>{message('Connection lost. Check gateway status before retrying the update.');byId('upload').disabled=false;byId('save').disabled=false;};
   message('Uploading firmware…');xhr.send(file);
 };
-async function loadProfiles(){const data=await api('/api/wifi');byId('profiles').replaceChildren();data.networks.forEach(addProfile);}
+async function loadProfiles(){const data=await api('/api/wifi');byId('hostname').value=data.hostname||'ecmpilot-gw';byId('ap-ssid').textContent=data.ap_ssid||'';byId('ap-password').value=data.ap_password||'';byId('ap-password').dataset.savedPassword=data.ap_password||'';byId('profiles').replaceChildren();data.networks.forEach(addProfile);}
 Promise.all([refresh(),loadProfiles()]).catch(e=>message(e.message));
+</script>
+<script>
+(()=>{
+'use strict';
+const byId=id=>document.getElementById('vars-'+id);
+const visible=()=>!document.getElementById('panel-varstore').hidden;
+const rows=new Map();let lastDump=null;let reading=false;let writing=false;
+function message(text){byId('message').textContent=text;}
+async function api(path,options){const response=await fetch(path,options);if(!response.ok)throw new Error(await response.text());return response.json();}
+function cell(row){const el=document.createElement('td');row.append(el);return el;}
+function valueText(value,unit){return value===null||value===undefined?'No sample':String(value)+(unit?' '+unit:'');}
+function integer(text){if(!/^-?\d+$/.test(text))throw new Error('Enter a signed 32-bit integer.');const value=Number(text);if(!Number.isInteger(value)||value < -2147483648||value > 2147483647)throw new Error('Value must be between -2147483648 and 2147483647.');return value;}
+async function command(row,action){
+  if(writing)return;
+  const payload={id:row.signal.id,action};
+  try{if(action==='write'||action==='force')payload.value=integer(row.input.value);}catch(error){message(error.message);return;}
+  writing=true;row.buttons.forEach(button=>button.disabled=true);
+  try{await api('/api/vars',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});message(row.signal.name+': '+action+' applied.');await refresh();}
+  catch(error){message(error.message);}
+  finally{writing=false;for(const item of rows.values())setButtons(item);}
+}
+function setButtons(row){row.buttons.forEach(button=>{button.disabled=writing||((button.action==='write'||button.action==='touch')&&!row.signal.writable)||(button.action==='release'&&!row.signal.forced);});}
+function addRow(signal){
+  const element=document.createElement('tr');const name=cell(element);const code=document.createElement('code');name.append(code);
+  const value=cell(element);value.className='value';const stateCell=cell(element);const state=document.createElement('span');state.className='state';stateCell.append(state);
+  const age=cell(element);age.className='value';const raw=cell(element);raw.className='value';const controls=cell(element);const actions=document.createElement('div');actions.className='actions';controls.append(actions);
+  const input=document.createElement('input');input.type='number';input.min='-2147483648';input.max='2147483647';input.step='1';input.value='0';input.setAttribute('aria-label','New value for '+signal.name);actions.append(input);
+  const row={element,code,value,state,age,raw,input,buttons:[],signal};
+  for(const [action,label] of [['write','Write'],['force','Force'],['release','Release'],['touch','Touch']]){const button=document.createElement('button');button.textContent=label;button.action=action;button.onclick=()=>command(row,action);row.buttons.push(button);actions.append(button);}
+  byId('signals').append(element);rows.set(signal.id,row);return row;
+}
+function updateRow(signal){
+  const row=rows.get(signal.id)||addRow(signal);row.signal=signal;row.code.textContent=signal.name;
+  row.code.title=signal.description;
+  row.state.className='state '+signal.state;row.state.textContent=signal.state;
+  row.value.textContent=valueText(signal.value,signal.unit);
+  row.age.textContent=signal.age_ms===null?'--':String(signal.age_ms);
+  row.raw.textContent=valueText(signal.raw_value,signal.unit)+(signal.raw_age_ms===null?'':' | '+signal.raw_age_ms+' ms | '+(signal.raw_valid?'valid':'invalid'));
+  setButtons(row);
+}
+function filter(){const query=byId('filter').value.trim().toLowerCase();for(const row of rows.values())row.element.hidden=!(row.signal.name+' '+row.signal.description).toLowerCase().includes(query);}
+async function refresh(){
+  if(reading)return;reading=true;
+  try{const data=await api('/api/vars');lastDump=data;data.signals.forEach(updateRow);filter();byId('summary').textContent=data.signals.length+' signals; '+data.signals.filter(signal=>signal.forced).length+' forced';}
+  finally{reading=false;}
+}
+byId('refresh').onclick=()=>refresh().catch(error=>message(error.message));
+byId('filter').oninput=filter;
+byId('dump').onclick=()=>{if(!lastDump){message('Refresh before downloading.');return;}const url=URL.createObjectURL(new Blob([JSON.stringify(lastDump,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='ecmpilot-signals.json';link.click();URL.revokeObjectURL(url);};
+setInterval(()=>{if(visible()&&byId('auto').checked&&!writing)refresh().catch(error=>message(error.message));},1000);
+onTabChange(tab=>{if(tab==='varstore')refresh().catch(error=>message(error.message));});
+if(visible())refresh().catch(error=>message(error.message));
+})();
+</script>
+<script>
+(()=>{
+'use strict';
+const byId=id=>document.getElementById('log-'+id);
+const visible=()=>!document.getElementById('panel-log').hidden;
+let boot=null,cursor=0,latest=0,lost=0,reading=false,lines=[],characters=0;
+function append(text){
+  const clean=text.replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g,'');
+  lines.push(clean);characters+=clean.length;
+  while(lines.length>512||characters>65536)characters-=lines.shift().length;
+}
+function render(){byId('output').textContent=lines.join('');if(byId('follow').checked)byId('output').scrollTop=byId('output').scrollHeight;}
+async function refresh(){
+  if(reading)return;reading=true;byId('refresh').disabled=byId('clear').disabled=true;
+  try{
+    for(let page=0;page<4;page++){
+      const response=await fetch('/api/log?after='+cursor+(boot?'&boot='+boot:''));
+      if(!response.ok)throw new Error(await response.text());
+      const data=await response.json();
+      if(boot&&boot!==data.boot){append('\n--- Gateway restarted ---\n');cursor=0;lost=0;}
+      boot=data.boot;latest=data.latest;
+      if(data.lost){lost+=data.lost;append('\n--- '+data.lost+' log entries overwritten in gateway buffer ---\n');}
+      for(const entry of data.entries)if(entry.seq>cursor)append(entry.text);
+      const previous=cursor;cursor=data.next;render();
+      byId('message').textContent='Latest entry: '+latest+' · missed: '+lost+(byId('auto').checked?' · live':' · paused');
+      if(cursor>=latest||cursor<=previous)break;
+    }
+  }catch(error){byId('message').textContent=error.message;}
+  finally{reading=false;byId('refresh').disabled=byId('clear').disabled=false;}
+}
+byId('refresh').onclick=refresh;
+byId('auto').onchange=()=>{if(byId('auto').checked&&visible())refresh();};
+byId('clear').onclick=()=>{if(reading)return;lines=[];characters=0;cursor=latest;lost=0;render();byId('message').textContent='View cleared; gateway buffer preserved.';};
+byId('download').onclick=()=>{const url=URL.createObjectURL(new Blob([lines.join('')],{type:'text/plain;charset=utf-8'}));const link=document.createElement('a');link.href=url;link.download='ecmpilot-log.txt';link.click();URL.revokeObjectURL(url);};
+onTabChange(tab=>{if(tab==='log')refresh();});
+setInterval(()=>{if(visible()&&byId('auto').checked)refresh();},1000);
+if(visible())refresh();
+})();
+</script>
+<script>
+(()=>{
+'use strict';
+const byId=id=>document.getElementById('tasks-'+id);
+const visible=()=>!document.getElementById('panel-tasks').hidden;
+let previous=null,reading=false,lastDump=null;
+const percent=value=>value===null?'--':value.toFixed(1)+'%';
+function metrics(data){
+  const interval=previous&&previous.boot===data.boot?data.sampled_us-previous.sampled_us:0;
+  const before=new Map((previous?.tasks||[]).map(task=>[task.id,task]));
+  const load=task=>{
+    const old=before.get(task.id);
+    if(interval<=0||!old||old.runtime_us>task.runtime_us)return null;
+    return Math.max(0,Math.min(100,100*(task.runtime_us-old.runtime_us)/interval));
+  };
+  const tasks=data.tasks.map(task=>({...task,cpu_percent:load(task)}));
+  const cores=Array.from({length:data.cores},(_,core)=>{
+    const idle=tasks.find(task=>task.idle_core===core);
+    return idle?.cpu_percent===null||!idle?null:100-idle.cpu_percent;
+  });
+  return {interval_us:interval,cores,tasks};
+}
+function render(data,stats){
+  byId('rows').replaceChildren();
+  const tasks=[...stats.tasks].sort((a,b)=>(b.cpu_percent??-1)-(a.cpu_percent??-1)||a.name.localeCompare(b.name));
+  for(const task of tasks){
+    const row=document.createElement('tr');
+    for(const value of [task.name,task.id,task.state,task.priority+' / '+task.base_priority,task.core===null?'Any':'CPU'+task.core,(task.runtime_us/1000000).toFixed(3),percent(task.cpu_percent),task.stack_min_free_bytes,task.stack_base]){
+      const cell=document.createElement('td');cell.textContent=String(value);row.append(cell);
+    }
+    byId('rows').append(row);
+  }
+  const cores=stats.cores.map((value,core)=>'CPU'+core+': '+percent(value)).join(' · ');
+  const total=stats.cores.every(value=>value!==null)?stats.cores.reduce((sum,value)=>sum+value,0)/data.cores:null;
+  byId('summary').textContent=data.tasks.length+' tasks · '+cores+' · total load: '+percent(total)+(stats.interval_us>0?' · window: '+(stats.interval_us/1000000).toFixed(1)+' s':' · collecting CPU sample…');
+}
+async function refresh(){
+  if(reading)return;reading=true;byId('refresh').disabled=true;
+  try{
+    const response=await fetch('/api/tasks');if(!response.ok)throw new Error(await response.text());
+    const data=await response.json();const stats=metrics(data);
+    const restarted=previous&&previous.boot!==data.boot;
+    render(data,stats);previous=data;lastDump={...data,interval_us:stats.interval_us,core_load_percent:stats.cores,tasks:stats.tasks};
+    byId('message').textContent=restarted?'Gateway restarted; collecting a new CPU sample.':'';
+  }catch(error){byId('message').textContent=error.message;}
+  finally{reading=false;byId('refresh').disabled=false;}
+}
+byId('refresh').onclick=refresh;
+byId('auto').onchange=()=>{if(byId('auto').checked&&visible()){previous=null;refresh();}};
+byId('dump').onclick=()=>{if(!lastDump){byId('message').textContent='Refresh before downloading.';return;}const url=URL.createObjectURL(new Blob([JSON.stringify(lastDump,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='ecmpilot-tasks.json';link.click();URL.revokeObjectURL(url);};
+onTabChange(tab=>{previous=null;if(tab==='tasks')refresh();});
+setInterval(()=>{if(visible()&&byId('auto').checked)refresh();},2000);
+if(visible())refresh();
+})();
 </script>
 </html>

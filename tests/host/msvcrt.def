@@ -1,0 +1,26 @@
+LIBRARY msvcrt.dll
+EXPORTS
+    malloc
+    free
+    realloc
+    sprintf
+    vsnprintf
+    _vscprintf
+    vprintf
+    sscanf
+    strtod
+    strcmp
+    strncmp
+    strlen
+    strnlen
+    strspn
+    strchr
+    strcpy
+    memcpy
+    memmove
+    memset
+    memcmp
+    floor
+    fabs
+    sqrt
+    tolower

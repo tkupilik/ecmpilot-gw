@@ -1,5 +1,11 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "gateway.h"
+#include "process_data.h"
+#include "udp_protocol.h"
+#include "log_buffer.h"
+#include "task_stats.h"
+#include <limits.h>
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -69,6 +75,8 @@ static esp_err_t status_get(httpd_req_t *r)
     cJSON_AddNumberToObject(j, "uptime_s", esp_timer_get_time() / 1000000);
     cJSON_AddNumberToObject(j, "free_heap", esp_get_free_heap_size());
     cJSON_AddNumberToObject(j, "heartbeat", gw_heartbeat_count());
+    cJSON_AddNumberToObject(j, "udp_port", GW_UDP_PORT);
+    cJSON_AddBoolToObject(j, "udp_test_mode", varstore_read(GW_VAR_TEST_ENABLED, 0, 0) == 1);
     cJSON_AddNumberToObject(j, "network_cpu", GW_NETWORK_CORE);
     cJSON_AddNumberToObject(j, "application_cpu", GW_APP_CORE);
     cJSON_AddBoolToObject(j, "connected", s.connected);
@@ -78,7 +86,167 @@ static esp_err_t status_get(httpd_req_t *r)
     cJSON_AddNumberToObject(j, "disconnect_reason", s.last_disconnect_reason);
     cJSON_AddBoolToObject(j, "setup_ap", s.setup_ap);
     cJSON_AddStringToObject(j, "ap_ssid", s.ap_ssid);
+    cJSON_AddStringToObject(j, "hostname", s.hostname);
     return json_response(r, j);
+}
+
+static esp_err_t vars_page_get(httpd_req_t *r)
+{
+    httpd_resp_set_status(r, "302 Found");
+    httpd_resp_set_hdr(r, "Location", "/#varstore");
+    httpd_resp_set_hdr(r, "Cache-Control", "no-store");
+    return httpd_resp_sendstr(r, "");
+}
+
+static bool log_cursor(const char *text, uint64_t *value)
+{
+    if (!text[0]) return false;
+    *value = 0;
+    for (const char *p = text; *p; ++p) {
+        if (*p < '0' || *p > '9' || *value > (9007199254740991ULL - (unsigned)(*p - '0')) / 10) return false;
+        *value = *value * 10 + (unsigned)(*p - '0');
+    }
+    return true;
+}
+static esp_err_t log_get(httpd_req_t *r)
+{
+    char query[112], value[24], boot[33];
+    uint64_t after = 0;
+    bool reset = false;
+    size_t query_length = httpd_req_get_url_query_len(r);
+    if (query_length >= sizeof(query)) return fail(r, "400 Bad Request", "Log query too long");
+    if (query_length) {
+        if (httpd_req_get_url_query_str(r, query, sizeof(query)) != ESP_OK)
+            return fail(r, "400 Bad Request", "Invalid log query");
+        esp_err_t err = httpd_query_key_value(query, "after", value, sizeof(value));
+        if ((err == ESP_OK && !log_cursor(value, &after)) || (err != ESP_OK && err != ESP_ERR_NOT_FOUND))
+            return fail(r, "400 Bad Request", "Invalid log cursor");
+        err = httpd_query_key_value(query, "boot", boot, sizeof(boot));
+        if (err == ESP_OK) {
+            if (strlen(boot) != 32 || strspn(boot, "0123456789abcdef") != 32)
+                return fail(r, "400 Bad Request", "Invalid log boot ID");
+            reset = strcmp(boot, gw_log_boot_id()) != 0;
+            if (reset) after = 0;
+        } else if (err != ESP_ERR_NOT_FOUND) return fail(r, "400 Bad Request", "Invalid log boot ID");
+    }
+    // Only the HTTP server task uses this scratch space. The buffer itself
+    // serializes access from logging tasks on both CPUs.
+    static gw_log_entry_t entries[GW_LOG_PAGE_SIZE];
+    const gw_log_page_t page = gw_log_buffer_read(after, entries, GW_LOG_PAGE_SIZE);
+    cJSON *json = cJSON_CreateObject();
+    if (!json) return fail(r, "500 Internal Server Error", "Out of memory");
+    cJSON_AddStringToObject(json, "boot", gw_log_boot_id());
+    cJSON_AddBoolToObject(json, "reset", reset);
+    cJSON_AddNumberToObject(json, "oldest", (double)page.oldest);
+    cJSON_AddNumberToObject(json, "latest", (double)page.latest);
+    cJSON_AddNumberToObject(json, "next", (double)page.next);
+    cJSON_AddNumberToObject(json, "lost", (double)page.lost);
+    cJSON *array = cJSON_AddArrayToObject(json, "entries");
+    if (!array) { cJSON_Delete(json); return fail(r, "500 Internal Server Error", "Out of memory"); }
+    for (size_t i = 0; i < page.count; ++i) {
+        cJSON *item = cJSON_CreateObject();
+        if (!item) { cJSON_Delete(json); return fail(r, "500 Internal Server Error", "Out of memory"); }
+        cJSON_AddNumberToObject(item, "seq", (double)entries[i].sequence);
+        cJSON_AddStringToObject(item, "text", entries[i].text);
+        cJSON_AddItemToArray(array, item);
+    }
+    return json_response(r, json);
+}
+
+static esp_err_t vars_get(httpd_req_t *r)
+{
+    const size_t count = varstore_count();
+    cJSON *j = cJSON_CreateObject();
+    if (!j) return fail(r, "500 Internal Server Error", "Out of memory");
+    cJSON *signals = cJSON_AddArrayToObject(j, "signals");
+    if (!signals) { cJSON_Delete(j); return fail(r, "500 Internal Server Error", "Out of memory"); }
+    for (size_t id = 0; id < count; ++id) {
+        const varstore_definition_t *def = varstore_definition(id);
+        cJSON *item = cJSON_CreateObject();
+        if (!item) { cJSON_Delete(j); return fail(r, "500 Internal Server Error", "Out of memory"); }
+        cJSON_AddNumberToObject(item, "id", id);
+        cJSON_AddStringToObject(item, "name", def->name);
+        cJSON_AddStringToObject(item, "description", def->description);
+        cJSON_AddStringToObject(item, "unit", def->unit);
+        cJSON_AddNumberToObject(item, "max_age_ms", def->max_age_ms);
+        cJSON_AddBoolToObject(item, "writable", gw_process_data_manual(id));
+        const varstore_snapshot_t sample = varstore_inspect(id, def->max_age_ms);
+        cJSON_AddStringToObject(item, "state", varstore_state_name(sample.state));
+        cJSON_AddBoolToObject(item, "valid", sample.state != VARSTORE_INVALID);
+        cJSON_AddBoolToObject(item, "forced", sample.state == VARSTORE_FORCED);
+        if (sample.has_value) {
+            cJSON_AddNumberToObject(item, "value", sample.value);
+            cJSON_AddNumberToObject(item, "age_ms", sample.age_ms);
+        } else { cJSON_AddNullToObject(item, "value"); cJSON_AddNullToObject(item, "age_ms"); }
+        if (sample.raw_has_value) {
+            cJSON_AddNumberToObject(item, "raw_value", sample.raw_value);
+            cJSON_AddNumberToObject(item, "raw_age_ms", sample.raw_age_ms);
+        } else { cJSON_AddNullToObject(item, "raw_value"); cJSON_AddNullToObject(item, "raw_age_ms"); }
+        cJSON_AddBoolToObject(item, "raw_valid", sample.raw_valid);
+        cJSON_AddItemToArray(signals, item);
+    }
+    return json_response(r, j);
+}
+
+static bool json_integer(const cJSON *item, double minimum, double maximum)
+{
+    return cJSON_IsNumber(item) && isfinite(item->valuedouble) &&
+           item->valuedouble >= minimum && item->valuedouble <= maximum &&
+           floor(item->valuedouble) == item->valuedouble;
+}
+
+static esp_err_t vars_post(httpd_req_t *r)
+{
+    if (!same_origin(r)) return fail(r, "403 Forbidden", "Origin rejected");
+    if (r->content_len <= 0 || r->content_len > 512)
+        return fail(r, "400 Bad Request", "Expected a small JSON command");
+    char body[513];
+    size_t received = 0;
+    while (received < (size_t)r->content_len) {
+        int n = httpd_req_recv(r, body + received, r->content_len - received);
+        if (n <= 0) return fail(r, "408 Request Timeout", "Command upload interrupted");
+        received += n;
+    }
+    body[received] = 0;
+    cJSON *command = cJSON_ParseWithLengthOpts(body, received + 1, NULL, true);
+    if (!command) return fail(r, "400 Bad Request", "Invalid JSON");
+    cJSON *id = cJSON_GetObjectItemCaseSensitive(command, "id");
+    cJSON *action = cJSON_GetObjectItemCaseSensitive(command, "action");
+    cJSON *value = cJSON_GetObjectItemCaseSensitive(command, "value");
+    const size_t count = varstore_count();
+    if (!count || !cJSON_IsObject(command) || !json_integer(id, 0, count - 1) || !cJSON_IsString(action)) {
+        cJSON_Delete(command);
+        return fail(r, "400 Bad Request", "Expected an existing integer id and an action string");
+    }
+    const size_t signal_id = (size_t)id->valuedouble;
+    const bool force = !strcmp(action->valuestring, "force");
+    const bool write = !strcmp(action->valuestring, "write");
+    const bool release = !strcmp(action->valuestring, "release");
+    const bool touch = !strcmp(action->valuestring, "touch");
+    const bool invalidate = !strcmp(action->valuestring, "invalidate");
+    if (!(force || write || release || touch || invalidate)) {
+        cJSON_Delete(command);
+        return fail(r, "400 Bad Request", "Unknown action");
+    }
+    if ((write || touch || invalidate) && !gw_process_data_manual(signal_id)) {
+        cJSON_Delete(command);
+        return fail(r, "403 Forbidden", "Producer-owned signal: use Force or Release");
+    }
+    if (force || write) {
+        if (!json_integer(value, INT32_MIN, INT32_MAX)) {
+            cJSON_Delete(command);
+            return fail(r, "400 Bad Request", "Value must be a signed 32-bit integer");
+        }
+        const int32_t number = (int32_t)value->valuedouble;
+        if (force) varstore_force(signal_id, true, number);
+        else varstore_write(signal_id, number);
+    } else if (release) varstore_force(signal_id, false, 0);
+    else if (touch) varstore_touch(signal_id);
+    else if (invalidate) varstore_invalidate(signal_id);
+    cJSON_Delete(command);
+    httpd_resp_set_type(r, "application/json");
+    httpd_resp_set_hdr(r, "Cache-Control", "no-store");
+    return httpd_resp_sendstr(r, "{\"updated\":true}");
 }
 
 static esp_err_t wifi_get(httpd_req_t *r)
@@ -87,6 +255,16 @@ static esp_err_t wifi_get(httpd_req_t *r)
     gw_settings_get(&settings);
     cJSON *j = cJSON_CreateObject();
     if (!j) return fail(r, "500 Internal Server Error", "Out of memory");
+    char hostname[GW_HOSTNAME_SIZE];
+    gw_hostname_get(hostname);
+    cJSON_AddStringToObject(j, "hostname", hostname);
+    char ap_password[GW_AP_PASSWORD_SIZE];
+    esp_err_t password_error = gw_ap_password_get(ap_password);
+    if (password_error != ESP_OK) { cJSON_Delete(j); return fail(r, "500 Internal Server Error", "Cannot read setup AP password"); }
+    gw_network_status_t status;
+    gw_network_status(&status);
+    cJSON_AddStringToObject(j, "ap_ssid", status.ap_ssid);
+    cJSON_AddStringToObject(j, "ap_password", ap_password);
     cJSON *networks = cJSON_AddArrayToObject(j, "networks");
     if (!networks) { cJSON_Delete(j); return fail(r, "500 Internal Server Error", "Out of memory"); }
     for (unsigned i = 0; i < settings.count; ++i) {
@@ -115,6 +293,16 @@ static esp_err_t wifi_post(httpd_req_t *r)
     free(body);
     if (!json) return fail(r, "400 Bad Request", "Invalid JSON");
     cJSON *array = cJSON_GetObjectItemCaseSensitive(json, "networks");
+    cJSON *hostname = cJSON_GetObjectItemCaseSensitive(json, "hostname");
+    cJSON *ap_password = cJSON_GetObjectItemCaseSensitive(json, "ap_password");
+    if (ap_password && (!cJSON_IsString(ap_password) || !gw_ap_password_valid(ap_password->valuestring))) {
+        cJSON_Delete(json);
+        return fail(r, "400 Bad Request", "AP password must be 8-63 printable ASCII characters");
+    }
+    if (hostname && (!cJSON_IsString(hostname) || !gw_hostname_valid(hostname->valuestring))) {
+        cJSON_Delete(json);
+        return fail(r, "400 Bad Request", "Hostname must be 1-32 letters, digits or hyphens, starting and ending with a letter or digit");
+    }
     gw_settings_t old, next = {.version = 1};
     gw_settings_get(&old);
     bool valid = cJSON_IsArray(array) && cJSON_GetArraySize(array) <= GW_MAX_NETWORKS;
@@ -134,13 +322,18 @@ static esp_err_t wifi_post(httpd_req_t *r)
             if (!strcmp(profile->ssid, old.networks[i].ssid))
                 strlcpy(profile->password, old.networks[i].password, sizeof(profile->password));
     }
+    if (!valid) { cJSON_Delete(json); return fail(r, "400 Bad Request", "Invalid Wi-Fi list (maximum eight unique SSIDs)"); }
+    char previous_ap_password[GW_AP_PASSWORD_SIZE];
+    const bool restart = ap_password &&
+        (gw_ap_password_get(previous_ap_password) != ESP_OK || strcmp(previous_ap_password, ap_password->valuestring));
+    esp_err_t err = gw_settings_save_wifi(&next, hostname ? hostname->valuestring : NULL,
+                                         ap_password ? ap_password->valuestring : NULL);
     cJSON_Delete(json);
-    if (!valid) return fail(r, "400 Bad Request", "Invalid Wi-Fi list (maximum eight unique SSIDs)");
-    esp_err_t err = gw_settings_save(&next);
     if (err != ESP_OK) return fail(r, err == ESP_ERR_INVALID_ARG ? "400 Bad Request" : "500 Internal Server Error", esp_err_to_name(err));
     httpd_resp_set_type(r, "application/json");
-    err = httpd_resp_sendstr(r, "{\"saved\":true,\"reconnecting\":true}");
-    gw_network_reconfigure();
+    err = httpd_resp_sendstr(r, restart ? "{\"saved\":true,\"restarting\":true}" : "{\"saved\":true,\"reconnecting\":true}");
+    if (restart) gw_restart_soon();
+    else gw_network_reconfigure();
     return err;
 }
 
@@ -204,6 +397,7 @@ esp_err_t gw_web_start(void)
     config.stack_size = 10240;
     config.recv_wait_timeout = 10;
     config.lru_purge_enable = true;
+    config.max_uri_handlers = 12;
     esp_err_t err = httpd_start(&server, &config);
     if (err != ESP_OK) return err;
     const httpd_uri_t routes[] = {
@@ -212,6 +406,11 @@ esp_err_t gw_web_start(void)
         {.uri="/api/wifi", .method=HTTP_GET, .handler=wifi_get},
         {.uri="/api/wifi", .method=HTTP_POST, .handler=wifi_post},
         {.uri="/api/ota", .method=HTTP_POST, .handler=ota_post},
+        {.uri="/vars", .method=HTTP_GET, .handler=vars_page_get},
+        {.uri="/api/vars", .method=HTTP_GET, .handler=vars_get},
+        {.uri="/api/vars", .method=HTTP_POST, .handler=vars_post},
+        {.uri="/api/log", .method=HTTP_GET, .handler=log_get},
+        {.uri="/api/tasks", .method=HTTP_GET, .handler=gw_tasks_get},
     };
     for (unsigned i = 0; i < sizeof(routes) / sizeof(routes[0]); ++i) {
         err = httpd_register_uri_handler(server, &routes[i]);
