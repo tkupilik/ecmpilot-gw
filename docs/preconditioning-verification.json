@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-03",
+  "scope": "Immediate preconditioning Start/Stop",
+  "gateway": {
+    "tests": 200,
+    "result": "passed",
+    "test_log": "build-host-tests/precond-final.log",
+    "build_log": "build-preconditioning.log",
+    "image": "build/ecmpilot_gw.bin",
+    "bytes": 1044160,
+    "sha256": "d029b78aea134920bf30f2d6c9a2180d56e404248fea8e2b2799330e9900aa79",
+    "flashed": false,
+    "physical_can_io": false
+  },
+  "android": {
+    "tests": 26,
+    "result": "passed",
+    "lint": "passed",
+    "apk": "C:\\work\\bev\\ecmpilot\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+    "sha256": "9128b810cc0f748d0716f63ae54357186a0527010a606cb57685f9e8f5ed4c2a",
+    "build_log": "C:\\work\\bev\\ecmpilot\\artifacts\\preconditioning-build.log",
+    "installed": true,
+    "device_model": "Samsung SM-A556B",
+    "launched": true,
+    "pid_at_check": 23247
+  },
+  "architecture": {
+    "shared_timer": "c.tmr",
+    "new_freertos_tasks": 0,
+    "tick_ms": 20,
+    "preconditioning_timeout_ms": 30000,
+    "udp_receipt_guard_ms": 35000,
+    "fixed_button_cooldown": false,
+    "wake_max": 10,
+    "request_pair_max": 3,
+    "programs_preserved": true,
+    "confirmation": "new raw BSI2E0 ASAP plus feedback; no optimistic state"
+  },
+  "capture": {
+    "path": "logs/info_precond.csv",
+    "sha256": "b1460c2bf4f5dbf717dcde1925711cd5b4e6b0074f3697395f36cbfb10454998",
+    "analysis": "docs/preconditioning-capture.json"
+  },
+  "dbc": {
+    "path": "dbc/opel_corsa_e_info.dbc",
+    "sha256": "195441d2c0044d0fbc5dc22810ac5ba803ed292bea3a9d948a5cc91144de14b8",
+    "scope": "2E0 reserved span replaced by observed ASAP and feedback, original source preserved"
+  },
+  "source_sha256": {
+    "main/vehicle_control.c": "946e26d460aecfb188c3230d68c2ac13d7fd5ff2d4f4c8f2b7b66cf083b17459",
+    "main/vehicle_control.h": "f8bf171655a6d4e9f70e7ef9f41dd1961e6fdc92d64281115d968f78b4103342",
+    "main/udp_protocol.c": "cc34f0887d35e850d33856c8c4f3ecc220f530afbc0610efd48db43763cc2429",
+    "main/can_info_decode.c": "9959be803d1240281d2a852f40e339631ca56ae466d163d0dfab2bd20f6e011d",
+    "main/process_data.c": "9afe16f2fb68e3725f53b90620fad3f3818e3bf06677a441a7de763bee87172c",
+    "main/process_data.h": "77919c62629a27241e8036bfc2e84a88256590af237c2cca8888eac29e2e8f14",
+    "main/task_can.cpp": "fa618bfb109a353a88f7ef0375e022504539f8018ca4ae11ab6ba263e630915a",
+    "tools/generate_info_can_dbc.py": "d1666d583fb9ec1178ccdcae9528f55a9dce86976e90c7278eeea61e3f51599c",
+    "tests/test_vehicle_control.py": "5be6c4af5f18de2c0d8129b950651b909016c1246490c816ee5f98fb10d36692",
+    "tests/test_info_can_dbc.py": "95ec999f59a2e364ac960038a31c31b4872dc5acae43451a6c3f288b557a0830"
+  },
+  "limits": [
+    "The source capture is acknowledged by the original app; physical HVAC operation was not checked by the owner.",
+    "No new GW transmission or vehicle operation was performed during implementation/testing.",
+    "The phone update still needs the new gateway firmware for the advertised capability.",
+    "No measured cabin-temperature field is assigned. The bounded byte-pattern search is not exhaustive for packed fields or other buses."
+  ]
+}

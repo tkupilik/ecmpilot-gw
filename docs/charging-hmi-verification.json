@@ -1,0 +1,65 @@
+{
+  "date": "2026-11-03",
+  "physical_can_io": false,
+  "device_flashed": false,
+  "android_changes": false,
+  "inputs": {
+    "info_charging.csv": "bf52a98d93e48e7ea6b7067a8989729154a1f97b310a6d3524a058bdda7480d8",
+    "info_start_odlozeni.csv": "e72d1cd292cfa0233b94430a16a8de37f73171bac2cd7daa1929bc9c491fd90e",
+    "info_start_jizda.csv": "1467c523cf6b396ad5b9e92d4432d268e8eae3d298d486f58abc00c4233af52c"
+  },
+  "source_commit": "67f7581e7622410efdbb29c7eda3b86982b9b450",
+  "charging_hmi": {
+    "id": "396",
+    "info_dlc": 6,
+    "first_byte_bits": "4..2",
+    "source_var": "bsi.charging_hmi_state",
+    "normalized_by": "vehicle task, not RX",
+    "observed_raw": [
+      0,
+      1,
+      3
+    ],
+    "source_only_raw": [
+      2,
+      4
+    ],
+    "unknown_raw": [
+      5,
+      6,
+      7
+    ],
+    "caveat": "Reported BSI HMI may be stale/default before refresh. Connected is derived, not independent cable sensing."
+  },
+  "host_tests": {
+    "count": 234,
+    "result": "passed",
+    "log": "build-host-tests/info-charging-tests.log"
+  },
+  "build": {
+    "result": "passed",
+    "log": "build-charging-hmi.log",
+    "binary": "build/ecmpilot_gw.bin",
+    "size_bytes": 1052320,
+    "sha256": "8faa886665f2442cd37537ab886079434832f93a3cbdc5fa54d6b96cb50ab685"
+  },
+  "dbc": {
+    "sha256": "a55ebfbe79d6087d9059b9b1fd64b89b644fbd17dff71fc951e5546352bde63c",
+    "messages": 377,
+    "captured_frames": 149767,
+    "full_payload_coverage_frames": 149767
+  },
+  "energy_search": {
+    "accepted_energy_signals": 0,
+    "checked_integer_fields": 146720,
+    "unsupported_growth_ids": [
+      "236",
+      "396"
+    ],
+    "float32_matches": 0
+  },
+  "limitations": [
+    "No physical confirmation of fault/complete/cable-removal transitions.",
+    "No decoded HV remaining energy, capacity, actual charging power or ETA."
+  ]
+}

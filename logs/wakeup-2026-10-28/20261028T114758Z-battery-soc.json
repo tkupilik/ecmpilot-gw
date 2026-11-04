@@ -1,0 +1,124 @@
+{
+  "case": "battery-soc",
+  "utc": "20261028T114758Z",
+  "cleanup_hard_reset_ok": true,
+  "events": [
+    {
+      "t_s": 0.012077,
+      "event": "initialize_500k",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.01223,
+      "event": "enable_hard_reset",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.012266,
+      "event": "read_hard_reset",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.012276,
+      "event": "hard_reset_verified",
+      "value": 1
+    },
+    {
+      "t_s": 0.012571,
+      "event": "listen_only_state",
+      "result": "(0, 0)"
+    },
+    {
+      "t_s": 0.015286,
+      "event": "reset_before",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.015451,
+      "event": "reset_before_bus_status",
+      "status": "0x0"
+    },
+    {
+      "t_s": 2.015932,
+      "event": "rx_window",
+      "phase": "baseline",
+      "seconds": 2,
+      "vehicle_data_frames": 0,
+      "ids": {},
+      "statuses": {},
+      "bus_status": "0x0"
+    },
+    {
+      "t_s": 2.016262,
+      "event": "write_enqueued",
+      "status": "0x0"
+    },
+    {
+      "t_s": 2.01631,
+      "event": "tx_request",
+      "id_hex": "6B4",
+      "data_hex": "03 22 D4 10 00 00 00 00",
+      "physical_retries": "controller automatic until hard reset; not counted"
+    },
+    {
+      "t_s": 2.816696,
+      "event": "rx_window",
+      "phase": "tx_window",
+      "seconds": 0.8,
+      "vehicle_data_frames": 0,
+      "ids": {},
+      "statuses": {
+        "0x8": 1
+      },
+      "bus_status": "0x8"
+    },
+    {
+      "t_s": 2.819427,
+      "event": "reset_after_tx",
+      "status": "0x0"
+    },
+    {
+      "t_s": 2.819654,
+      "event": "reset_after_tx_bus_status",
+      "status": "0x8"
+    },
+    {
+      "t_s": 5.820165,
+      "event": "rx_window",
+      "phase": "post_reset",
+      "seconds": 3,
+      "vehicle_data_frames": 0,
+      "ids": {},
+      "statuses": {},
+      "bus_status": "0x0"
+    },
+    {
+      "t_s": 5.82318,
+      "event": "final_hard_reset",
+      "status": "0x0"
+    },
+    {
+      "t_s": 5.82341,
+      "event": "final_hard_reset_bus_status",
+      "status": "0x0"
+    },
+    {
+      "t_s": 5.900763,
+      "event": "uninitialize",
+      "status": "0x0"
+    }
+  ],
+  "records_count": 1,
+  "records": [
+    {
+      "t_s": 2.019865,
+      "phase": "tx_window",
+      "read_status": "0x8",
+      "msg_type": "0x80",
+      "id_hex": "001",
+      "dlc": 4,
+      "data_hex": "00 00 00 08",
+      "adapter_us": 402946492675
+    }
+  ]
+}

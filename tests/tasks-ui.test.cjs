@@ -3,7 +3,9 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');const path=require('node:path');const vm=require('node:vm');
 const source=fs.readFileSync(path.join(__dirname,'../main/web/index.html'),'utf8');
-const script=[...source.matchAll(/<script>([\s\S]*?)<\/script>/g)][3][1];
+const matches=[...source.matchAll(/<script>([\s\S]*?)<\/script>/g)].filter(match=>match[1].includes("getElementById('tasks-'+id)"));
+assert.equal(matches.length,1,'The page must include exactly one tasks controller');
+const script=matches[0][1];
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 class Element {
   constructor(){this.checked=true;this.disabled=false;this.textContent='';this.children=[];}
@@ -12,7 +14,7 @@ class Element {
 }
 const task=(id,name,core,runtime_us,idle_core=null)=>({id,name,core,runtime_us,idle_core,state:'blocked',priority:4,base_priority:3,stack_min_free_bytes:1536,stack_base:'0x3fc90100'});
 async function page(){
-  const ids=Object.fromEntries(['auto','refresh','dump','summary','message','rows'].map(id=>[id,new Element()]));
+  const ids=Object.fromEntries(['auto','refresh','dump','summary','message','rows','heap'].map(id=>[id,new Element()]));
   const panel={hidden:true};let select,interval,fail=false;const requests=[];
   const data={boot:'a',sampled_us:5000000000,cores:2,tasks:[task(1,'IDLE0',0,3000000000,0),task(2,'IDLE1',1,3000000000,1),task(3,'network',0,1000000000),task(4,'floating',null,1000000000)]};
   const context=vm.createContext({document:{getElementById:id=>id==='panel-tasks'?panel:ids[id.replace('tasks-','')],createElement:()=>new Element()},
@@ -47,4 +49,15 @@ test('polls only while visible/enabled; re-entry starts a current sampling windo
 test('HTTP failure preserves the last table and re-enables Refresh',async()=>{
   const p=await page();await p.select('tasks');const row=p.row('network');p.fail();await p.refresh();
   assert.deepEqual(p.row('network'),row);assert.equal(p.ids.message.textContent,'Disconnected');assert.equal(p.ids.refresh.disabled,false);
+});
+
+test('heap views render capability groups, zero PSRAM and refreshed largest blocks',async()=>{
+  const p=await page();
+  p.data.heap=[{name:'Internal RAM',total_bytes:300000,allocated_bytes:200000,free_bytes:100000,minimum_free_bytes:90000,largest_free_block_bytes:64000,free_blocks:7},
+    {name:'PSRAM',total_bytes:0,allocated_bytes:0,free_bytes:0,minimum_free_bytes:0,largest_free_block_bytes:0,free_blocks:0}];
+  await p.select('tasks');
+  assert.equal(p.ids.heap.children[0].children[5].textContent,'64,000');
+  assert.equal(p.ids.heap.children[1].children[2].textContent,'0');
+  p.data.heap[0].largest_free_block_bytes=32000;await p.poll();
+  assert.equal(p.ids.heap.children[0].children[5].textContent,'32,000');
 });

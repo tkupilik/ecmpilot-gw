@@ -16,6 +16,8 @@ void gw_log_buffer_append(const char *text);
 gw_log_page_t gw_log_buffer_read(uint64_t after, gw_log_entry_t *entries, size_t capacity);
 void gw_log_start(void);
 const char *gw_log_boot_id(void);
+int gw_log_reset_reason(void);
+const char *gw_log_reset_name(void);
 #ifdef __cplusplus
 }
 #endif

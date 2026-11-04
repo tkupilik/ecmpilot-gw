@@ -1,0 +1,159 @@
+{
+  "date": "2026-11-03",
+  "capture": "info_precond.csv",
+  "sha256": "b1460c2bf4f5dbf717dcde1925711cd5b4e6b0074f3697395f36cbfb10454998",
+  "frames": 36565,
+  "ids": 100,
+  "duration_s": 149.039358,
+  "requests": [
+    {
+      "action": "start",
+      "request": {
+        "line": 6096,
+        "relative_s": 22.388686,
+        "raw_us": 469470861,
+        "id": "31B",
+        "payload": "C0 58 01 C2 00 07 FF"
+      },
+      "aux": {
+        "line": 6097,
+        "relative_s": 22.389625,
+        "raw_us": 469471800,
+        "id": "11B",
+        "payload": "00 00 07 FF 00 07 FF"
+      },
+      "aux_delay_ms": 0.939,
+      "ack": {
+        "line": 6210,
+        "relative_s": 22.804201,
+        "raw_us": 469886376,
+        "id": "2E0",
+        "payload": "84 58 01 C2 00 07 FF"
+      },
+      "ack_delay_ms": 415.515,
+      "complete": {
+        "line": 7873,
+        "relative_s": 28.804328,
+        "raw_us": 475886503,
+        "id": "2E0",
+        "payload": "8C 58 01 C2 00 07 FF"
+      },
+      "complete_delay_ms": 6415.642
+    },
+    {
+      "action": "stop",
+      "request": {
+        "line": 23145,
+        "relative_s": 85.495114,
+        "raw_us": 532577289,
+        "id": "31B",
+        "payload": "80 58 01 C2 00 07 FF"
+      },
+      "aux": {
+        "line": 23150,
+        "relative_s": 85.505215,
+        "raw_us": 532587390,
+        "id": "11B",
+        "payload": "00 00 07 FF 00 07 FF"
+      },
+      "aux_delay_ms": 10.101,
+      "ack": {
+        "line": 23228,
+        "relative_s": 85.80394,
+        "raw_us": 532886115,
+        "id": "2E0",
+        "payload": "88 58 01 C2 00 07 FF"
+      },
+      "ack_delay_ms": 308.826,
+      "complete": {
+        "line": 23497,
+        "relative_s": 86.803864,
+        "raw_us": 533886039,
+        "id": "2E0",
+        "payload": "80 58 01 C2 00 07 FF"
+      },
+      "complete_delay_ms": 1308.75
+    }
+  ],
+  "status_changes": [
+    {
+      "line": 22,
+      "relative_s": 0.099142,
+      "raw_us": 447181317,
+      "id": "2E0",
+      "payload": "80 58 01 C2 00 07 FF",
+      "available": 1,
+      "asap": 0,
+      "feedback": 0
+    },
+    {
+      "line": 6210,
+      "relative_s": 22.804201,
+      "raw_us": 469886376,
+      "id": "2E0",
+      "payload": "84 58 01 C2 00 07 FF",
+      "available": 1,
+      "asap": 1,
+      "feedback": 0
+    },
+    {
+      "line": 7873,
+      "relative_s": 28.804328,
+      "raw_us": 475886503,
+      "id": "2E0",
+      "payload": "8C 58 01 C2 00 07 FF",
+      "available": 1,
+      "asap": 1,
+      "feedback": 1
+    },
+    {
+      "line": 23228,
+      "relative_s": 85.80394,
+      "raw_us": 532886115,
+      "id": "2E0",
+      "payload": "88 58 01 C2 00 07 FF",
+      "available": 1,
+      "asap": 0,
+      "feedback": 1
+    },
+    {
+      "line": 23497,
+      "relative_s": 86.803864,
+      "raw_us": 533886039,
+      "id": "2E0",
+      "payload": "80 58 01 C2 00 07 FF",
+      "available": 1,
+      "asap": 0,
+      "feedback": 0
+    }
+  ],
+  "program_bytes_unchanged": true,
+  "refresh394_count": 0,
+  "hold3a9_payloads": [
+    {
+      "payload": "00 00",
+      "count": 674
+    }
+  ],
+  "outside0f6_raw": [
+    {
+      "raw": 255,
+      "count": 2,
+      "celsius": null
+    },
+    {
+      "raw": 93,
+      "count": 220,
+      "celsius": 6.5
+    },
+    {
+      "raw": 92,
+      "count": 48,
+      "celsius": 6.0
+    }
+  ],
+  "cabin_temperature_verified": false,
+  "physical_hvac_operation_verified": false,
+  "owner_observation": "Owner confirms application acknowledgement only; initial wake came from our app.",
+  "physical_can_io": false
+}

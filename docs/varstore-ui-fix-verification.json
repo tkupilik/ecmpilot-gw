@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-01",
+  "version": "0.5.0",
+  "cause": "Retained Log controller replaced Varstore script; old Log controller remained",
+  "fix": "Restore Varstore,14-signal pagination and a single retained Log controller",
+  "browser_tests": {
+    "varstore": 9,
+    "full_page_wifi_ota": 14,
+    "log": 6,
+    "tasks": 6,
+    "power": 9,
+    "total": 44
+  },
+  "backend_changed": false,
+  "flashed": false,
+  "physical_test": false,
+  "evidence": {
+    "build": "build-varstore-ui-fix.log",
+    "tests": "ui-fix-tests.log"
+  },
+  "image": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1030928,
+    "sha256": "d869d765a71f3d66994d6aeb2c62dec7358e33643522f0eb4097ed988ae97a3d"
+  }
+}

@@ -18,7 +18,8 @@ button{cursor:pointer;background:#284454;color:inherit}button.primary{background
 .tabs button{white-space:nowrap;background:transparent;border-color:transparent;color:#aebfce}
 .tabs button[aria-selected=true]{background:#284454;border-color:#526878;color:#e3ecf3}
 button:focus-visible,input:focus-visible,[role=tabpanel]:focus-visible{outline:2px solid #79cfc1;outline-offset:3px}
-#panel-home,#panel-wifi,#panel-ota{max-width:780px}
+#panel-home,#panel-wifi,#panel-ota,#panel-ha{max-width:780px}
+#panel-ha input[type=text],#panel-ha input[type=password]{width:min(100%,420px);box-sizing:border-box}
 input[type=number]{width:130px}input[type=search]{min-width:230px}
 .toolbar,.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.toolbar{margin:20px 0}
 .scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;background:#1b2935}
@@ -40,6 +41,7 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <button id="tab-home" type="button" role="tab" aria-controls="panel-home" aria-selected="true" tabindex="0">Home</button>
 <button id="tab-varstore" type="button" role="tab" aria-controls="panel-varstore" aria-selected="false" tabindex="-1">Varstore</button>
 <button id="tab-wifi" type="button" role="tab" aria-controls="panel-wifi" aria-selected="false" tabindex="-1">Wi-Fi setup</button>
+<button id="tab-ha" type="button" role="tab" aria-controls="panel-ha" aria-selected="false" tabindex="-1">Home Assistant</button>
 <button id="tab-ota" type="button" role="tab" aria-controls="panel-ota" aria-selected="false" tabindex="-1">OTA</button>
 <button id="tab-log" type="button" role="tab" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log</button>
 <button id="tab-tasks" type="button" role="tab" aria-controls="panel-tasks" aria-selected="false" tabindex="-1">Tasks</button>
@@ -47,12 +49,39 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <main>
 <div id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
 <section><h2>Gateway status</h2><pre id="status">Loading…</pre><button id="refresh">Refresh</button></section>
+<section><h2>Automatic vehicle refresh</h2>
+<p><label><input id="auto-refresh-enabled" type="checkbox"> Enable automatic refresh</label></p>
+<div class="actions">
+<label>Standby period (min)<br><input id="auto-refresh-standby" type="number" min="1" max="1440" step="1" value="60"></label>
+<label>Charging period (min)<br><input id="auto-refresh-charging" type="number" min="1" max="1440" step="1" value="5"></label>
+<label>Minimum 12V SOC (%)<br><input id="auto-refresh-soc" type="number" min="0" max="100" step="1" value="50"></label>
+</div>
+<p class="muted">Uses the last reported charging state. A shorter period limits the running countdown without restarting it. Known 12V SOC below the limit pauses automatic refresh; unknown SOC does not block it.</p>
+<p id="auto-refresh-status" role="status"></p>
+<h3>Charge limit</h3>
+<p><label><input id="auto-refresh-limit-enabled" type="checkbox" disabled> Enable charge limit</label></p>
+<label>Target battery level: <span id="auto-refresh-limit-value">80%</span><br><input id="auto-refresh-limit-soc" type="range" min="1" max="100" step="1" value="80" disabled></label>
+<p class="muted">Requires automatic refresh and fresh vehicle data. At the target, the gateway requests delayed charging using the start time stored in the car. Charging can resume at that time.</p>
+<p id="auto-refresh-limit-status" role="status"></p>
+<div class="actions"><button id="auto-refresh-save" type="button" disabled>Save automatic refresh</button><button id="auto-refresh-reload" type="button">Reload settings</button></div>
+<p id="auto-refresh-message" role="status" aria-live="polite"></p>
+</section>
+<section><h2>Power measurement</h2>
+<p>Manual CPU/sleep policy. Normal: 160 MHz. DFS: 40–160 MHz. Light sleep: 40–80 MHz with automatic sleep permitted.</p>
+<pre id="power-status">Loading…</pre>
+<div class="actions"><button id="power-normal" type="button">Normal</button><button id="power-dfs" type="button">DFS only</button><button id="power-light" type="button">Light sleep</button><button id="power-deep" type="button">Deep sleep · CAN wake</button><button id="power-refresh" type="button">Refresh</button></div>
+<p id="power-message" role="status" aria-live="polite"></p>
+<p class="muted">Normal/DFS/light policies keep CAN running; the installed TWAI driver prevents actual light sleep. Deep sleep stops Wi-Fi and TWAI, then wakes only on CAN RX activity. Phone/HA cannot reach the sleeping GW. First frames may be lost; active CAN may cause an immediate wake. No automatic sleep timeout. Reboot returns to Normal.</p>
+</section>
+
 </div>
 <div id="panel-wifi" role="tabpanel" aria-labelledby="tab-wifi" tabindex="0" hidden>
 <section><h2>Wi-Fi setup</h2>
 <p><label for="hostname">Hostname</label><br><input id="hostname" type="text" maxlength="32" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="ecmpilot-gw"></p>
 <p class="muted">1–32 letters, digits or hyphens; start and end with a letter or digit. Saved in the gateway and applied when reconnecting. Your router provides the DNS suffix and record (for example <code>ecmpilot-gw.lan</code>); local DNS availability depends on its configuration.</p>
 <h3>Setup access point</h3>
+<p><label><input id="ap-enabled" type="checkbox"> Enable setup AP fallback</label></p>
+<p class="muted">Disabled by default. When enabled, the setup AP starts if there are no saved networks or the gateway stays offline for 30 seconds. When disabled, no setup AP is started; configure Wi-Fi over the serial console if needed.</p>
 <p class="muted">SSID: <code id="ap-ssid"></code></p>
 <p><label for="ap-password">AP password</label><br><input id="ap-password" type="password" minlength="8" maxlength="63" autocomplete="new-password" autocapitalize="none" spellcheck="false"> <label><input id="ap-password-show" type="checkbox"> Show password</label></p>
 <p class="muted">8–63 printable ASCII characters. Leave blank to keep the current password. Changing it restarts the gateway; reconnect the setup AP with the new password.</p>
@@ -60,7 +89,22 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <p class="muted">Up to eight networks, highest priority first. The gateway connects to an available network and retries after a connection loss. Hidden networks are not supported yet.</p>
 <div id="profiles"></div>
 <div class="actions"><button id="add">Add network</button><button class="primary" id="save">Save and reconnect</button></div>
-<p class="muted">For a saved network, leave its password blank to keep it. Select “Open network” to remove its password. Saving an empty list enables the setup access point.</p>
+<p class="muted">For a saved network, leave its password blank to keep it. Select “Open network” to remove its password. Saving an empty list enables the setup access point only when AP fallback is allowed.</p>
+</section>
+</div>
+<div id="panel-ha" role="tabpanel" aria-labelledby="tab-ha" tabindex="0" hidden>
+<section><h2>Home Assistant · MQTT</h2>
+<p class="muted">Share vehicle information with Home Assistant, even when the phone app is closed. Sensors appear automatically through MQTT discovery. Last known values stay visible when the car sleeps; each sensor includes its data age. This connection only reads vehicle information.</p>
+<p id="ha-status" role="status">Not loaded</p>
+<p><label><input id="ha-enabled" type="checkbox"> Enable Home Assistant MQTT</label></p>
+<p><label for="ha-host">Broker hostname or IPv4 address</label><br><input id="ha-host" type="text" maxlength="127" placeholder="homeassistant.lan" autocomplete="off" spellcheck="false"></p>
+<div class="actions"><label>Port<br><input id="ha-port" type="number" min="1" max="65535" step="1" value="1883"></label><label>Publish every (s)<br><input id="ha-period" type="number" min="1" max="60" step="1" value="1"></label></div>
+<p><label for="ha-username">Username (optional)</label><br><input id="ha-username" type="text" maxlength="64" autocomplete="off" spellcheck="false"></p>
+<p><label for="ha-password">Password</label><br><input id="ha-password" type="password" maxlength="128" autocomplete="new-password"></p>
+<p><label><input id="ha-clear-password" type="checkbox"> Remove saved password</label></p>
+<p class="muted">Leave the password blank to keep the saved password. Save applies the settings and reconnects MQTT without restarting the gateway.</p>
+<div class="actions"><button id="ha-save" type="button" disabled>Save MQTT settings</button><button id="ha-reload" type="button">Reload settings</button></div>
+<p id="ha-message" role="status" aria-live="polite"></p>
 </section>
 </div>
 <div id="panel-ota" role="tabpanel" aria-labelledby="tab-ota" tabindex="0" hidden>
@@ -72,15 +116,16 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 </div>
 <div id="panel-varstore" role="tabpanel" aria-labelledby="tab-varstore" tabindex="0" hidden>
 <h2>Process signals</h2>
-<p class="muted">Vehicle signals are manual test inputs until CAN is implemented. Set <code>test.enabled</code> to 1 to enable UDP test controls. Incoming targets appear under <code>request.*</code>; set the matching observed climate/charge value to confirm a test command.</p>
+<p class="muted">INFO CAN supplies SOC, range, outside temperature, odometer and vehicle state. Unknown fields remain invalid until a producer or Force provides them. Set <code>can.replay_enabled</code> to 1 for local capture replay; it never transmits CAN. Set <code>test.enabled</code> to 1 for UDP test controls; incoming targets appear under <code>request.*</code>.</p>
 <p class="notice">Force overrides the value returned to consumers. Real producer data keeps updating underneath. Forces stay active until Release or reboot. Direct Write and Touch are available only for manual signals.</p>
 <div class="toolbar"><input id="vars-filter" type="search" placeholder="Filter name or description" aria-label="Filter signals"><label><input id="vars-auto" type="checkbox" checked> Refresh every second</label><button id="vars-refresh">Refresh</button><button id="vars-dump">Download JSON</button><span id="vars-summary" class="muted"></span></div>
+<nav class="toolbar" aria-label="Signal pages"><button id="vars-prev" type="button" disabled>Previous</button><span id="vars-page" class="muted" role="status" aria-live="polite">Page 0 / 0</span><button id="vars-next" type="button" disabled>Next</button></nav>
 <p id="vars-message" role="status" aria-live="polite"></p>
 <div class="scroll"><table><thead><tr><th>Signal</th><th>Effective value</th><th>State</th><th>Age (ms)</th><th>Real producer data</th><th>Edit / force (int32)</th></tr></thead><tbody id="vars-signals"></tbody></table></div>
 </div>
 <div id="panel-log" role="tabpanel" aria-labelledby="tab-log" tabindex="0" hidden>
 <section><h2>ESP log</h2>
-<p class="muted">Recent application logs from a RAM ring buffer. Older entries are overwritten when full; the serial console remains active.</p>
+<p class="muted">Live application logs plus up to 12 retained records from the previous software boot. Older entries are overwritten when full; the serial console remains active.</p>
 <div class="toolbar"><label><input id="log-auto" type="checkbox" checked> Live updates</label><label><input id="log-follow" type="checkbox" checked> Follow output</label><button id="log-refresh">Refresh</button><button id="log-clear">Clear view</button><button id="log-download">Download log</button></div>
 <p id="log-message" role="status" aria-live="polite"></p>
 <pre id="log-output" aria-label="ESP application log"></pre>
@@ -91,15 +136,19 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <p class="muted">CPU load is measured between samples; 100% equals one full core. Core affinity shows CPU0, CPU1 or Any (not the currently executing core). Stack minimum free is the smallest unused stack reserve since task creation, in bytes.</p>
 <div class="toolbar"><label><input id="tasks-auto" type="checkbox" checked> Refresh every 2 seconds</label><button id="tasks-refresh">Refresh</button><button id="tasks-dump">Download JSON</button></div>
 <p id="tasks-summary"></p><p id="tasks-message" role="status" aria-live="polite"></p>
+<h3>Heap</h3>
+<p class="muted">Sizes are in bytes; allocator totals include SDK pool reservations. Internal DMA RAM is part of Internal RAM; do not add these rows. Minimum free is the SDK's sum of per-region low-water marks since boot. Largest block limits individual allocations.</p>
+<div class="scroll"><table><thead><tr><th>Memory</th><th>Total (B)</th><th>Allocated (B)</th><th>Free (B)</th><th>Minimum free (B)</th><th>Largest block (B)</th><th>Free blocks</th></tr></thead><tbody id="tasks-heap"></tbody></table></div>
+<h3>Tasks</h3>
 <div class="scroll"><table><thead><tr><th>Task</th><th>ID</th><th>State</th><th>Priority / base</th><th>Core affinity</th><th>CPU time (s)</th><th>CPU load (%)</th><th>Stack min free (B)</th><th>Stack base</th></tr></thead><tbody id="tasks-rows"></tbody></table></div>
 </div>
 </main>
 <p id="message" role="status" aria-live="polite"></p>
-<p class="muted">Experimental development firmware. Not approved for use on public roads. No vehicle control is implemented in this build.</p>
+<p class="muted">Experimental development firmware. Not approved for use on public roads. Experimental INFO refresh/charge commands require explicit app requests.</p>
 <script>
 'use strict';
 const byId=id=>document.getElementById(id);
-const tabNames=['home','varstore','wifi','ota','log','tasks'];
+const tabNames=['home','varstore','wifi','ha','ota','log','tasks'];
 const tabListeners=[];
 function onTabChange(listener){tabListeners.push(listener);}
 function selectTab(name,remember=true){
@@ -135,7 +184,7 @@ function addProfile(profile={ssid:'',has_password:false}){
   row.append(ssid,password,actions,label);byId('profiles').append(row);
 }
 async function refresh(){const s=await api('/api/status');byId('status').textContent=
-  `Firmware: ${s.version} · ${s.partition}\nUptime: ${s.uptime_s}s · free heap: ${s.free_heap} bytes\nWi-Fi: ${s.connected?s.ssid+' · '+s.ip+' · '+s.rssi+' dBm':'offline'}\nHostname: ${s.hostname ?? "ecmpilot-gw"}\nSetup AP: ${s.setup_ap?s.ap_ssid+' · 192.168.4.1':'inactive'}\nCPU0: network · CPU1: application · heartbeat: ${s.heartbeat}\nUDP: ${s.udp_port ?? 42840} · ${s.udp_test_mode?"varstore test controls":"monitoring only"}`;}
+  `Firmware: ${s.version} · ${s.partition}\nUptime: ${s.uptime_s}s · free heap: ${s.free_heap} bytes\nWi-Fi: ${s.connected?s.ssid+' · '+s.ip+' · '+s.rssi+' dBm':'offline'}\nHostname: ${s.hostname ?? "ecmpilot-gw"}\nSetup AP: ${s.setup_ap?s.ap_ssid+' · 192.168.4.1':'inactive'}\nCPU0: network · CPU1: application · heartbeat: ${s.heartbeat}\nUDP: ${s.udp_port ?? 42840} · ${s.udp_test_mode?"varstore test controls":"passive reads; explicit actions via app"}\nReset: ${s.reset_reason ?? "unknown"} · previous boot log: ${s.previous_log_entries ?? 0} entries`;}
 byId('refresh').onclick=()=>refresh().catch(e=>message(e.message));
 onTabChange(tab=>{if(tab==='home')refresh().catch(e=>message(e.message));});
 byId('add').onclick=()=>addProfile();
@@ -155,7 +204,7 @@ byId('save').onclick=async()=>{
       else if(ssid!==row.dataset.savedSsid||row.dataset.savedPassword!=='true')throw new Error('Enter a password or select Open network.');
       return p;
     });
-    const payload={hostname,networks};if(apPassword&&apPassword!==byId('ap-password').dataset.savedPassword)payload.ap_password=apPassword;
+    const payload={hostname,networks,ap_enabled:byId('ap-enabled').checked};if(apPassword&&apPassword!==byId('ap-password').dataset.savedPassword)payload.ap_password=apPassword;
     const result=await api('/api/wifi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(result.restarting){message('Saved. Gateway restarting; reconnect the setup AP with the new password.');return;}
     message('Saved. Reconnecting with hostname '+hostname+'; the IP address may change and your router may need time to update DNS.');
@@ -171,7 +220,7 @@ byId('upload').onclick=()=>{
   xhr.onerror=xhr.ontimeout=()=>{message('Connection lost. Check gateway status before retrying the update.');byId('upload').disabled=false;byId('save').disabled=false;};
   message('Uploading firmware…');xhr.send(file);
 };
-async function loadProfiles(){const data=await api('/api/wifi');byId('hostname').value=data.hostname||'ecmpilot-gw';byId('ap-ssid').textContent=data.ap_ssid||'';byId('ap-password').value=data.ap_password||'';byId('ap-password').dataset.savedPassword=data.ap_password||'';byId('profiles').replaceChildren();data.networks.forEach(addProfile);}
+async function loadProfiles(){const data=await api('/api/wifi');byId('hostname').value=data.hostname||'ecmpilot-gw';byId('ap-ssid').textContent=data.ap_ssid||'';byId('ap-enabled').checked=data.ap_enabled===true;byId('ap-password').value=data.ap_password||'';byId('ap-password').dataset.savedPassword=data.ap_password||'';byId('profiles').replaceChildren();data.networks.forEach(addProfile);}
 Promise.all([refresh(),loadProfiles()]).catch(e=>message(e.message));
 </script>
 <script>
@@ -180,6 +229,7 @@ Promise.all([refresh(),loadProfiles()]).catch(e=>message(e.message));
 const byId=id=>document.getElementById('vars-'+id);
 const visible=()=>!document.getElementById('panel-varstore').hidden;
 const rows=new Map();let lastDump=null;let reading=false;let writing=false;
+const pageSize=14;let currentPage=0;
 function message(text){byId('message').textContent=text;}
 async function api(path,options){const response=await fetch(path,options);if(!response.ok)throw new Error(await response.text());return response.json();}
 function cell(row){const el=document.createElement('td');row.append(el);return el;}
@@ -213,14 +263,27 @@ function updateRow(signal){
   row.raw.textContent=valueText(signal.raw_value,signal.unit)+(signal.raw_age_ms===null?'':' | '+signal.raw_age_ms+' ms | '+(signal.raw_valid?'valid':'invalid'));
   setButtons(row);
 }
-function filter(){const query=byId('filter').value.trim().toLowerCase();for(const row of rows.values())row.element.hidden=!(row.signal.name+' '+row.signal.description).toLowerCase().includes(query);}
+function filter(){
+  const query=byId('filter').value.trim().toLowerCase();
+  const matching=[...rows.values()].filter(row=>(row.signal.name+' '+row.signal.description).toLowerCase().includes(query));
+  const pages=Math.ceil(matching.length/pageSize);
+  currentPage=Math.max(0,Math.min(currentPage,pages-1));
+  for(const row of rows.values())row.element.hidden=true;
+  const start=currentPage*pageSize;
+  for(const row of matching.slice(start,start+pageSize))row.element.hidden=false;
+  byId('page').textContent='Page '+(pages?currentPage+1:0)+' / '+pages+(matching.length?' · '+(start+1)+'–'+Math.min(start+pageSize,matching.length)+' of '+matching.length:'');
+  byId('prev').disabled=currentPage===0;
+  byId('next').disabled=currentPage+1>=pages;
+}
 async function refresh(){
   if(reading)return;reading=true;
   try{const data=await api('/api/vars');lastDump=data;data.signals.forEach(updateRow);filter();byId('summary').textContent=data.signals.length+' signals; '+data.signals.filter(signal=>signal.forced).length+' forced';}
   finally{reading=false;}
 }
 byId('refresh').onclick=()=>refresh().catch(error=>message(error.message));
-byId('filter').oninput=filter;
+byId('filter').oninput=()=>{currentPage=0;filter();};
+byId('prev').onclick=()=>{if(currentPage>0)--currentPage;filter();};
+byId('next').onclick=()=>{++currentPage;filter();};
 byId('dump').onclick=()=>{if(!lastDump){message('Refresh before downloading.');return;}const url=URL.createObjectURL(new Blob([JSON.stringify(lastDump,null,2)],{type:'application/json'}));const link=document.createElement('a');link.href=url;link.download='ecmpilot-signals.json';link.click();URL.revokeObjectURL(url);};
 setInterval(()=>{if(visible()&&byId('auto').checked&&!writing)refresh().catch(error=>message(error.message));},1000);
 onTabChange(tab=>{if(tab==='varstore')refresh().catch(error=>message(error.message));});
@@ -232,7 +295,7 @@ if(visible())refresh().catch(error=>message(error.message));
 'use strict';
 const byId=id=>document.getElementById('log-'+id);
 const visible=()=>!document.getElementById('panel-log').hidden;
-let boot=null,cursor=0,latest=0,lost=0,reading=false,lines=[],characters=0;
+let boot=null,cursor=0,latest=0,lost=0,reading=false,lines=[],characters=0,previousLoadedBoot=null;
 function append(text){
   const clean=text.replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'').replace(/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/g,'');
   lines.push(clean);characters+=clean.length;
@@ -248,6 +311,19 @@ async function refresh(){
       const data=await response.json();
       if(boot&&boot!==data.boot){append('\n--- Gateway restarted ---\n');cursor=0;lost=0;}
       boot=data.boot;latest=data.latest;
+      if(previousLoadedBoot!==boot){
+        if(data.previous_available){
+          const retained=await fetch('/api/log?previous=1&after=0&boot='+boot);
+          if(!retained.ok)throw new Error(await retained.text());
+          const tail=await retained.json();
+          if(tail.boot!==boot)throw new Error('Gateway restarted while reading previous log; retrying on next refresh.');
+          append('\n--- Previous boot: last '+tail.entries.length+' retained entries; reset reason: '+data.reset_reason+' ---\n');
+          for(const entry of tail.entries)append(entry.text);
+          append('--- Current boot ---\n');
+        }
+        if(data.reset_reason)append('--- Reset reason: '+data.reset_reason+' ('+data.reset_reason_code+') ---\n');
+        previousLoadedBoot=boot;
+      }
       if(data.lost){lost+=data.lost;append('\n--- '+data.lost+' log entries overwritten in gateway buffer ---\n');}
       for(const entry of data.entries)if(entry.seq>cursor)append(entry.text);
       const previous=cursor;cursor=data.next;render();
@@ -289,6 +365,20 @@ function metrics(data){
   return {interval_us:interval,cores,tasks};
 }
 function render(data,stats){
+  byId('heap').replaceChildren();
+  for(const heap of data.heap||[]){
+    const row=document.createElement('tr');
+    const name=document.createElement('td');name.textContent=heap.name;row.append(name);
+    for(const key of ['total_bytes','allocated_bytes','free_bytes','minimum_free_bytes','largest_free_block_bytes','free_blocks']){
+      const cell=document.createElement('td');const value=heap[key];
+      cell.textContent=Number.isSafeInteger(value)&&value>=0?value.toLocaleString('en-US'):'--';row.append(cell);
+    }
+    byId('heap').append(row);
+  }
+  if(!data.heap?.length){
+    const row=document.createElement('tr');const cell=document.createElement('td');
+    cell.colSpan=7;cell.textContent='Heap statistics unavailable.';row.append(cell);byId('heap').append(row);
+  }
   byId('rows').replaceChildren();
   const tasks=[...stats.tasks].sort((a,b)=>(b.cpu_percent??-1)-(a.cpu_percent??-1)||a.name.localeCompare(b.name));
   for(const task of tasks){
@@ -321,4 +411,125 @@ setInterval(()=>{if(visible()&&byId('auto').checked)refresh();},2000);
 if(visible())refresh();
 })();
 </script>
+
 </html>
+
+<script>
+(()=>{
+'use strict';
+const el=id=>document.getElementById('power-'+id);
+let reading=false,requesting=false,pending=false,deepRequested=false,deepAvailable=false;
+const controls=()=>{for(const id of ['normal','dfs','light','deep'])el(id).disabled=requesting||pending||(id==='deep'&&!deepAvailable);};
+const visible=()=>!document.getElementById('panel-home').hidden;
+async function refresh(){
+  if(reading)return;reading=true;el('refresh').disabled=true;
+  try{
+    const response=await fetch('/api/power');
+    if(!response.ok)throw new Error(await response.text());
+    const s=await response.json();pending=s.requested!==s.completed;deepAvailable=!!s.deep_sleep_available;
+    if(!pending)deepRequested=false;
+    const names=['Normal','DFS only','Automatic light sleep'];
+    el('status').textContent='Applied policy: '+(names[s.mode]??'unknown')+'\nCPU policy: '+s.cpu_min_mhz+'–'+s.cpu_max_mhz+' MHz\nAutomatic light sleep permitted: '+!!s.auto_light_sleep+'\nSuccessful sleep calls: '+s.light_sleep_count+' · cumulative call time: '+s.light_sleep_ms+' ms\nCAN enabled: '+!!s.can_enabled+' · state: '+s.can_state+'\nRequest/completed: '+s.requested+'/'+s.completed+' · last error: '+s.last_error+'\nDeep-sleep stage: '+(s.deep_stage??0)+' · wake cause: '+s.wake_cause;
+    el('message').textContent=pending?(deepRequested||s.deep_stage?'Preparing CAN-only deep sleep…':'Applying policy…'):s.last_error?'Power policy failed: '+s.last_error:s.auto_light_sleep&&s.can_enabled?'Light-sleep policy enabled; the CAN driver prevents actual sleep.':'Policy applied. CAN-only deep sleep is available as a manual test.';
+  }catch(error){el('message').textContent=deepRequested?'Deep sleep requested; gateway unreachable. Check current draw; CAN activity should wake it.':error.message;}
+  finally{reading=false;el('refresh').disabled=false;controls();}
+}
+async function request(mode){
+  if(requesting||pending)return;requesting=true;controls();
+  try{
+    const response=await fetch('/api/power',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode})});
+    if(!response.ok)throw new Error(await response.text());
+    pending=true;deepRequested=mode==='can_deep_sleep';el('message').textContent=deepRequested?'Deep sleep accepted; Wi-Fi will stop shortly. CAN activity wakes the gateway.':'Request accepted; policy will change shortly.';
+  }catch(error){el('message').textContent=deepRequested?'Deep sleep requested; gateway unreachable. Check current draw; CAN activity should wake it.':error.message;}
+  finally{requesting=false;controls();}
+}
+el('normal').onclick=()=>request('normal');el('dfs').onclick=()=>request('dfs');el('light').onclick=()=>request('light_sleep');
+el('deep').onclick=()=>request('can_deep_sleep');
+el('refresh').onclick=refresh;
+onTabChange(tab=>{if(tab==='home')refresh();});
+setInterval(()=>{if(visible())refresh();},2000);
+if(visible())refresh();
+})();
+</script>
+<script>
+/* Automatic refresh settings */
+(()=>{
+const el=name=>document.getElementById('auto-refresh-'+name);
+if(!el('enabled'))return;
+let revision=null,dirty=false,saving=false,reading=false;
+const controls=()=>{el('save').disabled=saving||reading||revision===null;el('reload').disabled=saving;for(const name of ['enabled','standby','charging','soc'])el(name).disabled=saving||revision===null;el('limit-enabled').disabled=saving||revision===null||!el('enabled').checked;el('limit-soc').disabled=saving||revision===null||!el('enabled').checked||!el('limit-enabled').checked;};
+const explain=text=>text==='settings_conflict'?'Settings changed elsewhere. Reload settings before saving.':text;
+function apply(s){
+  if(!dirty){revision=s.rev;el('enabled').checked=s.enabled;el('standby').value=String(s.standby_min);el('charging').value=String(s.charging_min);el('soc').value=String(s.min_aux_soc_pct);el('limit-enabled').checked=!!s.charge_limit_enabled;el('limit-soc').value=String(s.charge_limit_soc_pct??80);}
+  el('limit-value').textContent=el('limit-soc').value+'%';
+  const limitStates={disabled:'Charge limit is off',monitoring:'Monitoring battery level',waiting_data:'Waiting for updated vehicle data',busy:'Waiting for the current vehicle request',requesting:'Requesting delayed charging',limit_reached:'Charge limit reached',retry:'Will retry after a later vehicle update',unavailable:'Charge limit unavailable',low_aux_battery:'Paused: low 12V battery'};
+  el('limit-status').textContent=limitStates[s.charge_limit_state??'disabled']??'Charge limit unavailable';
+  const states={disabled:'Disabled',counting:'Countdown running',low_aux_battery:'Paused: 12V battery SOC is below the limit',unavailable:'Paused: vehicle refresh is unavailable',busy:'Waiting for the current vehicle request',invalid_config:'Paused: invalid configuration',refreshing:'Refreshing vehicle'};
+  const seconds=Math.ceil((s.remaining_ms||0)/1000);
+  el('status').textContent=(states[s.state]||s.state)+' · remaining '+Math.floor(seconds/60)+'m '+seconds%60+'s';
+  controls();
+}
+async function read(){
+  if(reading||saving)return;reading=true;controls();
+  try{const response=await fetch('/api/auto-refresh');if(!response.ok)throw new Error(await response.text());apply(await response.json());}
+  catch(error){el('message').textContent=explain(error.message);}
+  finally{reading=false;controls();}
+}
+function integer(name,min,max){const text=el(name).value.trim();if(!/^\d+$/.test(text)||Number(text)<min||Number(text)>max)throw new Error(name==='soc'?'Minimum 12V SOC must be 0–100%.':'Periods must be 1–1440 whole minutes.');return Number(text);}
+el('enabled').onchange=()=>{dirty=true;if(!el('enabled').checked)el('limit-enabled').checked=false;controls();};
+el('limit-enabled').onchange=()=>{dirty=true;controls();};
+el('limit-soc').oninput=()=>{dirty=true;el('limit-value').textContent=el('limit-soc').value+'%';};
+for(const name of ['standby','charging','soc'])el(name).oninput=()=>{dirty=true;};
+el('save').onclick=async()=>{
+  if(saving||reading||revision===null)return;
+  try{
+    const body={rev:revision,enabled:el('enabled').checked,standby_min:integer('standby',1,1440),charging_min:integer('charging',1,1440),min_aux_soc_pct:integer('soc',0,100),charge_limit_enabled:el('enabled').checked&&el('limit-enabled').checked,charge_limit_soc_pct:integer('limit-soc',1,100)};
+    saving=true;controls();el('message').textContent='Saving…';
+    const response=await fetch('/api/auto-refresh',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!response.ok)throw new Error(await response.text());
+    dirty=false;apply(await response.json());el('message').textContent='Automatic refresh settings saved.';
+  }catch(error){el('message').textContent=explain(error.message);}
+  finally{saving=false;controls();}
+};
+el('reload').onclick=()=>{dirty=false;el('message').textContent='';return read();};
+onTabChange(tab=>{if(tab==='home')read();});
+setInterval(()=>{if(!document.getElementById('panel-home').hidden)read();},2000);
+if(!document.getElementById('panel-home').hidden)read();
+})();
+</script>
+<script>
+/* Home Assistant settings */
+(()=>{
+const el=name=>document.getElementById('ha-'+name);
+let revision=0,dirty=false,busy=false,reading=false;
+const fields=['enabled','host','port','period','username','password','clear-password'];
+function controls(){for(const name of fields)el(name).disabled=busy;el('save').disabled=busy||!dirty||!revision;el('reload').disabled=busy;}
+function render(s){
+  if(s.rev<revision)return;
+  el('status').textContent=!s.enabled?'MQTT is disabled.':s.connected?'Connected to '+s.host+':'+s.port:s.last_error&&s.last_error!=='ESP_OK'?'Connection failed. Check the broker address and login.':'Connecting to '+s.host+':'+s.port+'…';
+  if(!dirty){revision=s.rev;el('enabled').checked=s.enabled;el('host').value=s.host;el('port').value=String(s.port);el('period').value=String(s.period_s);el('username').value=s.username;el('password').value='';el('clear-password').checked=false;el('password').placeholder=s.has_password?'Saved password (unchanged)':'Password';}
+  controls();
+}
+async function read(){
+  if(reading||busy)return;reading=true;
+  try{const r=await fetch('/api/ha',{cache:'no-store'});if(!r.ok)throw Error(await r.text());render(await r.json());}
+  catch(e){el('message').textContent=e.message;}finally{reading=false;}
+}
+for(const name of fields){const changed=()=>{dirty=true;el('message').textContent='';controls();};el(name).oninput=changed;el(name).onchange=changed;}
+el('save').onclick=async()=>{
+  if(busy||!dirty||!revision)return;
+  const host=el('host').value.trim(),port=Number(el('port').value),period=Number(el('period').value);
+  if((el('enabled').checked&&!host)||host.length>127||!/^[a-zA-Z0-9._-]*$/.test(host)||!Number.isInteger(port)||port<1||port>65535||!Number.isInteger(period)||period<1||period>60){el('message').textContent='Enter a broker hostname/IP, port 1–65535 and publication interval 1–60 seconds.';return;}
+  const payload={rev:revision,enabled:el('enabled').checked,host,port,period_s:period,username:el('username').value};
+  if(el('clear-password').checked)payload.password='';else if(el('password').value)payload.password=el('password').value;
+  busy=true;controls();
+  try{const r=await fetch('/api/ha',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!r.ok)throw Error(await r.text());const s=await r.json();dirty=false;render(s);el('message').textContent='MQTT settings saved. The connection will update automatically.';}
+  catch(e){el('message').textContent=e.message==='settings_conflict'?'Settings changed elsewhere. Reload before saving.':e.message;}
+  finally{busy=false;controls();}
+};
+el('reload').onclick=()=>{dirty=false;el('message').textContent='';return read();};
+onTabChange(tab=>{if(tab==='ha')read();});
+setInterval(()=>{if(!document.getElementById('panel-ha').hidden)read();},3000);
+if(!document.getElementById('panel-ha').hidden)read();
+})();
+</script>

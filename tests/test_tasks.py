@@ -28,3 +28,12 @@ class TaskStatsTests(unittest.TestCase):
         self.assertIn(b'capacity exceeded', self.lib.gw_test_tasks(1))
         self.assertEqual(b'503 Service Unavailable', self.lib.gw_test_tasks_status())
         self.assertEqual(0, self.lib.gw_test_tasks_errors())
+
+    def test_heap_capability_views_and_absent_psram(self):
+        data = json.loads(self.lib.gw_test_tasks(0))
+        ram, dma, psram = data['heap']
+        self.assertEqual('Internal RAM', ram['name'])
+        self.assertEqual((300000, 200000, 100000, 90000, 64000, 7), tuple(ram[k] for k in ('total_bytes','allocated_bytes','free_bytes','minimum_free_bytes','largest_free_block_bytes','free_blocks')))
+        self.assertEqual(50000, dma['free_bytes'])
+        self.assertEqual(0, psram['total_bytes'])
+        self.assertEqual(0, self.lib.gw_test_tasks_errors())

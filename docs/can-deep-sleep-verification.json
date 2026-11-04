@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-01",
+  "version": "0.5.0",
+  "native_tests": 156,
+  "browser_tests": {
+    "power": 9,
+    "wifi_ota": 13,
+    "log": 6
+  },
+  "signals": 182,
+  "can": {
+    "profile": "INFO",
+    "bitrate": 125000,
+    "rx_gpio": 16,
+    "tx_gpio": 15,
+    "version_tx_removed": true
+  },
+  "deep_sleep": {
+    "trigger": "Manual Home button / POST api/power can_deep_sleep",
+    "automatic_timeout": false,
+    "timer_wake": false,
+    "wake_source": "EXT0 GPIO16 LOW",
+    "tx_held_recessive": true,
+    "can_owner_uninstalls": true,
+    "network_owner_stops_wifi": true,
+    "raw_varstore_handshake": true,
+    "wake_is_new_boot": true
+  },
+  "physical_test": false,
+  "flashed": false,
+  "no_psram": true,
+  "build_log": "build-can-deep-sleep.log",
+  "test_log": "can-deep-tests.log",
+  "image": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1027808,
+    "ota_slot_bytes": 2031616,
+    "sha256": "423a84ad1aaa12db2c1e34fbac6c0d69f20976ed88a3f13f4fa306f0f56dffc3"
+  }
+}

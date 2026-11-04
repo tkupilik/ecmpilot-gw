@@ -55,6 +55,10 @@ esp_err_t gw_settings_save(const gw_settings_t *settings);
 // hostname == NULL preserves it; Wi-Fi blob v1 stays compatible with older OTA images.
 esp_err_t gw_settings_save_network(const gw_settings_t *settings, const char *hostname);
 esp_err_t gw_settings_save_wifi(const gw_settings_t *settings, const char *hostname, const char *ap_password);
+// Omitted optional fields preserve their saved value; AP defaults disabled.
+esp_err_t gw_settings_save_wifi_options(const gw_settings_t *settings, const char *hostname,
+                                        const char *ap_password, const bool *ap_enabled);
+bool gw_ap_enabled_get(void);
 bool gw_ap_password_valid(const char *password);
 esp_err_t gw_ap_password_get(char password[GW_AP_PASSWORD_SIZE]);
 bool gw_hostname_valid(const char *hostname);
@@ -64,6 +68,7 @@ void gw_network_reconfigure(void);
 void gw_network_status(gw_network_status_t *status);
 esp_err_t gw_web_start(void);
 esp_err_t gw_udp_start(void);
+esp_err_t gw_can_rx_start(void);
 esp_err_t gw_console_start(void);
 void gw_restart_soon(void);
 uint32_t gw_heartbeat_count(void);

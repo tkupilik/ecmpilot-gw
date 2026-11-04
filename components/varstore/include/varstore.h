@@ -62,6 +62,8 @@ bool varstore_check_valid(size_t id, uint32_t max_age_ms);
 // Single raw writer and single force controller per signal; task context only.
 varstore_snapshot_t varstore_inspect(size_t id, uint32_t max_age_ms);
 void varstore_write(size_t id, int32_t value);
+// Derived value with oldest contributing monotonic observation timestamp [ms].
+void varstore_write_at(size_t id, int32_t value, uint64_t timestamp_ms);
 void varstore_force(size_t id, bool enabled, int32_t value);
 // Refresh/revalidate an existing sample; a never-written signal stays invalid.
 void varstore_touch(size_t id);

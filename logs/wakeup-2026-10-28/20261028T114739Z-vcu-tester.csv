@@ -1,0 +1,2 @@
+t_s,phase,read_status,msg_type,id_hex,dlc,data_hex,adapter_us
+2.022315,tx_window,0x8,0x80,001,4,00 00 00 08,402927199549

@@ -1,0 +1,2 @@
+{"t_s": 2.7e-05, "event": "configuration", "profile": "all", "frames": 89, "tx_ms": 200, "observe_ms": 1000, "quiet_ms": 1000, "channel": "0x51", "dll": "C:\\work\\bev\\ecmpilot-gw\\build-host-tests\\pcan-sdk\\PCANBasic.dll", "one_api_write_per_id": true, "controller_retry_count": "not measured"}
+{"t_s": 0.257869, "event": "failed", "message": "Initialize 500k: PCAN status 0x4000000"}

@@ -1,0 +1,27 @@
+{
+  "date": "2026-11-01",
+  "version": "0.5.0",
+  "native_tests": 165,
+  "browser_tests": 46,
+  "ap": {
+    "default_enabled": false,
+    "persisted_nvs_key": "ap_enabled",
+    "wifi_blob_version": 1,
+    "wifi_blob_bytes": 792,
+    "legacy_missing_key": false,
+    "legacy_api_preserves_policy": true,
+    "active_ap_disabled_without_reboot": true
+  },
+  "flashed": false,
+  "hardware_ap_test": false,
+  "evidence": {
+    "build": "build-ap-policy.log",
+    "tests": "ap-policy-tests.log",
+    "browser_tests": "ap-policy-ui-tests.log"
+  },
+  "image": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1032048,
+    "sha256": "59fd08054c604d191c8c5e74aeaa9cefb79bf5795b7aa35a27f5fea5db6487d4"
+  }
+}

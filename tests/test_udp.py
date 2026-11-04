@@ -16,8 +16,8 @@ class Definition(c.Structure):
 
 
 class Codec:
-    def __init__(self):
-        self.lib = c.CDLL(str(ROOT / 'build-host-tests/udp-test.dll'))
+    def __init__(self, library='udp-test.dll'):
+        self.lib = c.CDLL(str(ROOT / 'build-host-tests' / library))
         self.lib.varstore_count.restype = c.c_size_t
         self.lib.varstore_definition.argtypes = [c.c_size_t]
         self.lib.varstore_definition.restype = c.POINTER(Definition)
@@ -33,6 +33,7 @@ class Codec:
         self.now = 1000
         self.lib.gw_test_set_time(self.now)
         assert self.lib.gw_process_data_init() == 0
+        assert self.lib.gw_auto_refresh_init() == 0
         self.ids = {self.lib.varstore_definition(i).contents.name.decode(): i for i in range(self.lib.varstore_count())}
         self.lib.gw_udp_protocol_init(b'ecmpilot-test', BOOT.encode(), b'0.3.0')
         self.next_id = 1
@@ -105,6 +106,25 @@ class UdpProtocolTests(unittest.TestCase):
         self.assertEqual(240000, state['soc_pct']['age_ms'])
         self.g.set('battery.soc_pct_x10', 9999)
         self.assertIsNone(self.g.call(self.g.request('state.get', {}))['state']['soc_pct']['value'])
+
+    def test_milli_units_convert_to_unchanged_phone_units(self):
+        inputs = {'temperature.cabin_mc': -1250, 'temperature.outside_mc': 9125,
+                  'battery.min_mc': -60000, 'battery.max_mc': 150000,
+                  'battery.voltage_mv': 416250, 'battery.current_ma': -12345,
+                  'battery.soc_pct_x10': 705, 'charge.power_w': 1234}
+        for name, value in inputs.items():
+            self.g.set(name, value, force=False)
+        state = self.g.call(self.g.request('state.get', {}))['state']
+        for name, value in {'cabin_c': -1.25, 'outside_c': 9.125, 'battery_min_c': -60,
+                            'battery_max_c': 150, 'voltage_v': 416.25, 'current_a': -12.345,
+                            'soc_pct': 70.5}.items():
+            self.assertEqual(value, state[name]['value'], name)
+        self.assertEqual(1.234, state['charge']['power_kw'])
+        for name, value, phone in [('temperature.cabin_mc', -60001, 'cabin_c'),
+                                    ('battery.voltage_mv', 1000001, 'voltage_v'),
+                                    ('battery.current_ma', -2000001, 'current_a')]:
+            self.g.set(name, value, force=False)
+            self.assertIsNone(self.g.call(self.g.request('state.get', {}))['state'][phone]['value'])
 
     def test_acceptance_duplicate_readback_and_cached_result_after_deadline(self):
         self.g.bench(); req = self.g.request()
@@ -208,14 +228,15 @@ class UdpProtocolTests(unittest.TestCase):
 
     def test_maximal_snapshot_fits_and_emit_android_fixtures(self):
         self.g.bench()
-        for name, value in {'battery.soc_pct_x10':1000,'vehicle.range_km_x10':20000,'temperature.cabin_c_x10':-600,
-                            'temperature.outside_c_x10':1000,'battery.min_c_x10':-600,'battery.max_c_x10':1500,
-                            'vehicle.odometer_km':10000000,'battery.voltage_v_x10':10000,'battery.current_a_x10':-20000,
-                            'charge.power_w':1000000,'charge.remaining_min':100000}.items():
+        for name, value in {'battery.soc_pct_x10':1000,'vehicle.range_km_x10':20000,'temperature.cabin_mc':-60000,
+                            'temperature.outside_mc':100000,'battery.min_mc':-60000,'battery.max_mc':150000,
+                            'vehicle.odometer_km':10000000,'battery.voltage_mv':1000000,'battery.current_ma':-2000000,
+                            'charge.power_w':1000000,'charge.remaining_min':100000,'bsi.power_management':1}.items():
             self.g.set(name, value, force=False)
         self.g.advance(2**40)
         data = self.g.raw(json.dumps(self.g.request('state.get', {})).encode())
         self.assertLessEqual(len(data), 1024)
+        self.assertEqual(1,json.loads(data)['state']['bsi']['power_management'])
         fixtures = ROOT / 'build-host-tests/udp-fixtures'; fixtures.mkdir(exist_ok=True)
         self.g = Codec(); self.g.bench(); self.g.set('battery.soc_pct_x10',682)
         for name, response in [('info', self.g.call(self.g.request('info.get',{}))),

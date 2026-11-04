@@ -1,0 +1,10 @@
+Derived definitions: prototux/PSA-RE, https://github.com/prototux/PSA-RE
+Source revision: 67f7581e7622410efdbb29c7eda3b86982b9b450
+License: Apache License 2.0 (LICENSE-PSA-RE.txt).
+Modified by eCMPilot: all observed HS1 messages; all fitting canonical source fields, ECU-first names, raw coverage, documented payload-bound exclusions, corrected cell-index factor and logical temperature-slot multiplexing. Unresolved source alternatives retained in source JSON and signal comments. No physical validation implied.
+Derived definitions are not relicensed under the firmware BSD license.
+INFO-DIV export modifications: all source IDs on LS.INFO-DIV with architecture inheritance; ECU-prefixed display names; source title clarification; opaque fields as raw integers; raw bit coverage; normal-addressing ISO-TP physical-frame candidate layouts instead of copying logical application offsets onto wire frames; complete original layouts and alternatives retained in source JSON. Later INFO captures adapt six DLCs, add raw unknown ID 7A4 and label the source SOC field as a candidate. All captured bytes are checked; physical meanings remain separately qualified.
+
+2026-10-31: separate owner-validation overlay promotes speed, gear, parking-brake, consumed BSI_SlowData2 fields and MaintenanceStatusEv named fields at observed operating points. Other meanings remain qualified; no source bit layouts are changed.
+
+2026-10-31 EV review:161 and3F0 exported as Unknown raw bytes for this vehicle; all original fields preserved in source metadata/audit.350 display title clarified to FrontClimateStatus. No unsupported electric units inferred.

@@ -1,0 +1,551 @@
+{"t_s": 8e-06, "event": "configuration", "profile": "app", "frames": 68, "tx_ms": 200, "observe_ms": 1000, "quiet_ms": 1000, "channel": "0x51", "dll": "C:\\Windows\\PCANBasic.dll", "one_api_write_per_id": true, "controller_retry_count": "not measured"}
+{"t_s": 0.048757, "event": "connected", "channel": "0x51", "bitrate": 500000, "hard_reset": true}
+{"t_s": 0.050924, "event": "hard_reset", "status": "0x0"}
+{"t_s": 2.05155, "event": "window", "phase": "initial_baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 3.052321, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 3.052869, "event": "trial_start", "index": 1, "total": 68, "id": "102", "dlc": 8, "data": "99 1F 07 23 01 12 B2 01"}
+{"t_s": 3.053068, "event": "write_enqueued", "id": "102", "data": "99 1F 07 23 01 12 B2 01"}
+{"t_s": 3.05861, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404041675181}
+{"t_s": 3.254544, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 3.258468, "event": "hard_reset", "status": "0x8"}
+{"t_s": 4.258825, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 4.259049, "event": "trial_result", "id": "102", "data": "99 1F 07 23 01 12 B2 01", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 5.26096, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 5.26119, "event": "trial_start", "index": 2, "total": 68, "id": "112", "dlc": 8, "data": "00 00 00 00 00 01 00 00"}
+{"t_s": 5.261445, "event": "write_enqueued", "id": "112", "data": "00 00 00 00 00 01 00 00"}
+{"t_s": 5.266414, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404043883354}
+{"t_s": 5.463904, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 5.467956, "event": "hard_reset", "status": "0x8"}
+{"t_s": 6.470558, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 6.470916, "event": "trial_result", "id": "112", "data": "00 00 00 00 00 01 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 7.472383, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 7.472712, "event": "trial_start", "index": 3, "total": 68, "id": "12A", "dlc": 8, "data": "74 09 02 15 05 04 0E 01"}
+{"t_s": 7.473002, "event": "write_enqueued", "id": "12A", "data": "74 09 02 15 05 04 0E 01"}
+{"t_s": 7.478569, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404046095127}
+{"t_s": 7.674394, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 7.67723, "event": "hard_reset", "status": "0x8"}
+{"t_s": 8.67906, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 8.67934, "event": "trial_result", "id": "12A", "data": "74 09 02 15 05 04 0E 01", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 9.680541, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 9.68099, "event": "trial_start", "index": 4, "total": 68, "id": "208", "dlc": 8, "data": "FF FF 51 00 2C 00 00 32"}
+{"t_s": 9.681575, "event": "write_enqueued", "id": "208", "data": "FF FF 51 00 2C 00 00 32"}
+{"t_s": 9.687062, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404048303308}
+{"t_s": 9.88374, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 9.887529, "event": "hard_reset", "status": "0x8"}
+{"t_s": 10.889552, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 10.889807, "event": "trial_result", "id": "208", "data": "FF FF 51 00 2C 00 00 32", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 11.891787, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 11.892072, "event": "trial_start", "index": 5, "total": 68, "id": "262", "dlc": 1, "data": "E0"}
+{"t_s": 11.892212, "event": "write_enqueued", "id": "262", "data": "E0"}
+{"t_s": 11.894959, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404050512832}
+{"t_s": 12.093361, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 12.097094, "event": "hard_reset", "status": "0x8"}
+{"t_s": 13.097944, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 13.098167, "event": "trial_result", "id": "262", "data": "E0", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 14.10062, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 14.100924, "event": "trial_start", "index": 6, "total": 68, "id": "2ED", "dlc": 7, "data": "11 00 00 00 00 00 00"}
+{"t_s": 14.101209, "event": "write_enqueued", "id": "2ED", "data": "11 00 00 00 00 00 00"}
+{"t_s": 14.106268, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404052723311}
+{"t_s": 14.30334, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 14.306925, "event": "hard_reset", "status": "0x8"}
+{"t_s": 15.308183, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 15.308419, "event": "trial_result", "id": "2ED", "data": "11 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 16.309026, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 16.309248, "event": "trial_start", "index": 7, "total": 68, "id": "30D", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 16.309541, "event": "write_enqueued", "id": "30D", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 16.314719, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404054931314}
+{"t_s": 16.510435, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 16.51391, "event": "hard_reset", "status": "0x8"}
+{"t_s": 17.515062, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 17.515416, "event": "trial_result", "id": "30D", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 18.517177, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 18.517513, "event": "trial_start", "index": 8, "total": 68, "id": "334", "dlc": 8, "data": "48 00 00 00 00 00 00 00"}
+{"t_s": 18.517926, "event": "write_enqueued", "id": "334", "data": "48 00 00 00 00 00 00 00"}
+{"t_s": 18.523131, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404057139681}
+{"t_s": 18.7199, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 18.723107, "event": "hard_reset", "status": "0x8"}
+{"t_s": 19.724967, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 19.725262, "event": "trial_result", "id": "334", "data": "48 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 20.728155, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 20.728442, "event": "trial_start", "index": 9, "total": 68, "id": "348", "dlc": 8, "data": "00 00 FF 00 C1 21 00 11"}
+{"t_s": 20.728659, "event": "write_enqueued", "id": "348", "data": "00 00 FF 00 C1 21 00 11"}
+{"t_s": 20.733268, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404059350680}
+{"t_s": 20.930795, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 20.934818, "event": "hard_reset", "status": "0x8"}
+{"t_s": 21.935955, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 21.93617, "event": "trial_result", "id": "348", "data": "00 00 FF 00 C1 21 00 11", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 22.93825, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 22.938609, "event": "trial_start", "index": 10, "total": 68, "id": "349", "dlc": 8, "data": "03 55 00 10 00 00 51 20"}
+{"t_s": 22.938862, "event": "write_enqueued", "id": "349", "data": "03 55 00 10 00 00 51 20"}
+{"t_s": 22.943737, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404061561074}
+{"t_s": 23.139972, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 23.143536, "event": "hard_reset", "status": "0x8"}
+{"t_s": 24.145254, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 24.145659, "event": "trial_result", "id": "349", "data": "03 55 00 10 00 00 51 20", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 25.147802, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 25.148187, "event": "trial_start", "index": 11, "total": 68, "id": "34D", "dlc": 8, "data": "10 23 64 00 09 01 00 3E"}
+{"t_s": 25.148616, "event": "write_enqueued", "id": "34D", "data": "10 23 64 00 09 01 00 3E"}
+{"t_s": 25.15409, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404063770759}
+{"t_s": 25.351205, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 25.35422, "event": "hard_reset", "status": "0x8"}
+{"t_s": 26.354765, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 26.355092, "event": "trial_result", "id": "34D", "data": "10 23 64 00 09 01 00 3E", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 27.357815, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 27.358485, "event": "trial_start", "index": 12, "total": 68, "id": "352", "dlc": 2, "data": "00 FD"}
+{"t_s": 27.359387, "event": "write_enqueued", "id": "352", "data": "00 FD"}
+{"t_s": 27.362435, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404065979996}
+{"t_s": 27.562171, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 27.56619, "event": "hard_reset", "status": "0x8"}
+{"t_s": 28.567972, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 28.568248, "event": "trial_result", "id": "352", "data": "00 FD", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 29.570121, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 29.570469, "event": "trial_start", "index": 13, "total": 68, "id": "36D", "dlc": 4, "data": "0F B0 00 00"}
+{"t_s": 29.570796, "event": "write_enqueued", "id": "36D", "data": "0F B0 00 00"}
+{"t_s": 29.573871, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404068191713}
+{"t_s": 29.773344, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 29.778234, "event": "hard_reset", "status": "0x8"}
+{"t_s": 30.780207, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 30.78052, "event": "trial_result", "id": "36D", "data": "0F B0 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 31.782271, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 31.7825, "event": "trial_start", "index": 14, "total": 68, "id": "38D", "dlc": 8, "data": "00 00 00 00 AF 14 45 00"}
+{"t_s": 31.78287, "event": "write_enqueued", "id": "38D", "data": "00 00 00 00 AF 14 45 00"}
+{"t_s": 31.788025, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404070405008}
+{"t_s": 31.984755, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 31.98705, "event": "hard_reset", "status": "0x8"}
+{"t_s": 32.989827, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 32.990199, "event": "trial_result", "id": "38D", "data": "00 00 00 00 AF 14 45 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 33.991137, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 33.991472, "event": "trial_start", "index": 15, "total": 68, "id": "3A8", "dlc": 6, "data": "06 06 FE 00 00 00"}
+{"t_s": 33.991926, "event": "write_enqueued", "id": "3A8", "data": "06 06 FE 00 00 00"}
+{"t_s": 33.997416, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404072613847}
+{"t_s": 34.193449, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 34.197285, "event": "hard_reset", "status": "0x8"}
+{"t_s": 35.198549, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 35.198824, "event": "trial_result", "id": "3A8", "data": "06 06 FE 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 36.20005, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 36.20033, "event": "trial_start", "index": 16, "total": 68, "id": "3AD", "dlc": 8, "data": "0F FF 80 00 80 00 00 1F"}
+{"t_s": 36.200536, "event": "write_enqueued", "id": "3AD", "data": "0F FF 80 00 80 00 00 1F"}
+{"t_s": 36.205793, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404074822321}
+{"t_s": 36.402323, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 36.405792, "event": "hard_reset", "status": "0x8"}
+{"t_s": 37.408531, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 37.408747, "event": "trial_result", "id": "3AD", "data": "0F FF 80 00 80 00 00 1F", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 38.410178, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 38.410739, "event": "trial_start", "index": 17, "total": 68, "id": "3CD", "dlc": 8, "data": "00 00 00 00 03 22 70 32"}
+{"t_s": 38.410966, "event": "write_enqueued", "id": "3CD", "data": "00 00 00 00 03 22 70 32"}
+{"t_s": 38.41649, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404077032683}
+{"t_s": 38.613052, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 38.616239, "event": "hard_reset", "status": "0x8"}
+{"t_s": 39.616751, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 39.617034, "event": "trial_result", "id": "3CD", "data": "00 00 00 00 03 22 70 32", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 40.61876, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 40.619042, "event": "trial_start", "index": 18, "total": 68, "id": "3CE", "dlc": 8, "data": "40 62 00 00 02 24 00 00"}
+{"t_s": 40.619354, "event": "write_enqueued", "id": "3CE", "data": "40 62 00 00 02 24 00 00"}
+{"t_s": 40.624107, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404079241255}
+{"t_s": 40.820914, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 40.824616, "event": "hard_reset", "status": "0x8"}
+{"t_s": 41.827344, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 41.827626, "event": "trial_result", "id": "3CE", "data": "40 62 00 00 02 24 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 42.829007, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 42.829308, "event": "trial_start", "index": 19, "total": 68, "id": "3EE", "dlc": 4, "data": "00 00 00 00"}
+{"t_s": 42.829531, "event": "write_enqueued", "id": "3EE", "data": "00 00 00 00"}
+{"t_s": 42.832421, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404081450259}
+{"t_s": 43.030464, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 43.032617, "event": "hard_reset", "status": "0x8"}
+{"t_s": 44.033851, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 44.034454, "event": "trial_result", "id": "3EE", "data": "00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 45.035349, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 45.035678, "event": "trial_start", "index": 20, "total": 68, "id": "3F2", "dlc": 8, "data": "00 81 00 00 00 00 00 02"}
+{"t_s": 45.036255, "event": "write_enqueued", "id": "3F2", "data": "00 81 00 00 00 00 00 02"}
+{"t_s": 45.041719, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404083657960}
+{"t_s": 45.2367, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 45.239971, "event": "hard_reset", "status": "0x8"}
+{"t_s": 46.241576, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 46.242015, "event": "trial_result", "id": "3F2", "data": "00 81 00 00 00 00 00 02", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 47.244921, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 47.245164, "event": "trial_start", "index": 21, "total": 68, "id": "3F4", "dlc": 8, "data": "80 28 28 28 28 28 28 28"}
+{"t_s": 47.245397, "event": "write_enqueued", "id": "3F4", "data": "80 28 28 28 28 28 28 28"}
+{"t_s": 47.2512, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404085867331}
+{"t_s": 47.447523, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 47.451596, "event": "hard_reset", "status": "0x8"}
+{"t_s": 48.452572, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 48.452902, "event": "trial_result", "id": "3F4", "data": "80 28 28 28 28 28 28 28", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 49.453863, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 49.454232, "event": "trial_start", "index": 22, "total": 68, "id": "40D", "dlc": 8, "data": "00 00 00 00 00 00 00 02"}
+{"t_s": 49.454775, "event": "write_enqueued", "id": "40D", "data": "00 00 00 00 00 00 00 02"}
+{"t_s": 49.460406, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404088076555}
+{"t_s": 49.656294, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 49.659362, "event": "hard_reset", "status": "0x8"}
+{"t_s": 50.661971, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 50.662273, "event": "trial_result", "id": "40D", "data": "00 00 00 00 00 00 00 02", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 51.663565, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 51.664284, "event": "trial_start", "index": 23, "total": 68, "id": "40E", "dlc": 5, "data": "0D 0A 2A 28 00"}
+{"t_s": 51.665104, "event": "write_enqueued", "id": "40E", "data": "0D 0A 2A 28 00"}
+{"t_s": 51.667978, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404090285865}
+{"t_s": 51.867562, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 51.870178, "event": "hard_reset", "status": "0x8"}
+{"t_s": 52.872688, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 52.873383, "event": "trial_result", "id": "40E", "data": "0D 0A 2A 28 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 53.874108, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 53.874372, "event": "trial_start", "index": 24, "total": 68, "id": "412", "dlc": 8, "data": "10 00 00 00 00 3C 00 00"}
+{"t_s": 53.874613, "event": "write_enqueued", "id": "412", "data": "10 00 00 00 00 3C 00 00"}
+{"t_s": 53.879935, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404092496415}
+{"t_s": 54.076271, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 54.080557, "event": "hard_reset", "status": "0x8"}
+{"t_s": 55.082924, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 55.083414, "event": "trial_result", "id": "412", "data": "10 00 00 00 00 3C 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 56.08506, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 56.085454, "event": "trial_start", "index": 25, "total": 68, "id": "432", "dlc": 8, "data": "42 19 40 FE 00 08 30 02"}
+{"t_s": 56.085771, "event": "write_enqueued", "id": "432", "data": "42 19 40 FE 00 08 30 02"}
+{"t_s": 56.09114, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404094707907}
+{"t_s": 56.287541, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 56.291679, "event": "hard_reset", "status": "0x8"}
+{"t_s": 57.294189, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 57.294672, "event": "trial_result", "id": "432", "data": "42 19 40 FE 00 08 30 02", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 58.297347, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 58.297755, "event": "trial_start", "index": 26, "total": 68, "id": "44D", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 58.298006, "event": "write_enqueued", "id": "44D", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 58.303238, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404096919827}
+{"t_s": 58.498636, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 58.501765, "event": "hard_reset", "status": "0x8"}
+{"t_s": 59.504422, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 59.504729, "event": "trial_result", "id": "44D", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 60.505254, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 60.505594, "event": "trial_start", "index": 27, "total": 68, "id": "44E", "dlc": 3, "data": "35 C0 00"}
+{"t_s": 60.505928, "event": "write_enqueued", "id": "44E", "data": "35 C0 00"}
+{"t_s": 60.508467, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404099126587}
+{"t_s": 60.707632, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 60.711236, "event": "hard_reset", "status": "0x8"}
+{"t_s": 61.712864, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 61.713483, "event": "trial_result", "id": "44E", "data": "35 C0 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 62.714471, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 62.714696, "event": "trial_start", "index": 28, "total": 68, "id": "454", "dlc": 8, "data": "0C 40 AB 76 C0 00 20 20"}
+{"t_s": 62.714994, "event": "write_enqueued", "id": "454", "data": "0C 40 AB 76 C0 00 20 20"}
+{"t_s": 62.719805, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404101336902}
+{"t_s": 62.91532, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 62.918546, "event": "hard_reset", "status": "0x8"}
+{"t_s": 63.920993, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 63.92158, "event": "trial_result", "id": "454", "data": "0C 40 AB 76 C0 00 20 20", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 64.924017, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 64.924329, "event": "trial_start", "index": 29, "total": 68, "id": "462", "dlc": 4, "data": "40 00 00 00"}
+{"t_s": 64.924548, "event": "write_enqueued", "id": "462", "data": "40 00 00 00"}
+{"t_s": 64.929541, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404103545373}
+{"t_s": 65.12516, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 65.127687, "event": "hard_reset", "status": "0x8"}
+{"t_s": 66.129729, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 66.130077, "event": "trial_result", "id": "462", "data": "40 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 67.130946, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 67.131494, "event": "trial_start", "index": 30, "total": 68, "id": "468", "dlc": 8, "data": "00 30 40 C0 00 00 00 00"}
+{"t_s": 67.132614, "event": "write_enqueued", "id": "468", "data": "00 30 40 C0 00 00 00 00"}
+{"t_s": 67.138006, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404105754307}
+{"t_s": 67.333753, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 67.33739, "event": "hard_reset", "status": "0x8"}
+{"t_s": 68.340163, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 68.34049, "event": "trial_result", "id": "468", "data": "00 30 40 C0 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 69.343175, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 69.343744, "event": "trial_start", "index": 31, "total": 68, "id": "46E", "dlc": 2, "data": "00 00"}
+{"t_s": 69.34458, "event": "write_enqueued", "id": "46E", "data": "00 00"}
+{"t_s": 69.347741, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404107965202}
+{"t_s": 69.546053, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 69.54999, "event": "hard_reset", "status": "0x8"}
+{"t_s": 70.551346, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 70.551626, "event": "trial_result", "id": "46E", "data": "00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 71.552728, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 71.553084, "event": "trial_start", "index": 32, "total": 68, "id": "489", "dlc": 8, "data": "00 01 10 28 00 01 00 3F"}
+{"t_s": 71.553347, "event": "write_enqueued", "id": "489", "data": "00 01 10 28 00 01 00 3F"}
+{"t_s": 71.558468, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404110175056}
+{"t_s": 71.755234, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 71.7588, "event": "hard_reset", "status": "0x8"}
+{"t_s": 72.759436, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 72.759778, "event": "trial_result", "id": "489", "data": "00 01 10 28 00 01 00 3F", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 73.760334, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 73.760699, "event": "trial_start", "index": 33, "total": 68, "id": "494", "dlc": 8, "data": "0F E0 00 17 60 6C 00 00"}
+{"t_s": 73.760935, "event": "write_enqueued", "id": "494", "data": "0F E0 00 17 60 6C 00 00"}
+{"t_s": 73.766301, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404112382681}
+{"t_s": 73.961922, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 73.965258, "event": "hard_reset", "status": "0x8"}
+{"t_s": 74.966746, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 74.967237, "event": "trial_result", "id": "494", "data": "0F E0 00 17 60 6C 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 75.969168, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 75.969664, "event": "trial_start", "index": 34, "total": 68, "id": "4A2", "dlc": 2, "data": "00 80"}
+{"t_s": 75.970153, "event": "write_enqueued", "id": "4A2", "data": "00 80"}
+{"t_s": 75.973275, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404114591003}
+{"t_s": 76.172083, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 76.176389, "event": "hard_reset", "status": "0x8"}
+{"t_s": 77.178258, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 77.17872, "event": "trial_result", "id": "4A2", "data": "00 80", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 78.180944, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 78.181253, "event": "trial_start", "index": 35, "total": 68, "id": "4CE", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 78.181513, "event": "write_enqueued", "id": "4CE", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 78.186666, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404116803366}
+{"t_s": 78.382724, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 78.386227, "event": "hard_reset", "status": "0x8"}
+{"t_s": 79.3887, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 79.388997, "event": "trial_result", "id": "4CE", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 80.38988, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 80.390347, "event": "trial_start", "index": 36, "total": 68, "id": "4E9", "dlc": 4, "data": "00 17 FF FF"}
+{"t_s": 80.390729, "event": "write_enqueued", "id": "4E9", "data": "00 17 FF FF"}
+{"t_s": 80.395649, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404119011496}
+{"t_s": 80.592218, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 80.595406, "event": "hard_reset", "status": "0x8"}
+{"t_s": 81.597179, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 81.597392, "event": "trial_result", "id": "4E9", "data": "00 17 FF FF", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 82.598681, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 82.59902, "event": "trial_start", "index": 37, "total": 68, "id": "4F8", "dlc": 5, "data": "00 00 31 00 00"}
+{"t_s": 82.599359, "event": "write_enqueued", "id": "4F8", "data": "00 00 31 00 00"}
+{"t_s": 82.604123, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404121221072}
+{"t_s": 82.800148, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 82.803907, "event": "hard_reset", "status": "0x8"}
+{"t_s": 83.806159, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 83.806834, "event": "trial_result", "id": "4F8", "data": "00 00 31 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 84.808705, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 84.809238, "event": "trial_start", "index": 38, "total": 68, "id": "4FE", "dlc": 3, "data": "A0 C0 08"}
+{"t_s": 84.809736, "event": "write_enqueued", "id": "4FE", "data": "A0 C0 08"}
+{"t_s": 84.812778, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404123430514}
+{"t_s": 85.012369, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 85.016593, "event": "hard_reset", "status": "0x8"}
+{"t_s": 86.01743, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 86.017904, "event": "trial_result", "id": "4FE", "data": "A0 C0 08", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 87.018731, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 87.019042, "event": "trial_start", "index": 39, "total": 68, "id": "50D", "dlc": 8, "data": "C1 00 00 00 00 73 8E 1E"}
+{"t_s": 87.019472, "event": "write_enqueued", "id": "50D", "data": "C1 00 00 00 00 73 8E 1E"}
+{"t_s": 87.024312, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404125641621}
+{"t_s": 87.221826, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 87.224971, "event": "hard_reset", "status": "0x8"}
+{"t_s": 88.225695, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 88.226098, "event": "trial_result", "id": "50D", "data": "C1 00 00 00 00 73 8E 1E", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 89.228838, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 89.229383, "event": "trial_start", "index": 40, "total": 68, "id": "512", "dlc": 4, "data": "07 10 00 00"}
+{"t_s": 89.230001, "event": "write_enqueued", "id": "512", "data": "07 10 00 00"}
+{"t_s": 89.232841, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404127850773}
+{"t_s": 89.431885, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 89.438306, "event": "hard_reset", "status": "0x8"}
+{"t_s": 90.439817, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 90.440329, "event": "trial_result", "id": "512", "data": "07 10 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 91.442119, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 91.442645, "event": "trial_start", "index": 41, "total": 68, "id": "518", "dlc": 4, "data": "40 00 00 00"}
+{"t_s": 91.442949, "event": "write_enqueued", "id": "518", "data": "40 00 00 00"}
+{"t_s": 91.445968, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404130063657}
+{"t_s": 91.644746, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 91.649475, "event": "hard_reset", "status": "0x8"}
+{"t_s": 92.651485, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 92.651954, "event": "trial_result", "id": "518", "data": "40 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 93.653965, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 93.654407, "event": "trial_start", "index": 42, "total": 68, "id": "522", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 93.6549, "event": "write_enqueued", "id": "522", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 93.66035, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404132276761}
+{"t_s": 93.856677, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 93.86069, "event": "hard_reset", "status": "0x8"}
+{"t_s": 94.862692, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 94.863059, "event": "trial_result", "id": "522", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 95.864243, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 95.864539, "event": "trial_start", "index": 43, "total": 68, "id": "52E", "dlc": 8, "data": "FF FF 00 00 00 00 00 00"}
+{"t_s": 95.864859, "event": "write_enqueued", "id": "52E", "data": "FF FF 00 00 00 00 00 00"}
+{"t_s": 95.869855, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404134486661}
+{"t_s": 96.065289, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 96.071518, "event": "hard_reset", "status": "0x8"}
+{"t_s": 97.072798, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 97.073307, "event": "trial_result", "id": "52E", "data": "FF FF 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 98.074858, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 98.075403, "event": "trial_start", "index": 44, "total": 68, "id": "543", "dlc": 4, "data": "00 01 00 00"}
+{"t_s": 98.076074, "event": "write_enqueued", "id": "543", "data": "00 01 00 00"}
+{"t_s": 98.079095, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404136696582}
+{"t_s": 98.278168, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 98.283433, "event": "hard_reset", "status": "0x8"}
+{"t_s": 99.285918, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 99.286364, "event": "trial_result", "id": "543", "data": "00 01 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 100.287952, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 100.28841, "event": "trial_start", "index": 45, "total": 68, "id": "54E", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 100.288942, "event": "write_enqueued", "id": "54E", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 100.29437, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404138910890}
+{"t_s": 100.490135, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 100.494338, "event": "hard_reset", "status": "0x8"}
+{"t_s": 101.494858, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 101.49511, "event": "trial_result", "id": "54E", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 102.49555, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 102.49574, "event": "trial_start", "index": 46, "total": 68, "id": "552", "dlc": 8, "data": "05 76 20 35 00 E6 70 FE"}
+{"t_s": 102.495916, "event": "write_enqueued", "id": "552", "data": "05 76 20 35 00 E6 70 FE"}
+{"t_s": 102.500772, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404141118021}
+{"t_s": 102.698142, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 102.702169, "event": "hard_reset", "status": "0x8"}
+{"t_s": 103.703258, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 103.703641, "event": "trial_result", "id": "552", "data": "05 76 20 35 00 E6 70 FE", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 104.706014, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 104.706296, "event": "trial_start", "index": 47, "total": 68, "id": "563", "dlc": 7, "data": "00 00 00 00 00 00 00"}
+{"t_s": 104.70659, "event": "write_enqueued", "id": "563", "data": "00 00 00 00 00 00 00"}
+{"t_s": 104.712414, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404143328665}
+{"t_s": 104.908494, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 104.912575, "event": "hard_reset", "status": "0x8"}
+{"t_s": 105.915192, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 105.915733, "event": "trial_result", "id": "563", "data": "00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 106.91911, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 106.919514, "event": "trial_start", "index": 48, "total": 68, "id": "56B", "dlc": 4, "data": "80 00 FF 40"}
+{"t_s": 106.919912, "event": "write_enqueued", "id": "56B", "data": "80 00 FF 40"}
+{"t_s": 106.922472, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404145540584}
+{"t_s": 107.121372, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 107.12641, "event": "hard_reset", "status": "0x8"}
+{"t_s": 108.129688, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 108.130163, "event": "trial_result", "id": "56B", "data": "80 00 FF 40", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 109.132657, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 109.133028, "event": "trial_start", "index": 49, "total": 68, "id": "56E", "dlc": 6, "data": "F4 00 00 00 00 00"}
+{"t_s": 109.133454, "event": "write_enqueued", "id": "56E", "data": "F4 00 00 00 00 00"}
+{"t_s": 109.138934, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404147755299}
+{"t_s": 109.334621, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 109.33888, "event": "hard_reset", "status": "0x8"}
+{"t_s": 110.339925, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 110.340441, "event": "trial_result", "id": "56E", "data": "F4 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 111.341767, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 111.342318, "event": "trial_start", "index": 50, "total": 68, "id": "572", "dlc": 8, "data": "50 80 FF C0 00 00 00 00"}
+{"t_s": 111.342919, "event": "write_enqueued", "id": "572", "data": "50 80 FF C0 00 00 00 00"}
+{"t_s": 111.348284, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404149964736}
+{"t_s": 111.544, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 111.547499, "event": "hard_reset", "status": "0x8"}
+{"t_s": 112.549434, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 112.549894, "event": "trial_result", "id": "572", "data": "50 80 FF C0 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 113.55045, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 113.5509, "event": "trial_start", "index": 51, "total": 68, "id": "583", "dlc": 7, "data": "00 00 00 20 00 00 00"}
+{"t_s": 113.551344, "event": "write_enqueued", "id": "583", "data": "00 00 00 20 00 00 00"}
+{"t_s": 113.556601, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404152173448}
+{"t_s": 113.752137, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 113.756498, "event": "hard_reset", "status": "0x8"}
+{"t_s": 114.759493, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 114.760018, "event": "trial_result", "id": "583", "data": "00 00 00 20 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 115.760861, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 115.761308, "event": "trial_start", "index": 52, "total": 68, "id": "588", "dlc": 8, "data": "FE FF 00 00 00 54 20 00"}
+{"t_s": 115.761754, "event": "write_enqueued", "id": "588", "data": "FE FF 00 00 00 54 20 00"}
+{"t_s": 115.767117, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404154383571}
+{"t_s": 115.964025, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 115.968669, "event": "hard_reset", "status": "0x8"}
+{"t_s": 116.970511, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 116.970947, "event": "trial_result", "id": "588", "data": "FE FF 00 00 00 54 20 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 117.972162, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 117.97263, "event": "trial_start", "index": 53, "total": 68, "id": "58E", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 117.97318, "event": "write_enqueued", "id": "58E", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 117.979585, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404156595006}
+{"t_s": 118.173598, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 118.17762, "event": "hard_reset", "status": "0x8"}
+{"t_s": 119.180349, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 119.180905, "event": "trial_result", "id": "58E", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 120.183467, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 120.183949, "event": "trial_start", "index": 54, "total": 68, "id": "598", "dlc": 4, "data": "00 00 00 00"}
+{"t_s": 120.184601, "event": "write_enqueued", "id": "598", "data": "00 00 00 00"}
+{"t_s": 120.187498, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404158805327}
+{"t_s": 120.386913, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 120.391263, "event": "hard_reset", "status": "0x8"}
+{"t_s": 121.393638, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 121.394316, "event": "trial_result", "id": "598", "data": "00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 122.396191, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 122.396679, "event": "trial_start", "index": 55, "total": 68, "id": "5A2", "dlc": 7, "data": "00 00 00 00 00 00 00"}
+{"t_s": 122.397229, "event": "write_enqueued", "id": "5A2", "data": "00 00 00 00 00 00 00"}
+{"t_s": 122.402476, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404161019398}
+{"t_s": 122.597768, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 122.602277, "event": "hard_reset", "status": "0x8"}
+{"t_s": 123.603845, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 123.604372, "event": "trial_result", "id": "5A2", "data": "00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 124.605561, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 124.605941, "event": "trial_start", "index": 56, "total": 68, "id": "5A3", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 124.606476, "event": "write_enqueued", "id": "5A3", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 124.611958, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404163228416}
+{"t_s": 124.807316, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 124.811193, "event": "hard_reset", "status": "0x8"}
+{"t_s": 125.813668, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 125.814097, "event": "trial_result", "id": "5A3", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 126.817187, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 126.817713, "event": "trial_start", "index": 57, "total": 68, "id": "5AE", "dlc": 5, "data": "00 00 00 00 00"}
+{"t_s": 126.818305, "event": "write_enqueued", "id": "5AE", "data": "00 00 00 00 00"}
+{"t_s": 126.823537, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404165440050}
+{"t_s": 127.021265, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 127.025706, "event": "hard_reset", "status": "0x8"}
+{"t_s": 128.027231, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 128.02771, "event": "trial_result", "id": "5AE", "data": "00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 129.028241, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 129.028522, "event": "trial_start", "index": 58, "total": 68, "id": "5B2", "dlc": 8, "data": "00 00 62 80 00 02 00 00"}
+{"t_s": 129.028877, "event": "write_enqueued", "id": "5B2", "data": "00 00 62 80 00 02 00 00"}
+{"t_s": 129.03415, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404167650669}
+{"t_s": 129.229456, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 129.233687, "event": "hard_reset", "status": "0x8"}
+{"t_s": 130.234965, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 130.235338, "event": "trial_result", "id": "5B2", "data": "00 00 62 80 00 02 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 131.236269, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 131.236707, "event": "trial_start", "index": 59, "total": 68, "id": "5C1", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 131.237143, "event": "write_enqueued", "id": "5C1", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 131.242611, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404169859046}
+{"t_s": 131.438041, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 131.442638, "event": "hard_reset", "status": "0x8"}
+{"t_s": 132.445108, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 132.445445, "event": "trial_result", "id": "5C1", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 133.448085, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 133.448516, "event": "trial_start", "index": 60, "total": 68, "id": "5C3", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 133.448983, "event": "write_enqueued", "id": "5C3", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 133.454387, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404172070728}
+{"t_s": 133.650076, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 133.654142, "event": "hard_reset", "status": "0x8"}
+{"t_s": 134.657222, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 134.657571, "event": "trial_result", "id": "5C3", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 135.658097, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 135.658552, "event": "trial_start", "index": 61, "total": 68, "id": "5CD", "dlc": 4, "data": "E1 7F FE F0"}
+{"t_s": 135.659045, "event": "write_enqueued", "id": "5CD", "data": "E1 7F FE F0"}
+{"t_s": 135.661785, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404174279763}
+{"t_s": 135.860974, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 135.866031, "event": "hard_reset", "status": "0x8"}
+{"t_s": 136.86751, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 136.867981, "event": "trial_result", "id": "5CD", "data": "E1 7F FE F0", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 137.870395, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 137.870787, "event": "trial_start", "index": 62, "total": 68, "id": "5CE", "dlc": 3, "data": "00 00 00"}
+{"t_s": 137.871149, "event": "write_enqueued", "id": "5CE", "data": "00 00 00"}
+{"t_s": 137.873807, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404176491783}
+{"t_s": 138.071378, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 138.075742, "event": "hard_reset", "status": "0x8"}
+{"t_s": 139.0785, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 139.079016, "event": "trial_result", "id": "5CE", "data": "00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 140.079964, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 140.080142, "event": "trial_start", "index": 63, "total": 68, "id": "5E2", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 140.080295, "event": "write_enqueued", "id": "5E2", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 140.085012, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404178702026}
+{"t_s": 140.280423, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 140.283145, "event": "hard_reset", "status": "0x8"}
+{"t_s": 141.283832, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 141.284272, "event": "trial_result", "id": "5E2", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 142.285742, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 142.286359, "event": "trial_start", "index": 64, "total": 68, "id": "5EB", "dlc": 8, "data": "00 00 00 00 00 60 00 00"}
+{"t_s": 142.287137, "event": "write_enqueued", "id": "5EB", "data": "00 00 00 00 00 60 00 00"}
+{"t_s": 142.293533, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404180909009}
+{"t_s": 142.487796, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 142.490978, "event": "hard_reset", "status": "0x8"}
+{"t_s": 143.491771, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 143.492003, "event": "trial_result", "id": "5EB", "data": "00 00 00 00 00 60 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 144.492635, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 144.492941, "event": "trial_start", "index": 65, "total": 68, "id": "612", "dlc": 8, "data": "00 20 01 00 07 FE 00 10"}
+{"t_s": 144.493163, "event": "write_enqueued", "id": "612", "data": "00 20 01 00 07 FE 00 10"}
+{"t_s": 144.497897, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404183114944}
+{"t_s": 144.694727, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 144.698653, "event": "hard_reset", "status": "0x8"}
+{"t_s": 145.700105, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 145.700473, "event": "trial_result", "id": "612", "data": "00 20 01 00 07 FE 00 10", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 146.70281, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 146.703198, "event": "trial_start", "index": 66, "total": 68, "id": "782", "dlc": 8, "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 146.703676, "event": "write_enqueued", "id": "782", "data": "00 00 00 00 00 00 00 00"}
+{"t_s": 146.708946, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404185325617}
+{"t_s": 146.90497, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 146.908866, "event": "hard_reset", "status": "0x8"}
+{"t_s": 147.91007, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 147.910353, "event": "trial_result", "id": "782", "data": "00 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 148.911513, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 148.911887, "event": "trial_start", "index": 67, "total": 68, "id": "78D", "dlc": 8, "data": "28 00 00 00 00 00 00 00"}
+{"t_s": 148.912213, "event": "write_enqueued", "id": "78D", "data": "28 00 00 00 00 00 00 00"}
+{"t_s": 148.917694, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404187534000}
+{"t_s": 149.113767, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 149.117049, "event": "hard_reset", "status": "0x8"}
+{"t_s": 150.118371, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 150.118905, "event": "trial_result", "id": "78D", "data": "28 00 00 00 00 00 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 151.122543, "event": "window", "phase": "baseline", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 151.123072, "event": "trial_start", "index": 68, "total": 68, "id": "792", "dlc": 8, "data": "00 00 00 00 00 10 00 00"}
+{"t_s": 151.123502, "event": "write_enqueued", "id": "792", "data": "00 00 00 00 00 10 00 00"}
+{"t_s": 151.129664, "event": "rx", "phase": "tx", "status": "0x8", "kind": "0x80", "id": "001", "dlc": 4, "data": "00 00 00 08", "adapter_us": 404189745656}
+{"t_s": 151.324277, "event": "window", "phase": "tx", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}
+{"t_s": 151.328176, "event": "hard_reset", "status": "0x8"}
+{"t_s": 152.329404, "event": "window", "phase": "after_reset", "data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}
+{"t_s": 152.329636, "event": "trial_result", "id": "792", "data": "00 00 00 00 00 10 00 00", "candidate": false, "during": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {"0x8": 1}}, "after": {"data_frames": 0, "ids": {}, "bsi_seen": false, "echoes": 0, "read_statuses": {}}}
+{"t_s": 152.333538, "event": "hard_reset", "status": "0x0"}
+{"t_s": 152.453015, "event": "disconnected", "status": "0x0"}
+{"t_s": 152.453576, "event": "complete", "tested": 68, "selected": 68, "candidate": null}

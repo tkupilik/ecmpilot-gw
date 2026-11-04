@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-03",
+  "version_changed": false,
+  "android": {
+    "build": "passed",
+    "lint": "passed (0 errors, 1 existing warning)",
+    "jvm_tests": 31,
+    "jvm_failures": 0,
+    "apk": "C:\\work\\bev\\ecmpilot\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+    "apk_sha256": "c9876c8540d782f7845db58e2f188686b46940f5c20860e4d77516047ad9c994",
+    "ui_tests": 6,
+    "ui_result": "OK (6 tests)",
+    "ui_log": "artifacts/vehicle-home-ui-final.log",
+    "ui_limits": "Live UDP instrumentation case returns without a test host; this run used in-process demo only.",
+    "emulator_notes": "First two instrumented starts had BIND APPLICATION ANRs; Pixel Launcher also ANRed. AOT package compilation preceded the passing suite. Emulator was shut down to release RAM.",
+    "installed_on_physical_phone": false
+  },
+  "gateway": {
+    "build": "ESP-IDF 5.3.2 sequential incremental build passed",
+    "host_tests": 210,
+    "host_failures": 0,
+    "binary": "C:\\work\\bev\\ecmpilot-gw\\build\\ecmpilot_gw.bin",
+    "sha256": "dbcc896e2b1fe8342a25e0051cbcf0d1cd92622c5ee789c4d9e480680a6f010e",
+    "maximal_tested_details_bytes": 651,
+    "udp_limit_bytes": 1024,
+    "uploaded_to_vehicle": false
+  },
+  "hardware_validation_pending": [
+    "Open each physical door/boot and compare lock states",
+    "Compare Trip 1/2 and history with original cluster"
+  ],
+  "host_memory": {
+    "before_emulator_shutdown": {
+      "available_mib": 2836,
+      "load_percent": 82
+    },
+    "after_emulator_shutdown": {
+      "available_mib": 7077,
+      "load_percent": 56
+    },
+    "earlier_peak_unknown": true
+  },
+  "physical_can_transmission_during_work": false
+}

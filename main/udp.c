@@ -84,7 +84,7 @@ esp_err_t gw_udp_start(void)
     if (xTaskCreatePinnedToCore(udp_task, "udp", 8192, NULL, 4, NULL, GW_NETWORK_CORE) != pdPASS) {
         close(udp_socket); udp_socket = -1; return ESP_ERR_NO_MEM;
     }
-    ESP_LOGI("udp", "%s listening on UDP %d, CPU%d; vehicle control unavailable; varstore test mode is opt-in",
+    ESP_LOGI("udp", "%s listening on UDP %d, CPU%d; passive reads, explicit INFO refresh/charge requests; test mode is opt-in",
              identity, GW_UDP_PORT, GW_NETWORK_CORE);
     return ESP_OK;
 }

@@ -1,0 +1,74 @@
+{
+  "case": "probe",
+  "utc": "20261028T115316Z",
+  "cleanup_hard_reset_ok": true,
+  "events": [
+    {
+      "t_s": 0.015566,
+      "event": "initialize_500k",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.01601,
+      "event": "enable_hard_reset",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.016074,
+      "event": "read_hard_reset",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.016087,
+      "event": "hard_reset_verified",
+      "value": 1
+    },
+    {
+      "t_s": 0.016373,
+      "event": "allow_echo_frames",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.016598,
+      "event": "listen_only_state",
+      "result": "(0, 0)"
+    },
+    {
+      "t_s": 0.019359,
+      "event": "reset_before",
+      "status": "0x0"
+    },
+    {
+      "t_s": 0.019568,
+      "event": "reset_before_bus_status",
+      "status": "0x0"
+    },
+    {
+      "t_s": 3.020719,
+      "event": "rx_window",
+      "phase": "baseline",
+      "seconds": 3,
+      "vehicle_data_frames": 0,
+      "ids": {},
+      "statuses": {},
+      "bus_status": "0x0"
+    },
+    {
+      "t_s": 3.02416,
+      "event": "final_hard_reset",
+      "status": "0x0"
+    },
+    {
+      "t_s": 3.024314,
+      "event": "final_hard_reset_bus_status",
+      "status": "0x0"
+    },
+    {
+      "t_s": 3.103733,
+      "event": "uninitialize",
+      "status": "0x0"
+    }
+  ],
+  "records_count": 0,
+  "records": []
+}

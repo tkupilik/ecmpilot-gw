@@ -1,0 +1,58 @@
+{
+  "date": "2026-11-03",
+  "scope": "GW vehicle-control protothread rewrite",
+  "host": {
+    "command": "tests/run-udp.ps1 -PythonPath python",
+    "tests": 186,
+    "result": "passed",
+    "log": "build-host-tests/pt-final.log",
+    "physical_can_io": false
+  },
+  "build": {
+    "sdk": "ESP-IDF 5.3.2",
+    "command": "tools/build_sequential.py in dev.ps1 environment",
+    "result": "passed",
+    "sdk_objects_reused": true,
+    "log": "build-pt-control.log",
+    "image": "build/ecmpilot_gw.bin",
+    "bytes": 1039968,
+    "sha256": "b90f14c8fe4322c7a04dacf72d5bebc36abc60e10d669fcd5715720e0077f174"
+  },
+  "architecture": {
+    "shared_step_timers": 1,
+    "timer_symbol": "c.tmr",
+    "separate_operation_watchdog": true,
+    "tick_ms": 20,
+    "new_freertos_tasks": 0,
+    "wake_max_total": 10,
+    "wake_interval_ms": 100,
+    "normal_settle_ms": 200,
+    "refresh_max_total": 3,
+    "mode_max_total": 3,
+    "operation_timeout_ms": 25000
+  },
+  "source_sha256": {
+    "main/vehicle_control.c": "6007b58bfa20fbd5f0fdb54d198e0d3559a8a124a15504555055fb270456bfac",
+    "main/vehicle_control.h": "cee77fbc1cfe8247d3003069a8f31bdb2011ed1e880de4d29efcd6663cf3954b",
+    "main/can_wake.c": "a6e6db0d10aff50b135bd24e073c82f3532078489d79e34e339c7b91efbd5757",
+    "main/can_wake.h": "2803e9ba7dc56f2e2f1b143fd8e0457a130fbbdde6e1cea55b8d9588754d01c9",
+    "main/task_can.cpp": "7364071df67524a07a915c623f05ffd9a6163b3cef27b30fa34b62178ca96c21",
+    "main/task_can.h": "044d162cdd11ce1788a87d467406a33239b190fbc8daa5118953b7ab9060da84",
+    "main/can_info_decode.c": "7c141a68832547adc393981852eeb71167706ba7d6089be40fef932c92420805",
+    "main/main.cpp": "63fd98ed0a47019f1d6f6a693aeecc79629ac8ba5ad4ddc6ccef24c6b757e7f0",
+    "main/vehicle_data.c": "94c92c4168328f9903c4314c0c7d3d040fc8e174ead8e6637360eabf5f1a0f5c",
+    "main/process_data.c": "3f56fa9cd32691fdca8bcd3ed460a6b6d8a4983a5558565b485df8307798db93",
+    "main/process_data.h": "c1285b1a6b9d842ac874729788609a8d2655e972aeaea20b4c19a9cd353646fb",
+    "main/udp_protocol.c": "47423ee5245a78167da77d12390728dcccedf813e48b9a0361b4b52276b83d5e"
+  },
+  "deployment": {
+    "flashed": false,
+    "ota_uploaded": false,
+    "vehicle_tested": false
+  },
+  "limits": [
+    "Host tests simulate clock, driver hand-off and received frames; they do not validate physical bus timing or ECU semantics.",
+    "Compiled against actual protothread headers. SDK objects were reused by the sequential incremental build.",
+    "Charge-mode and refresh sequencing require vehicle validation; no physical preconditioning implementation."
+  ]
+}

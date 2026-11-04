@@ -23,6 +23,8 @@ class HostnameSettingsTests(unittest.TestCase):
         self.lib.gw_hostname_valid.restype = c.c_bool
         self.lib.gw_test_nvs_hostname.argtypes = [c.c_char_p]
         self.lib.gw_settings_save_wifi.argtypes = [c.POINTER(Settings), c.c_char_p, c.c_char_p]
+        self.lib.gw_ap_enabled_get.restype = c.c_bool
+        self.lib.gw_settings_save_wifi_options.argtypes = [c.POINTER(Settings), c.c_char_p, c.c_char_p, c.POINTER(c.c_bool)]
         self.lib.gw_ap_password_get.argtypes = [c.c_char_p]
         self.lib.gw_test_nvs_ap_password.argtypes = [c.c_char_p]
         self.lib.gw_test_nvs_reset()
@@ -88,6 +90,51 @@ class HostnameSettingsTests(unittest.TestCase):
         self.lib.gw_test_nvs_hostname(b'invalid.name')
         self.assertEqual(0x103, self.lib.gw_settings_init())
 
+
+    def save_ap_enabled(self, settings, enabled):
+        value = c.c_bool(enabled)
+        return self.lib.gw_settings_save_wifi_options(c.byref(settings), None, None, c.byref(value))
+
+    def test_ap_is_disabled_for_fresh_and_legacy_settings_without_changing_blob(self):
+        self.assertFalse(self.lib.gw_ap_enabled_get())
+        old = self.settings(b'Home')
+        self.assertEqual(0, self.lib.gw_settings_save(c.byref(old)))
+        self.assertEqual(0, self.lib.gw_settings_init())
+        self.assertFalse(self.lib.gw_ap_enabled_get())
+        self.assertEqual(792, self.lib.gw_test_nvs_blob_size())
+        self.assertEqual(b'Home', self.settings().networks[0].ssid)
+
+    def test_ap_flag_roundtrip_and_legacy_save_apis_preserve_it(self):
+        s = self.settings(b'Home')
+        self.assertEqual(0, self.save_ap_enabled(s, True))
+        self.assertTrue(self.lib.gw_ap_enabled_get())
+        self.assertEqual(0, self.lib.gw_settings_init())
+        self.assertTrue(self.lib.gw_ap_enabled_get())
+        s.count = 0
+        self.assertEqual(0, self.lib.gw_settings_save(c.byref(s)))
+        self.assertEqual(0, self.lib.gw_settings_save_wifi(c.byref(s), None, None))
+        self.assertEqual(0, self.lib.gw_settings_init())
+        self.assertTrue(self.lib.gw_ap_enabled_get())
+        self.assertEqual(0, self.save_ap_enabled(s, False))
+        self.assertEqual(0, self.lib.gw_settings_init())
+        self.assertFalse(self.lib.gw_ap_enabled_get())
+
+    def test_failed_commit_preserves_ap_policy_and_existing_wifi(self):
+        old = self.settings(b'Home')
+        self.assertEqual(0, self.lib.gw_settings_save(c.byref(old)))
+        self.lib.gw_test_nvs_fail_commit(1)
+        changed = self.settings(b'Other')
+        self.assertNotEqual(0, self.save_ap_enabled(changed, True))
+        self.assertFalse(self.lib.gw_ap_enabled_get())
+        self.assertEqual(b'Home', self.settings().networks[0].ssid)
+        self.lib.gw_test_nvs_fail_commit(0)
+        self.assertEqual(0, self.lib.gw_settings_init())
+        self.assertFalse(self.lib.gw_ap_enabled_get())
+
+    def test_invalid_saved_ap_flag_is_rejected_without_enabling_ap(self):
+        self.lib.gw_test_nvs_ap_enabled(2)
+        self.assertEqual(0x103, self.lib.gw_settings_init())
+        self.assertFalse(self.lib.gw_ap_enabled_get())
 
     def ap_password(self):
         b = c.create_string_buffer(64)

@@ -142,8 +142,13 @@ bool varstore_check_valid(size_t id, uint32_t max_age_ms)
 void varstore_write(size_t id, int32_t value)
 {
     if (!exists(id)) return;
+    varstore_write_at(id, value, store->clock(store->clock_context));
+}
+void varstore_write_at(size_t id, int32_t value, uint64_t timestamp_ms)
+{
+    if (!exists(id)) return;
     varstore_slot_t *v = &store->slots[id];
-    const uint64_t now = store->clock(store->clock_context);
+    const uint64_t now = timestamp_ms;
     const uint32_t level = writer_enter(), seq = load(&v->sequence);
     save(&v->sequence, seq + 1);
     save(&v->value, (uint32_t)value);

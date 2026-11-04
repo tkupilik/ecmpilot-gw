@@ -1,0 +1,68 @@
+{
+  "date": "2026-11-04",
+  "feature": "UDP operation correlation and multi-second loss recovery",
+  "identity": {
+    "message_pair": "id / reply_to",
+    "result_query": "command.get with empty args and original correlation",
+    "scope": "Persistent client + random client_session + uint32 correlation_id",
+    "vehicle_trace": "request.vehicle and control varstore context, controller phases/CAN intent/TaskCan logs",
+    "counter_wrap": "Rotate client_session before reusing 1"
+  },
+  "policy": {
+    "gw_admission_window_ms": 5000,
+    "receipt_capacity": 256,
+    "read_budget_ms": 5000,
+    "offline_ms": 15000,
+    "receipt_retention_ms": 600000,
+    "write_budget_ms": 6000,
+    "vehicle_result_ms": 35000,
+    "send_offsets_ms": [
+      0,
+      700,
+      1800,
+      3500
+    ]
+  },
+  "checks": {
+    "idf": {
+      "result": "Successful sequential incremental ESP-IDF 5.3.2 build; all project sources compiled, SDK objects reused",
+      "log": "build-udp-correlation.log"
+    },
+    "simulator": {
+      "passed": 11,
+      "log": "C:/work/bev/ecmpilot/artifacts/udp-correlation-simulator.log"
+    },
+    "native": {
+      "passed": 259,
+      "log": "build-host-tests/udp-correlation-final.log",
+      "covers": [
+        "Changed message ID deduplicated by operation",
+        "Changed intent rejected",
+        "Queries by correlation",
+        "Cached Busy and full-cache deadline guard",
+        "Boot/session boundaries",
+        "uint32 and complete response budget"
+      ]
+    },
+    "android": {
+      "failures": 0,
+      "passed": 46,
+      "log": "C:/work/bev/ecmpilot/artifacts/udp-correlation-build.log",
+      "covers": [
+        "3.1 second read response",
+        "Lost read retried with unchanged bytes",
+        "Wrong correlation ignored",
+        "Socket reused after read timeout with late old reply",
+        "Counter wrap and demo canonical receipt"
+      ]
+    }
+  },
+  "artifacts": {
+    "firmware_sha256": "B2B0EB93213D94BE779F3812B7081F4355FB4530C89DC69D3665A4D49970F185",
+    "apk_sha256": "B88C2EE8BC52B53399C70EC6AEFD8BCE3C71F34DC0C7943CBE78A8737497FE70"
+  },
+  "device_check": "Not run; no ADB device connected",
+  "live_vehicle_commands_sent": false,
+  "firmware_flashed": false,
+  "phone_installed": false
+}

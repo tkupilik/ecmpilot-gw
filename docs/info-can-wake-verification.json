@@ -1,0 +1,65 @@
+{
+  "date": "2026-11-01",
+  "version": "0.5.0",
+  "native_tests": 148,
+  "browser_tests": {
+    "log": 6,
+    "wifi_ota": 13,
+    "power": 6
+  },
+  "can": {
+    "profile": "INFO",
+    "bitrate": 125000,
+    "mode": "normal",
+    "tx_gpio": 15,
+    "rx_gpio": 16,
+    "queue_length": 0,
+    "single_shot": true,
+    "version_transmitter_removed": true,
+    "wake": {
+      "default_id": "43C",
+      "allowed_ids": [
+        "401",
+        "43C"
+      ],
+      "dlc": 2,
+      "default_payload": "00 80",
+      "packed_payload": "0xB0B1",
+      "force_supported": true,
+      "one_per_valid_udp": true,
+      "skip_power_management": 1,
+      "power_management_max_age_ms": 1000,
+      "pending_max_age_ms": 250
+    },
+    "optional_profile": "HSCAN1/500000 listen-only; no wake TX"
+  },
+  "log": {
+    "reset_reason": true,
+    "previous_records": 12,
+    "live_records": 64,
+    "rtc_address": "50000000",
+    "rtc_bytes": 6360,
+    "flash_writes": false
+  },
+  "signals": 173,
+  "no_psram": true,
+  "hardware_test": false,
+  "flashed": false,
+  "evidence": {
+    "full_build": "build-info-reset.log",
+    "full_edges": 893,
+    "final_build": "build-info-reset-final.log",
+    "native_tests": "info-reset-tests.log",
+    "browser_commands": [
+      "node tests/log-ui.test.cjs",
+      "node tests/web-ui.test.cjs",
+      "node tests/power-ui.test.cjs"
+    ]
+  },
+  "image": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1021200,
+    "ota_slot_bytes": 2031616,
+    "sha256": "7c96a394524f0999edcd1ea7580f53025f3cda3b566b1f17cff54d927821839c"
+  }
+}

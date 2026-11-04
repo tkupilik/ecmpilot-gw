@@ -22,10 +22,10 @@ class Element {
 }
 
 async function page(hash='') {
-  const tabNames=['home','varstore','wifi','ota','log','tasks'];
-  const ids = Object.fromEntries([...['auto','refresh','dump','summary','message','rows'].map(name=>'tasks-'+name),...['auto','follow','refresh','clear','download','message','output'].map(name=>'log-'+name),'status','hostname','ap-ssid','ap-password','ap-password-show','refresh','profiles','add','save','firmware','upload','progress','message',...['filter','auto','refresh','dump','summary','message','signals'].map(name=>'vars-'+name),...tabNames.flatMap(name=>['tab-'+name,'panel-'+name])].map(id => [id, new Element()]));
+  const tabNames=['home','varstore','wifi','ha','ota','log','tasks'];
+  const ids = Object.fromEntries([...['enabled','host','port','period','username','password','clear-password','save','reload','message','status'].map(name=>'ha-'+name),'can-wake-send','can-wake-status',...['auto','refresh','dump','summary','message','rows'].map(name=>'tasks-'+name),...['auto','follow','refresh','clear','download','message','output'].map(name=>'log-'+name),'status','hostname','ap-ssid','ap-enabled','ap-password','ap-password-show','refresh','profiles','add','save','firmware','upload','progress','message',...['filter','auto','refresh','dump','summary','message','signals','prev','page','next'].map(name=>'vars-'+name),...['status','message','normal','dfs','light','deep','refresh'].map(name=>'power-'+name),...tabNames.flatMap(name=>['tab-'+name,'panel-'+name])].map(id => [id, new Element()]));
   const requests = [], uploads = [];
-  let restart=false;
+  let restart=false,apEnabled=false;
   const profiles = [{ssid:'Home',has_password:true},{ssid:'Workshop',has_password:false}];
   class Upload {
     constructor() {this.upload = {};uploads.push(this);}
@@ -35,7 +35,8 @@ async function page(hash='') {
   }
   const fetch = async (url, options) => {
     requests.push({url, options});
-    return {ok:true, json:async () => url === '/api/status' ? {version:'test',partition:'ota_0',uptime_s:1,free_heap:100000,heartbeat:2,connected:false,setup_ap:true,ap_ssid:'eCMPilot-TEST'} : url === '/api/vars' ? {signals:[]} : url==='/api/tasks' ? {boot:'0'.repeat(32),sampled_us:1000000,cores:2,tasks:[]} : url.startsWith('/api/log') ? {boot:'0'.repeat(32),latest:0,next:0,lost:0,entries:[]} : options ? {saved:true,restarting:restart} : {hostname:'ecmpilot-gw',ap_ssid:'eCMPilot-TEST',ap_password:'APpassword123',networks:profiles}};
+    if(url==='/api/wifi'&&options)apEnabled=JSON.parse(options.body).ap_enabled;
+    return {ok:true, json:async () => url === '/api/status' ? {version:'test',partition:'ota_0',uptime_s:1,free_heap:100000,heartbeat:2,connected:false,setup_ap:true,ap_ssid:'eCMPilot-TEST'} : url === '/api/vars' ? {signals:[{id:0,name:'app.heartbeat',description:'Heartbeat',unit:'count',value:42,age_ms:1,raw_value:42,raw_age_ms:1,raw_valid:true,state:'valid',forced:false,writable:false}]} : url==='/api/tasks' ? {boot:'0'.repeat(32),sampled_us:1000000,cores:2,tasks:[]} : url.startsWith('/api/log') ? {boot:'0'.repeat(32),latest:0,next:0,lost:0,entries:[]} : options ? {saved:true,restarting:restart} : {hostname:'ecmpilot-gw',ap_enabled:apEnabled,ap_ssid:'eCMPilot-TEST',ap_password:'APpassword123',networks:profiles}};
   };
   const location={hash};const listeners={};
   const context = vm.createContext({setInterval:()=>{},location,history:{replaceState:(_state,_title,url)=>{location.hash=url;}},window:{addEventListener:(name,fn)=>{listeners[name]=fn;}},document:{getElementById:id => ids[id],createElement:tag => new Element(tag),querySelectorAll:selector => {assert.equal(selector,'.profile');return ids.profiles.children;}},fetch,XMLHttpRequest:Upload,console});
@@ -74,7 +75,7 @@ test('saved credentials are kept when saving unchanged profiles', async () => {
   const p = await page();
   await p.ids.save.onclick();
   const post = p.requests.find(r => r.options?.method === 'POST');
-  assert.deepEqual(JSON.parse(post.options.body), {hostname:'ecmpilot-gw',networks:[{ssid:'Home'},{ssid:'Workshop',password:''}]});
+  assert.deepEqual(JSON.parse(post.options.body), {hostname:'ecmpilot-gw',ap_enabled:false,networks:[{ssid:'Home'},{ssid:'Workshop',password:''}]});
 });
 
 test('hostname is loaded, normalized and saved with Wi-Fi settings',async()=>{
@@ -162,4 +163,32 @@ test('invalid AP passwords are rejected; blank keeps the saved password',async()
   }
   p.ids['ap-password'].value='';await p.ids.save.onclick();
   assert.equal(JSON.parse(p.requests.find(r=>r.options).options.body).ap_password,undefined);
+});
+
+test('full page loads Varstore through tab entry once and binds its visible controls',async()=>{
+  const p=await page();p.ids['tab-varstore'].onclick();
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(p.requests.filter(request=>request.url==='/api/vars').length,1);
+  assert.equal(p.ids['vars-signals'].children.length,1);
+  assert.equal(p.ids['vars-signals'].children[0].hidden,false);
+  assert.match(p.ids['vars-page'].textContent,/Page 1 \/ 1/);
+  assert.equal(typeof p.ids['vars-refresh'].onclick,'function');
+  assert.equal(typeof p.ids['vars-filter'].oninput,'function');
+});
+
+test('AP fallback defaults unchecked and saves/reloads both enabled and disabled',async()=>{
+  const p=await page();assert.equal(p.ids['ap-enabled'].checked,false);
+  p.ids['ap-enabled'].checked=true;await p.ids.save.onclick();
+  let posts=p.requests.filter(r=>r.options?.method==='POST');
+  assert.equal(JSON.parse(posts.at(-1).options.body).ap_enabled,true);
+  assert.equal(p.ids['ap-enabled'].checked,true);
+  p.ids['ap-enabled'].checked=false;await p.ids.save.onclick();
+  posts=p.requests.filter(r=>r.options?.method==='POST');
+  assert.equal(JSON.parse(posts.at(-1).options.body).ap_enabled,false);
+  assert.equal(p.ids['ap-enabled'].checked,false);
+});
+test('unfinished AP policy survives tab changes',async()=>{
+  const p=await page();p.ids['ap-enabled'].checked=true;
+  p.ids['tab-log'].onclick();p.ids['tab-wifi'].onclick();
+  assert.equal(p.ids['ap-enabled'].checked,true);
 });

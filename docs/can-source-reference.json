@@ -1,0 +1,3829 @@
+{
+  "source": "prototux/PSA-RE",
+  "revision": "67f7581e7622410efdbb29c7eda3b86982b9b450",
+  "license": "Apache-2.0",
+  "rx_definitions": {
+    "036": {
+      "id": 54,
+      "name": "RADIO_COMMANDS",
+      "type": "can",
+      "length": 8,
+      "comment": "Audio remote control commands from the steering column switch unit (under-wheel radio controls, excluding stalk end pushes), relayed by the BSI.",
+      "observations": "On state change of: DRIVER_MEMORY, DRIVER_MEMORY_SAVE, PASSENGER_MEMORY, PASSENGER_MEMORY_SAVE, DAYNIGHT_STATUS, DARK_MODE, POWER_MANAGEMENT, ECO_MODE, AVR_ACTIVATION_STATUS, DRIVER_MEMORY_COUNT, ENGINE_BAY_ACC_POWER_COMMAND, HYBRID_MODE, HYBRID_MODE_UPDATED, HYBRID_STATUS, HYBRID_STATUS_UPDATED, RADIO_ON_OFF_TOGGLE, RADIO_ON_OFF_SYNC",
+      "periodicity": [
+        "100ms",
+        "trigger"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "SDCM",
+        "CRT",
+        "ICSV",
+        "AAS",
+        "CMB",
+        "EMF",
+        "RAD",
+        "VTH",
+        "CDC",
+        "AMPLI",
+        "BTEL",
+        "MDS",
+        "MATT",
+        "FMUX",
+        "AVP",
+        "RBG",
+        "OVIP",
+        "IDVR"
+      ],
+      "signals": {
+        "VEHICLE_DIRECTION": {
+          "bits": "1.7-1.6",
+          "comment": "Vehicle direction of travel",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Unspecified",
+            "1": "Toward the front",
+            "2": "Toward the rear",
+            "3": "Invalid"
+          }
+        },
+        "DRIVER_MEMORY": {
+          "bits": "1.5",
+          "comment": "Driver seat position memory recall command",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No callback",
+            "1": "Recall"
+          }
+        },
+        "DRIVER_MEMORY_SAVE": {
+          "bits": "1.4",
+          "comment": "Driver seat position memory save command",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No storage",
+            "1": "Memorization"
+          }
+        },
+        "DRIVER_MEMORY_COUNT": {
+          "bits": "1.3-1.0",
+          "comment": "Driver memory slot number to use",
+          "type": "uint",
+          "min": 1,
+          "max": 14,
+          "default": 14
+        },
+        "UNUSED_1": {
+          "bits": "2.7-2.0",
+          "unused": true
+        },
+        "ECO_MODE": {
+          "bits": "3.7",
+          "comment": "Eco driving mode status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No eco mode",
+            "1": "ECO mode requested"
+          }
+        },
+        "AMBIENT_LIGHT_LEVEL_FMUX": {
+          "bits": "3.6-3.0",
+          "comment": "Ambient lighting rheostat level (FMUX)",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 127,
+          "default": 80
+        },
+        "RESYNCHRONIZATION": {
+          "bits": "4.7",
+          "comment": "Reference level resynchronization request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not requested",
+            "1": "Requested"
+          }
+        },
+        "RHEOSTAT_TYPE": {
+          "bits": "4.6",
+          "comment": "Rheostat type (manual or automatic)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Manual",
+            "1": "Automatic"
+          }
+        },
+        "DAYNIGHT_STATUS": {
+          "bits": "4.5",
+          "comment": "Day/night state",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Day state",
+            "1": "Night state"
+          }
+        },
+        "DARK_MODE": {
+          "bits": "4.4",
+          "comment": "Instrument cluster brightness in Black Panel (dark) mode",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Black panel inactive",
+            "1": "Black panel active"
+          }
+        },
+        "BRIGHTNESS": {
+          "bits": "4.3-4.0",
+          "comment": "Brightness level to apply (0 = minimum, 15 = maximum)",
+          "type": "uint",
+          "min": 0,
+          "max": 15,
+          "default": 8
+        },
+        "DYNAMIC_PACK_ACTIVATION": {
+          "bits": "5.7",
+          "comment": "Dynamic driving pack activation request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal mode request",
+            "1": "Dynamic mode request"
+          }
+        },
+        "CLEAR_FAULTS": {
+          "bits": "5.6",
+          "comment": "Global fault memory erase request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Delete request"
+          }
+        },
+        "DIAG_STATUS": {
+          "bits": "5.5",
+          "comment": "Multiplexed communication diagnostic status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "not authorization",
+            "1": "Authorization"
+          }
+        },
+        "DIAG_TOOL_NETWORK_AUTHORIZATION": {
+          "bits": "5.4",
+          "comment": "Internal diagnostic tool authorized to communicate on the networks",
+          "type": "bool",
+          "default": 1,
+          "values": {
+            "0": "Not allowed",
+            "1": "Allowed"
+          }
+        },
+        "LOG_FAULTS": {
+          "bits": "5.3",
+          "comment": "Fault storage locking (fault memory logging disabled)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Storing authorized",
+            "1": "Storage forbidden"
+          }
+        },
+        "POWER_MANAGEMENT": {
+          "bits": "5.2-5.0",
+          "comment": "Network power management phase (sleep, normal, going to sleep, wake-up, COM off)",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "Standby",
+            "1": "Normal mode",
+            "2": "Standby mode",
+            "3": "Wake-up",
+            "4": "Communication off",
+            "5": {
+              "unused": true
+            },
+            "6": {
+              "unused": true
+            },
+            "7": {
+              "unused": true
+            }
+          }
+        },
+        "HYBRID_STATUS": {
+          "bits": "6.7-6.5",
+          "comment": "Hybrid powertrain (GMP) status (idle, stopped, in traction, in propulsion)",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Unspecified",
+            "1": "Inactive",
+            "2": "Active while stopped",
+            "3": "Active in traction mode",
+            "4": "Active in propulsion mode",
+            "5": "Active in hybrid mode",
+            "6": {
+              "unused": true
+            },
+            "7": {
+              "unused": true
+            }
+          }
+        },
+        "HYBRID_STATUS_UPDATED": {
+          "bits": "6.4",
+          "comment": "Update flag for the hybrid powertrain status signal",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Info not refreshed",
+            "1": "Information refreshed"
+          }
+        },
+        "HYBRID_MODE": {
+          "bits": "6.3-6.1",
+          "comment": "Hybrid powertrain usage mode (4x4, Sport, Hybrid, Zero-emission)",
+          "type": "enum",
+          "default": 2,
+          "values": {
+            "0": "4x4",
+            "1": "Sport",
+            "2": "HY",
+            "3": "ZEV",
+            "4": "Comfort",
+            "5": {
+              "unused": true
+            },
+            "6": {
+              "unused": true
+            },
+            "7": "Invalid"
+          }
+        },
+        "HYBRID_MODE_UPDATED": {
+          "bits": "6.0",
+          "comment": "Update flag for the hybrid powertrain mode signal",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Info not refreshed",
+            "1": "Information refreshed"
+          }
+        },
+        "MEDIA_SHUTDOWN_REQUEST": {
+          "bits": "7.7",
+          "comment": "Request to switch off the media system",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "SPEED_DISPLAY_OFFSET": {
+          "bits": "7.6",
+          "comment": "Additional speed offset applied to the speed display",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No additional",
+            "1": "Additional offset"
+          }
+        },
+        "UNUSED_2": {
+          "bits": "7.5",
+          "unused": true
+        },
+        "CAFR_VALIDATION_COMMAND": {
+          "bits": "7.4",
+          "comment": "CAFR validation command",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not available",
+            "1": "Available"
+          }
+        },
+        "AVR_ACTIVATION_STATUS": {
+          "bits": "7.3",
+          "comment": "Rear-view camera (AVR) activation status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "PRECONDITIONING_MENU_PRESENCE": {
+          "bits": "7.2",
+          "comment": "Presence of the thermal preconditioning menu",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not present",
+            "1": "Present"
+          }
+        },
+        "RADIO_ON_OFF_TOGGLE": {
+          "bits": "7.1",
+          "comment": "Radio ON/OFF toggle button",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Switch off",
+            "1": "Pressed"
+          }
+        },
+        "RADIO_ON_OFF_SYNC": {
+          "bits": "7.0",
+          "comment": "Radio ON/OFF button synchronization",
+          "type": "bool",
+          "default": 1,
+          "values": {
+            "0": "Push acknowledgement authorized",
+            "1": "Push not taken into account, not authorized"
+          }
+        },
+        "SECURE_INFO": {
+          "bits": "8.7-8.4",
+          "comment": "Redundant/secured main electrical system (SEV) state information",
+          "type": "enum",
+          "default": 5,
+          "values": {
+            "0": "Electrical system main state information not valid",
+            "1": "Electrical system main state information not valid",
+            "2": "Electrical system main state information not valid",
+            "3": "Electrical system main state information not valid",
+            "4": "Electrical system main state information not valid",
+            "5": "Electrical system main state information not valid",
+            "6": "Electrical system main state information not valid",
+            "7": "Electrical system main state information not valid",
+            "8": "Electrical system main state information not valid",
+            "9": "Electrical system main state information not valid",
+            "10": "Electrical system main state information valid",
+            "11": "Electrical system main state information not valid",
+            "12": "Electrical system main state information not valid",
+            "13": "Electrical system main state information not valid",
+            "14": "Electrical system main state information not valid",
+            "15": "Electrical system main state information not valid"
+          }
+        },
+        "ENGINE_BAY_ACC_POWER_COMMAND": {
+          "bits": "8.3-8.2",
+          "comment": "Accessory power (+APC) control under the engine bonnet",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "+APC unchanged",
+            "1": "+APC unchanged",
+            "2": "+APC OFF",
+            "3": "+APC on"
+          }
+        },
+        "AUDIO_INVIOLABILITY": {
+          "bits": "8.1",
+          "comment": "Audio system inviolability (anti-theft protection) requested",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Tamper-proofing not requested",
+            "1": "Tamper-proof requested"
+          }
+        },
+        "TE_POSITION": {
+          "bits": "8.0",
+          "comment": "Retractable hardtop position (coupe or convertible)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Coupe position",
+            "1": "Cabriolet position"
+          }
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/036.yml"
+    },
+    "0A2": {
+      "id": 162,
+      "name": "STEERING_WHEEL_COMMANDS",
+      "type": "can",
+      "length": 6,
+      "comment": "Steering wheel control buttons, used by the radio, CMB, EMF and BTEL.",
+      "observations": "On state change of any parameter of the frame",
+      "periodicity": [
+        "100ms",
+        "trigger"
+      ],
+      "senders": [
+        "BSI",
+        "ICSV"
+      ],
+      "receivers": [
+        "RAD",
+        "EMF",
+        "CMB",
+        "BTEL",
+        "MDS",
+        "MATT",
+        "FMUX",
+        "EDP_C",
+        "OVIP"
+      ],
+      "signals": {
+        "STEERING_WHEEL_NAV_MENU_SCROLL": {
+          "bits": "1.7-1.0",
+          "comment": "Steering wheel navigation menu scroll counter.",
+          "type": "sint",
+          "min": -128,
+          "max": 127,
+          "default": 0
+        },
+        "STEERING_WHEEL_NAV_MENU_SCROLL_OVERFLOW": {
+          "bits": "2.7",
+          "comment": "High overflow of the steering wheel navigation scroll wheel",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_NAV_MENU_SCROLL_UNDERFLOW": {
+          "bits": "2.6",
+          "comment": "Low overflow (underflow) of the steering wheel navigation scroll wheel",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_VALIDATION_BUTTON": {
+          "bits": "2.5",
+          "comment": "Validation button (steering wheel remote)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_ESCAPE_BUTTON": {
+          "bits": "2.4",
+          "comment": "Steering wheel designator escape key.",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_MENU_BUTTON": {
+          "bits": "2.3",
+          "comment": "Menu button (steering wheel remote)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_MODE_BUTTON": {
+          "bits": "2.2",
+          "comment": "Mode button (steering wheel remote)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_LEFT_PUSH": {
+          "bits": "2.1",
+          "comment": "Left push button",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_VOICE_COMMAND": {
+          "bits": "2.0",
+          "comment": "Voice command button on the steering wheel",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_TELEPHONE_COMMAND": {
+          "bits": "3.7",
+          "comment": "Access to the hands-free kit (KML) phone directory.",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "3.6-3.0",
+          "unused": true
+        },
+        "CMB_NAV_MENU_COUNTER": {
+          "bits": "4.7-4.0",
+          "comment": "Instrument cluster (CMB) navigation menu scroll counter.",
+          "type": "sint",
+          "min": -128,
+          "max": 127,
+          "default": 0
+        },
+        "CMB_NAV_MENU_SCROLL_OVERFLOW": {
+          "bits": "5.7",
+          "comment": "High overflow of the instrument cluster navigation scroll wheel",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "CMB_NAV_MENU_SCROLL_UNDERFLOW": {
+          "bits": "5.6",
+          "comment": "Low overflow (underflow) of the instrument cluster navigation scroll wheel",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "CMB_VALIDATION_BUTTON": {
+          "bits": "5.5",
+          "comment": "Validation button (instrument cluster)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "CMB_ESCAPE_BUTTON": {
+          "bits": "5.4",
+          "comment": "Instrument cluster (CMB) designator escape key.",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "RECYCL_AIR_ET_VMF": {
+          "bits": "5.3",
+          "comment": "Air conditioning air recycling flap command",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "UNUSED_2": {
+          "bits": "5.2",
+          "unused": true
+        },
+        "VOLUME_KNOB_SCROLL_OVERFLOW": {
+          "bits": "5.1",
+          "comment": "High overflow of the volume knob",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "VOLUME_KNOB_SCROLL_UNDERFLOW": {
+          "bits": "5.0",
+          "comment": "Low overflow (underflow) of the volume knob",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Command not activated",
+            "1": "Command activated"
+          }
+        },
+        "STEERING_WHEEL_VOLUME_COUNTER": {
+          "bits": "6.7-6.0",
+          "comment": "Steering wheel volume control counter.",
+          "type": "sint",
+          "min": -128,
+          "max": 127,
+          "default": 0
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/0A2.yml"
+    },
+    "0B6": {
+      "id": 182,
+      "name": "FAST_BSI_DATA",
+      "type": "can",
+      "length": 8,
+      "comment": "Fast vehicle data broadcast by the body controller: engine speed, vehicle speed, distance and fuel consumption counters.",
+      "periodicity": [
+        "5020ms"
+      ],
+      "senders": [
+        "BSI",
+        "ICSV"
+      ],
+      "receivers": [
+        "BTEL",
+        "EMF",
+        "RAD",
+        "CMB",
+        "VTH",
+        "AAS",
+        "AMPLI",
+        "MDS",
+        "MATT",
+        "AVP",
+        "OVIP",
+        "IDVR",
+        "FMUX"
+      ],
+      "signals": {
+        "RPM": {
+          "bits": "1.7-2.0",
+          "comment": "Engine speed, 0.125 rpm per bit; invalid when all bits set",
+          "type": "uint",
+          "factor": 0.125,
+          "min": 0,
+          "max": 8191.75,
+          "units": "rpm",
+          "invalid": 65535,
+          "default": 8000
+        },
+        "SPEED": {
+          "bits": "3.7-4.0",
+          "comment": "Instantaneous vehicle speed (average of the driven wheels)",
+          "type": "uint",
+          "factor": 0.01,
+          "min": 0,
+          "max": 655.34,
+          "units": "km/h",
+          "invalid": 65535,
+          "default": 0
+        },
+        "DISTANCE_TRAVELLED": {
+          "bits": "5.7-6.0",
+          "comment": "Rolling distance counter, 0.1 m per bit, wraps after 0xFFFF (6553.5 m); no invalid value, frozen when unknown",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 6553.5,
+          "units": "m",
+          "default": 0
+        },
+        "FUEL_CONSUMPTION": {
+          "bits": "7.7-7.0",
+          "comment": "Rolling fuel consumption counter, 80 mm3 per bit, wraps at 20400 mm3; no invalid value, frozen when unknown",
+          "type": "uint",
+          "factor": 80,
+          "min": 0,
+          "max": 20400,
+          "units": "mm3",
+          "default": 0
+        },
+        "SECURISATION": {
+          "bits": "8.7",
+          "comment": "Vehicle speed information security status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Speed information unavailable",
+            "1": "Speed information available"
+          }
+        },
+        "SECU_VITESSE": {
+          "bits": "8.6-8.3",
+          "comment": "Vehicle speed information security status",
+          "type": "enum",
+          "default": 5,
+          "values": {
+            "0": "Speed unavailable",
+            "1": "Speed unavailable",
+            "2": "Speed unavailable",
+            "3": "Speed unavailable",
+            "4": "Speed unavailable",
+            "5": "Speed unavailable",
+            "6": "Speed unavailable",
+            "7": "Speed unavailable",
+            "8": "Speed unavailable",
+            "9": "Speed unavailable",
+            "10": "Gear available",
+            "11": "Speed unavailable",
+            "12": "Speed unavailable",
+            "13": "Speed unavailable",
+            "14": "Speed unavailable",
+            "15": "Speed unavailable"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "8.2-8.0",
+          "unused": true
+        }
+      },
+      "alternatives": [
+        {
+          "note": "Also observed with a period of 50ms",
+          "periodicity": [
+            "50ms"
+          ]
+        }
+      ],
+      "path": "buses/AEE2010.full/LS.INFO-DIV/0B6.yml"
+    },
+    "0F6": {
+      "id": 246,
+      "name": "BSI_SLOW_DATA_2",
+      "type": "can",
+      "length": 8,
+      "comment": "Vehicle state broadcast by the body controller: lighting/dimming, power supply state and key position, coolant temperature, odometer, outside temperature.",
+      "observations": "On state change of: MAIN_STATUS, GEN_STATUS, POWERTRAIN_STATUS, REVERSE_STATUS, BLINKERS_STATUS, CONFIG_MODE, CLUSTER_INDICATORS_TEST",
+      "periodicity": [
+        "500ms",
+        "trigger"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "SDCM",
+        "CRT",
+        "BTEL",
+        "ICSV",
+        "CDC",
+        "EMF",
+        "RAD",
+        "CMB",
+        "VTH",
+        "AAS",
+        "MDS",
+        "MATT",
+        "FMUX",
+        "BGP",
+        "AMPLI",
+        "AVP",
+        "OVIP",
+        "IDVR",
+        "WLC"
+      ],
+      "signals": {
+        "CONFIG_MODE": {
+          "bits": "1.7-1.6",
+          "comment": "Configuration mode",
+          "type": "enum",
+          "default": 2,
+          "values": {
+            "0": "Factory",
+            "1": {
+              "unused": true
+            },
+            "2": "Customer (normal)",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "FACTORY_PARK": {
+          "bits": "1.5",
+          "comment": "Factory park (storage) configuration",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not parked",
+            "1": "Parked"
+          }
+        },
+        "MAIN_STATUS": {
+          "bits": "1.4-1.3",
+          "comment": "Vehicle electrical system main state",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Stop",
+            "1": "Ignition on",
+            "2": "DEM (starter)",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "GEN_STATUS": {
+          "bits": "1.2",
+          "comment": "Generator state",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Generator not operational (GNO)",
+            "1": "Generator operational (GO)"
+          }
+        },
+        "POWERTRAIN_STATUS": {
+          "bits": "1.1-1.0",
+          "comment": "Powertrain operating status (off, stopped, starting, restarting, running)",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Engine not running",
+            "1": "Starting in progress",
+            "2": "Engine running",
+            "3": "Engine stopped in stop phase"
+          }
+        },
+        "COOLANT_TEMPERATURE": {
+          "bits": "2.7-2.0",
+          "comment": "Coolant temperature",
+          "type": "uint",
+          "factor": 1,
+          "offset": -40,
+          "min": -40,
+          "max": 214,
+          "units": "Â°C",
+          "invalid": 255,
+          "default": 60
+        },
+        "TOTAL_MILEAGE": {
+          "bits": "3.7-5.0",
+          "comment": "Vehicle odometer, 0.1 km per bit; invalid when all bits set",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 1677721.4,
+          "units": "km",
+          "invalid": 16777215,
+          "default": 16777215
+        },
+        "EXTERNAL_TEMPERATURE": {
+          "bits": "6.7-6.0",
+          "comment": "Outside temperature, T = N/2 - 40 Â°C; specific codes indicate sensor absent or unmanaged",
+          "type": "uint",
+          "factor": 0.5,
+          "offset": -40,
+          "min": -40,
+          "max": 85,
+          "invalid": 255,
+          "default": 252
+        },
+        "EXTERNAL_FILTERED_TEMPERATURE": {
+          "bits": "7.7-7.0",
+          "comment": "Filtered outside temperature",
+          "type": "uint",
+          "factor": 0.5,
+          "offset": -40,
+          "min": -40,
+          "max": 85,
+          "units": "Â°C",
+          "invalid": 255,
+          "default": 255
+        },
+        "REVERSE_STATUS": {
+          "bits": "8.7",
+          "comment": "Reverse gear state",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Reverse not engaged",
+            "1": "Reverse engaged"
+          }
+        },
+        "FRONT_WIPERS_STATUS": {
+          "bits": "8.6",
+          "comment": "Confirmed front wiping",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No wiping confirmed",
+            "1": "Wiping confirmed"
+          }
+        },
+        "WHEEL_POSITION": {
+          "bits": "8.5-8.4",
+          "comment": "Type of vehicle steering (left-hand / right-hand drive)",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Invalid",
+            "1": "Steering right",
+            "2": "Steering left",
+            "3": "Invalid"
+          }
+        },
+        "CLUSTER_INDICATORS_TEST": {
+          "bits": "8.3",
+          "comment": "Instrument cluster telltale lamps test",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No warning lamp test",
+            "1": "Telltale test"
+          }
+        },
+        "CONNECTOR_AREA_LIGHT_COMMAND": {
+          "bits": "8.2",
+          "comment": "Interface/connector area lighting command",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "On"
+          }
+        },
+        "BLINKERS_STATUS": {
+          "bits": "8.1-8.0",
+          "comment": "Turn indicator state",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Indicator not active",
+            "1": "Right indicator active",
+            "2": "Left indicator active",
+            "3": "Left and right indicators both active"
+          }
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/0F6.yml"
+    },
+    "11C": {
+      "id": 284,
+      "name": "COLUMN_MODULE_DIAG_INFO_CVM",
+      "type": "can",
+      "length": 4,
+      "comment": "Faults and requests relayed by the body computer between column-mounted modules: wiper state, headlamp and degraded-mode requests, lever alignment faults.",
+      "observations": "On state change of any parameter of the frame",
+      "periodicity": [
+        "200ms",
+        "trigger"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "BTEL",
+        "OVIP"
+      ],
+      "signals": {
+        "STL_FAULT_PRESENT": {
+          "bits": "1.7",
+          "comment": "Fault present in the lane departure warning system (STL).",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No fault detected",
+            "1": "Failure detected"
+          }
+        },
+        "ABNORMAL_LANE_DEPARTURE_RIGHT": {
+          "bits": "1.6",
+          "comment": "Abnormal right lane departure detected.",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No abnormal right-hand crossing",
+            "1": "Abnormal right-hand crossing"
+          }
+        },
+        "ABNORMAL_LANE_DEPARTURE_LEFT": {
+          "bits": "1.5",
+          "comment": "Abnormal left lane departure detected.",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No abnormal left-hand crossing",
+            "1": "Abnormal left-hand crossing"
+          }
+        },
+        "LOW_HIGH_BEAM_SWITCHING_REQUEST": {
+          "bits": "1.4",
+          "comment": "Low/high beam switching request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Dipped beam position",
+            "1": "High beam position"
+          }
+        },
+        "CAFR_FUNCTION_FAULT": {
+          "bits": "1.3",
+          "comment": "CAFR function status (normal or faulty)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Faulty"
+          }
+        },
+        "CAFR_BRIGHTNESS_STATUS": {
+          "bits": "1.2",
+          "comment": "CAFR brightness validity status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "CAFR brightness not OK",
+            "1": "CAFR brightness OK"
+          }
+        },
+        "AAF_REQUEST": {
+          "bits": "1.1",
+          "comment": "AAF request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "CDL_STATUS": {
+          "bits": "1.0",
+          "comment": "CDL module status (normal or faulty)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Faulty"
+          }
+        },
+        "WIPER_SWEEP_SPEED": {
+          "bits": "2.7-2.4",
+          "comment": "Wiper sweep speed",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Speed 0 (low speed)",
+            "1": "Speed 1",
+            "2": "Speed 2",
+            "3": "Speed 3",
+            "4": "Speed 4",
+            "5": "Speed 5",
+            "6": "Speed 6",
+            "7": "Speed 7",
+            "8": "Speed 8",
+            "9": "Speed 9",
+            "10": "Speed 10",
+            "11": "Speed 11",
+            "12": "Speed 12",
+            "13": "Speed 13",
+            "14": "Speed 14",
+            "15": "Speed 15 (HS)"
+          }
+        },
+        "RAIN_SENSOR_WIPER_STATE": {
+          "bits": "2.3-2.2",
+          "comment": "Wiper state controlled by the rain sensor",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Stop",
+            "1": {
+              "unused": true
+            },
+            "2": "Low speed (or variable speed)",
+            "3": "HS (high side)"
+          }
+        },
+        "CDP_STATUS": {
+          "bits": "2.1",
+          "comment": "CDP module status (normal or faulty)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Faulty"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "2.0",
+          "unused": true
+        },
+        "ILV_SPEED_TO_DISPLAY": {
+          "bits": "3.7-3.0",
+          "comment": "ILV speed information to display",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 253,
+          "units": "km/h",
+          "invalid": 255,
+          "default": 254
+        },
+        "SPEED_SIGN_TYPE": {
+          "bits": "4.7-4.6",
+          "comment": "Type of speed sign read (speed limit start or end of limited area)",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "Speed limit area",
+            "1": "End of speed limit area",
+            "2": {
+              "unused": true
+            },
+            "3": "Invalid"
+          }
+        },
+        "SPEED_INFO_ROBUSTNESS_FLAG": {
+          "bits": "4.5",
+          "comment": "Robustness flag of the vehicle speed information",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not robust",
+            "1": "robust"
+          }
+        },
+        "UNUSED_2": {
+          "bits": "4.4-4.0",
+          "unused": true
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/11C.yml"
+    },
+    "128": {
+      "id": 296,
+      "name": "CLUSTER_SIGNAL_COMMAND",
+      "type": "can",
+      "length": 8,
+      "comment": "Signalling commands sent by the BSI to the instrument cluster: indicators, hazard warning, engine fault display and cluster colour/personalisation.",
+      "observations": "On state change of: ABPI, PREHEAT, OPEN_DOOR_WARNING_LAMP, CHILD_SAFETY, ESPI, ESPACT, SUSP, MPD, SIDELIGHTS, LOW_BEAM, FULL_BEAM, FRONT_FOG_LIGHTS, RIGHT_TURN, LEFT_TURN, ODOMETER_STATUS, GEARBOX_MODE, FRPK, SAFETY_FAULT, OUCC, OUCP, DAYLIGHTS, AUTO_STOP_ALERT, CAFR_INDICATOR_LIGHTING, ENGINE_WARNING_LAMP_COMMAND, IGNITION_READY",
+      "periodicity": [
+        "200ms",
+        "trigger"
+      ],
+      "senders": [
+        "ICSV",
+        "BSI"
+      ],
+      "receivers": [
+        "FMUX",
+        "BTEL",
+        "CMB",
+        "MATT",
+        "AVP",
+        "OVIP",
+        "MDS",
+        "RAD"
+      ],
+      "signals": {
+        "SIDELIGHTS": {
+          "bits": "1.7",
+          "comment": "Side marker lights telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Position lights off",
+            "1": "Position lights on"
+          }
+        },
+        "LOW_BEAM": {
+          "bits": "1.6",
+          "comment": "Low beam telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Low beams off",
+            "1": "Dipped beam lights on"
+          }
+        },
+        "FULL_BEAM": {
+          "bits": "1.5",
+          "comment": "High beam telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "High beams off",
+            "1": "High beam lights on"
+          }
+        },
+        "FRONT_FOG_LIGHTS": {
+          "bits": "1.4",
+          "comment": "Front fog light telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Front fog lights off",
+            "1": "Front fog lights on"
+          }
+        },
+        "REAR_FOG_LIGHTS": {
+          "bits": "1.3",
+          "comment": "Rear fog light telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Rear fog lights off",
+            "1": "Rear fog lamp on"
+          }
+        },
+        "RIGHT_TURN": {
+          "bits": "1.2",
+          "comment": "Right indicator telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Right indicator off",
+            "1": "Right indicator active"
+          }
+        },
+        "LEFT_TURN": {
+          "bits": "1.1",
+          "comment": "Left indicator telltale lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Left indicator off",
+            "1": "Left indicator active"
+          }
+        },
+        "DAYLIGHTS": {
+          "bits": "1.0",
+          "comment": "Daytime running lights indicator",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Lamp off",
+            "1": "Lamp on"
+          }
+        },
+        "GEAR_POSITION_TO_DISPLAY": {
+          "bits": "2.7-2.4",
+          "comment": "Gear position to display on the instrument cluster (P, R, N, D, 6th gear)",
+          "type": "enum",
+          "default": 11,
+          "values": {
+            "0": "Passenger-side display",
+            "1": "Rear display",
+            "2": "N displayed",
+            "3": "Right-side display",
+            "4": "Gear 6",
+            "5": "5th gear",
+            "6": "4th gear",
+            "7": "3rd gear",
+            "8": "Gear 2",
+            "9": "1st gear",
+            "10": "Invalid",
+            "11": "No gear to display",
+            "12": "7th gear",
+            "13": "8th gear",
+            "14": "Gear 9",
+            "15": "B displayed"
+          }
+        },
+        "DRIVE_GEAR": {
+          "bits": "2.3-2.1",
+          "comment": "Gear to display in drive mode",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Disengaged",
+            "1": "Gear 1",
+            "2": "Gear 2",
+            "3": "Gear 3",
+            "4": "Gear 4",
+            "5": "Gear 5",
+            "6": "Gear ratio 6",
+            "7": "Invalid"
+          }
+        },
+        "CURRENT_GEAR_BLINK": {
+          "bits": "2.0",
+          "comment": "Displayed gear number blinking",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing"
+          }
+        },
+        "GEAR_SHIFT_ARROW_BLINK": {
+          "bits": "3.7",
+          "comment": "Gear shift arrow lighting type (fixed/blinking)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Arrow lit steady",
+            "1": "Arrow lit, blinking"
+          }
+        },
+        "GEARBOX_MODE": {
+          "bits": "3.6-3.4",
+          "comment": "Selected gearbox program (automatic / piloted manual)",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Automatic",
+            "1": {
+              "unused": true
+            },
+            "2": "Auto + Sport",
+            "3": {
+              "unused": true
+            },
+            "4": "Sequential",
+            "5": "Sequential + Sport",
+            "6": "Auto + Snow",
+            "7": "ASM"
+          }
+        },
+        "GEAR_SHIFT_ARROW": {
+          "bits": "3.3-3.2",
+          "comment": "Gear shift indicator arrow lighting",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No ignition",
+            "1": "Rising-arrow ignition",
+            "2": "Lowering arrow ignition",
+            "3": "Rising and lowering arrow lit"
+          }
+        },
+        "GEARBOX_TYPE": {
+          "bits": "3.1-3.0",
+          "comment": "Gearbox mode selection (automatic/manual/robotized)",
+          "type": "enum",
+          "default": 1,
+          "values": {
+            "0": "Automatic gearbox mode",
+            "1": "Manual gearbox mode",
+            "2": "Piloted manual gearbox",
+            "3": "DCT mode"
+          }
+        },
+        "MAINTENANCE": {
+          "bits": "4.7",
+          "comment": "Service reminder indicator",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Lamp off",
+            "1": "Lamp on"
+          }
+        },
+        "STOP": {
+          "bits": "4.6",
+          "comment": "STOP indicator lighting",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Lamp off",
+            "1": "Lamp on"
+          }
+        },
+        "CHILD_SAFETY": {
+          "bits": "4.5",
+          "comment": "Child safety lock active indicator",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "PASSENGER_AIRBAG": {
+          "bits": "4.4",
+          "comment": "Passenger airbag disabled warning light",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Inhibited"
+          }
+        },
+        "BRAKE_PEDAL": {
+          "bits": "4.3-4.2",
+          "comment": "Foot on brake pedal indicator",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "On",
+            "2": "Flashing",
+            "3": "Invalid"
+          }
+        },
+        "PARKING_BRAKES": {
+          "bits": "4.1",
+          "comment": "Parking brake status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Loose",
+            "1": "Tight"
+          }
+        },
+        "PARKING_BRAKE_DESACTIVATED": {
+          "bits": "4.0",
+          "comment": "Electric parking brake disabled",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Inhibited"
+          }
+        },
+        "PREHEAT": {
+          "bits": "5.7",
+          "comment": "Diesel glow plug preheating indicator",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Preheating not active",
+            "1": "Preheating activated"
+          }
+        },
+        "OPEN_DOOR_WARNING_LAMP": {
+          "bits": "5.6",
+          "comment": "Open door/hatch warning lamp",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Hard",
+            "1": "Open"
+          }
+        },
+        "AVAILABLE_SPACE": {
+          "bits": "5.5",
+          "comment": "Parking space measurement indicator",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Lamp off",
+            "1": "Lamp on"
+          }
+        },
+        "AVAILABLE_PLACE_BLINK": {
+          "bits": "5.4",
+          "comment": "Parking space measurement indicator blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing lamp"
+          }
+        },
+        "CAFR_INDICATOR_LIGHTING": {
+          "bits": "5.3",
+          "comment": "CAFR high beam indicator lamp lit",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "High beams off",
+            "1": "High beam lights on"
+          }
+        },
+        "ESP_DESACTIVED": {
+          "bits": "5.2",
+          "comment": "ESP disabled",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Operation",
+            "1": "Inhibited"
+          }
+        },
+        "ESP_BLINK": {
+          "bits": "5.1",
+          "comment": "ESP active (regulating)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "SUSPENSION": {
+          "bits": "5.0",
+          "comment": "Sport suspension activated",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Sport suspension not activated",
+            "1": "Sport suspension activated"
+          }
+        },
+        "LOW_FUEL": {
+          "bits": "6.7",
+          "comment": "Low fuel warning",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "On"
+          }
+        },
+        "FRONT_LEFT_SEATBELT": {
+          "bits": "6.6",
+          "comment": "Driver seatbelt reminder",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Unfastened"
+          }
+        },
+        "FRONT_LEFT_SEATBELT_BLINK": {
+          "bits": "6.5",
+          "comment": "Driver seatbelt reminder light blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing lamp"
+          }
+        },
+        "FRONT_RIGHT_SEATBELT": {
+          "bits": "6.4",
+          "comment": "Passenger seatbelt reminder",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Unfastened"
+          }
+        },
+        "FRONT_RIGHT_SEATBELT_BLINK": {
+          "bits": "6.3",
+          "comment": "Passenger seatbelt reminder light blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing lamp"
+          }
+        },
+        "REQUEST_PILOT_LIGTH_SCR": {
+          "bits": "6.2-6.1",
+          "comment": "SCR indicator light request",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "Flashing",
+            "2": "Steady on",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "REAR_LEFT_SEATBELT": {
+          "bits": "6.0",
+          "comment": "Rear left seatbelt reminder",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Unfastened"
+          }
+        },
+        "REAR_LEFT_SEATBELT_BLINK": {
+          "bits": "7.7",
+          "comment": "Rear left seatbelt reminder light blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing lamp"
+          }
+        },
+        "REAR_MIDDLE_SEATBELT": {
+          "bits": "7.6",
+          "comment": "Rear middle seatbelt reminder",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Unfastened"
+          }
+        },
+        "REAR_MIDDLE_SEATBELT_BLINK": {
+          "bits": "7.5",
+          "comment": "Rear middle seatbelt reminder light blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing lamp"
+          }
+        },
+        "REAR_RIGHT_SEATBELT": {
+          "bits": "7.4",
+          "comment": "Rear right seatbelt reminder",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Normal",
+            "1": "Unfastened"
+          }
+        },
+        "REAR_RIGHT_SEATBELT_BLINK_DUPLICATE": {
+          "bits": "7.3",
+          "comment": "Rear right seatbelt reminder light blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady",
+            "1": "Flashing lamp"
+          }
+        },
+        "ODOMETER_STATUS": {
+          "bits": "7.2",
+          "comment": "Instrument cluster on/off (held active while the cluster must operate)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Handheld not activated",
+            "1": "Handset activated"
+          }
+        },
+        "WARNINGS": {
+          "bits": "7.1",
+          "comment": "Hazard warning lights command",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Warnings not activated",
+            "1": "Hazard warning activated"
+          }
+        },
+        "FRONT_PASSENGER_PROTECTION": {
+          "bits": "7.0",
+          "comment": "Front passenger protection activated",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "ENGINE_WARNING_LAMP_COMMAND": {
+          "bits": "8.7-8.6",
+          "comment": "Engine warning lamp lighting command",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "G3 request",
+            "2": "G4 request",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "CLUTCH_PEDAL": {
+          "bits": "8.5-8.4",
+          "comment": "Foot on clutch pedal indicator",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "On",
+            "2": "Flashing",
+            "3": "Invalid"
+          }
+        },
+        "LOW_FUEL_BLINK": {
+          "bits": "8.3",
+          "comment": "Low fuel indicator blinking request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Steady lighting request",
+            "1": "Flashing request"
+          }
+        },
+        "IGNITION_READY": {
+          "bits": "8.2",
+          "comment": "READY indicator lighting (hybrid)",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "COLOR_CHANGE": {
+          "bits": "8.1",
+          "comment": "Instrument cluster color change request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "CUSTOMIZATION": {
+          "bits": "8.0",
+          "comment": "Instrument cluster customization change request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/128.yml"
+    },
+    "1E7": {
+      "id": 487,
+      "name": "ARTIV_AND_HYBRID_STATUS",
+      "type": "can",
+      "length": 8,
+      "comment": "Adaptive cruise control (target detection and gap) and hybrid system status: alert, detected target, display mode, gap setpoint.",
+      "observations": "On state change of: ARTIV_SELECTION_STATUS, IHM_ARTIV_STATUS, ARTIV_ALERT, ARTIV_ALERT_ADJUSTMENT, ARTIV_TARGET_DETECTED, TIV_SETPOINT, TIV_TARGET, PLUG_INDICATOR_LAMP_REQUEST, PLUG_INDICATOR_LAMP_REQUEST",
+      "periodicity": [
+        "200ms",
+        "trigger"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "ICSV",
+        "BTEL",
+        "CMB",
+        "VTH",
+        "MATT",
+        "OVIP",
+        "MDS",
+        "RAD"
+      ],
+      "signals": {
+        "ARTIV_SELECTION_STATUS": {
+          "bits": "1.7-1.6",
+          "comment": "ARTIV selection status",
+          "type": "enum",
+          "default": 2,
+          "values": {
+            "0": "Not selected",
+            "1": "Selected",
+            "2": "Selected but unavailable",
+            "3": "Invalid"
+          }
+        },
+        "IHM_ARTIV_STATUS": {
+          "bits": "1.5-1.4",
+          "comment": "ARTIV display status",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Inappropriate speed",
+            "1": "Active",
+            "2": "Low visibility",
+            "3": "Learning"
+          }
+        },
+        "ARTIV_ALERT": {
+          "bits": "1.3",
+          "comment": "ARTIV alert",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No alert",
+            "1": "Alert"
+          }
+        },
+        "ARTIV_ALERT_ADJUSTMENT": {
+          "bits": "1.2",
+          "comment": "ARTIV alert adjustment",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No adjustment",
+            "1": "Adjustment"
+          }
+        },
+        "ARTIV_TARGET_DETECTED": {
+          "bits": "1.1",
+          "comment": "ARTIV target detected",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Target not detected",
+            "1": "Target detected"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "1.0",
+          "unused": true
+        },
+        "TIV_SETPOINT": {
+          "bits": "2.7-2.0",
+          "comment": "Setpoint time interval to the vehicle ahead (TIV)",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25.3,
+          "units": "s",
+          "invalid": 255,
+          "default": 255
+        },
+        "TIV_TARGET": {
+          "bits": "3.7-3.0",
+          "comment": "Target time interval to the vehicle ahead (TIV)",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25.3,
+          "units": "s",
+          "invalid": 255,
+          "default": 255
+        },
+        "POWER_BATTERY_HT": {
+          "bits": "4.7-4.1",
+          "comment": "High-voltage battery power balance",
+          "type": "uint",
+          "factor": 1,
+          "offset": -50,
+          "min": -50,
+          "max": 50,
+          "units": "kW",
+          "invalid": 127,
+          "default": 50
+        },
+        "HYBRID_POWER_TRACTION": {
+          "bits": "4.0-5.0",
+          "comment": "Power delivered by the hybrid powertrain",
+          "type": "uint",
+          "factor": 0.5,
+          "offset": -50,
+          "min": -50,
+          "max": 200,
+          "units": "%",
+          "invalid": 511,
+          "default": 510
+        },
+        "DAA_LATERAL_CONTROL_LEVEL": {
+          "bits": "6.7-6.4",
+          "comment": "Driver alertness level information for lateral control",
+          "type": "enum",
+          "default": 8,
+          "values": {
+            "0": "Unavailable",
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3",
+            "4": "Level 4",
+            "5": "Level 5",
+            "6": "Level 6",
+            "7": "Level 7",
+            "8": "Level 8",
+            "9": {
+              "unused": true
+            },
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "LKA_RIGHT_LINE_STATUS": {
+          "bits": "6.3-6.2",
+          "comment": "Continuous status information for the driver about the lane keeping function on the right line",
+          "type": "enum",
+          "default": 1,
+          "values": {
+            "0": "Not selected",
+            "1": "Not allowed",
+            "2": "Allowed",
+            "3": "Correction in progress"
+          }
+        },
+        "LKA_LEFT_LINE_STATUS": {
+          "bits": "6.1-6.0",
+          "comment": "Continuous status information for the driver about the lane keeping function on the left line",
+          "type": "enum",
+          "default": 1,
+          "values": {
+            "0": "Not selected",
+            "1": "Not allowed",
+            "2": "Allowed",
+            "3": "Correction in progress"
+          }
+        },
+        "LKA_STATE_STATUS": {
+          "bits": "7.7-7.6",
+          "comment": "Status information for the driver indicating the state of the lane keeping assist function",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "Lit steady, not ready",
+            "2": "On, blinking",
+            "3": "On steady, ready"
+          }
+        },
+        "PLUG_INDICATOR_LAMP_REQUEST": {
+          "bits": "7.5-7.4",
+          "comment": "Request to light the charging plug indicator lamp",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Fixed request",
+            "2": "Flashing request",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "LPA_STATE_STATUS": {
+          "bits": "7.3-7.2",
+          "comment": "Continuous status information for the driver: function not selected, selected (chosen but unable to operate), or active (in progress, suspended or faulty)",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "On fixed selected",
+            "2": "On fixed active",
+            "3": "On, fixed fault"
+          }
+        },
+        "LPA_READY_WHEN_SELECTED": {
+          "bits": "7.1",
+          "comment": "Indicates, once the function is selected, whether it will become active when ACC is active",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not ready",
+            "1": "Ready"
+          }
+        },
+        "DAA_LATERAL_CONTROL_STATE": {
+          "bits": "7.0",
+          "comment": "Operational state of the DAA lateral control indicator",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not operational",
+            "1": "Operational"
+          }
+        },
+        "ZTEP_POWER_RATIO": {
+          "bits": "8.7-8.1",
+          "comment": "Percentage of vehicle power relative to ZTEP available power",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 63,
+          "default": 0
+        },
+        "UNUSED_2": {
+          "bits": "8.0",
+          "unused": true
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/1E7.yml"
+    },
+    "31A": {
+      "id": 794,
+      "name": "ZEV_TRIP_INFO",
+      "type": "can",
+      "length": 8,
+      "comment": "Zero-emission driving trip-computer data: range, instant/average consumption in electric mode and charging time remaining.",
+      "periodicity": [
+        "1000390ms"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "BTEL",
+        "CMB",
+        "OVIP"
+      ],
+      "signals": {
+        "ZEV_RANGE_DISPLAY": {
+          "bits": "1.7-2.7",
+          "comment": "Zero-emission (ZEV) driving range to display (km)",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 500,
+          "units": "km",
+          "invalid": 511,
+          "default": 511,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 0.1)",
+              "factor": 0.1
+            }
+          ]
+        },
+        "ZEV_PERCENTAGE": {
+          "bits": "2.6-2.0",
+          "comment": "Percentage of driving in ZEV mode",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 127,
+          "default": 0
+        },
+        "ZEV_AVERAGE_CONSUMPTION_TRIP_1": {
+          "bits": "3.7-4.7",
+          "comment": "Average ZEV-mode consumption for trip 1",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 50,
+          "units": "kWh/100km",
+          "invalid": 511,
+          "default": 511
+        },
+        "ZEV_AVERAGE_CONSUMPTION_TRIP_2": {
+          "bits": "4.6-5.6",
+          "comment": "Average ZEV-mode consumption for trip 2",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 50,
+          "units": "kWh/100km",
+          "invalid": 511,
+          "default": 511
+        },
+        "ZEV_INSTANT_CONSUMPTION": {
+          "bits": "5.5-6.5",
+          "comment": "Instantaneous consumption in ZEV mode",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 50,
+          "units": "kWh/100km",
+          "invalid": 511,
+          "default": 511
+        },
+        "CHARGE_REMAINING_TIME": {
+          "bits": "6.4-7.6",
+          "comment": "Remaining electric charging time",
+          "type": "uint",
+          "factor": 5,
+          "min": 0,
+          "max": 630,
+          "units": "min",
+          "default": 127
+        },
+        "SCHEDULED_CHARGING_START_TIME": {
+          "bits": "7.5-8.3",
+          "comment": "Scheduled charging start time",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 1440,
+          "units": "min",
+          "default": 2047
+        },
+        "CHARGING_TYPE": {
+          "bits": "8.2",
+          "comment": "Charging type: immediate or postponed",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Immediate",
+            "1": "Postponed"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "8.1-8.0",
+          "unused": true
+        }
+      },
+      "alternatives": [
+        {
+          "note": "Also observed with a period of 1000ms",
+          "periodicity": [
+            "1000ms"
+          ]
+        }
+      ],
+      "path": "buses/AEE2010.full/LS.INFO-DIV/31A.yml"
+    },
+    "3E0": {
+      "id": 992,
+      "name": "HYBRID_INFO",
+      "type": "can",
+      "length": 8,
+      "comment": "Hybrid battery state of charge and cumulative electric-driving time counters.",
+      "observations": "On state change of: AVERAGE_FUEL_CONSUMPTION_1, AVERAGE_FUEL_CONSUMPTION_2, AVERAGE_FUEL_CONSUMPTION_3, AVERAGE_FUEL_CONSUMPTION_4, AVERAGE_FUEL_CONSUMPTION_5, AVERAGE_FUEL_CONSUMPTION_6",
+      "periodicity": [
+        "1000ms",
+        "trigger"
+      ],
+      "senders": [
+        "ICSV",
+        "BSI"
+      ],
+      "receivers": [
+        "CMB",
+        "MATT",
+        "BTEL",
+        "OVIP",
+        "RAD"
+      ],
+      "signals": {
+        "BATTERY_STATUS": {
+          "bits": "1.7-1.0",
+          "comment": "Battery state of charge",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 127,
+          "default": 0
+        },
+        "AVERAGE_FUEL_CONSUMPTION_1": {
+          "bits": "2.7-2.0",
+          "comment": "Average fuel consumption, memory 1",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25,
+          "units": "L/100km",
+          "invalid": 255,
+          "default": 0,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 1)",
+              "factor": 1
+            }
+          ]
+        },
+        "AVERAGE_FUEL_CONSUMPTION_2": {
+          "bits": "3.7-3.0",
+          "comment": "Average fuel consumption, memory 2",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25,
+          "units": "L/100km",
+          "invalid": 255,
+          "default": 0,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 1)",
+              "factor": 1
+            }
+          ]
+        },
+        "AVERAGE_FUEL_CONSUMPTION_3": {
+          "bits": "4.7-4.0",
+          "comment": "Average fuel consumption, memory 3",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25,
+          "units": "L/100km",
+          "invalid": 255,
+          "default": 0,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 1)",
+              "factor": 1
+            }
+          ]
+        },
+        "AVERAGE_FUEL_CONSUMPTION_4": {
+          "bits": "5.7-5.0",
+          "comment": "Average fuel consumption, memory 4",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25,
+          "units": "L/100km",
+          "invalid": 255,
+          "default": 0,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 1)",
+              "factor": 1
+            }
+          ]
+        },
+        "AVERAGE_FUEL_CONSUMPTION_5": {
+          "bits": "6.7-6.0",
+          "comment": "Average fuel consumption, memory 5",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25,
+          "units": "L/100km",
+          "invalid": 255,
+          "default": 0,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 1)",
+              "factor": 1
+            }
+          ]
+        },
+        "AVERAGE_FUEL_CONSUMPTION_6": {
+          "bits": "7.7-7.0",
+          "comment": "Average fuel consumption, memory 6",
+          "type": "uint",
+          "factor": 0.1,
+          "min": 0,
+          "max": 25,
+          "units": "L/100km",
+          "invalid": 255,
+          "default": 0,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 1)",
+              "factor": 1
+            }
+          ]
+        },
+        "ECO_TIME": {
+          "bits": "8.7-8.0",
+          "comment": "ECO time",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 127,
+          "default": 0
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/3E0.yml"
+    },
+    "2AD": {
+      "id": 685,
+      "name": "CLIMATE_HMI_COMMAND",
+      "type": "can",
+      "length": 8,
+      "comment": "Commands sent by the BSI to the climate control: cabin air purifier level and state, filter/cabin cleaning states, ionizer command, air intake, blower and central temperature setpoints.",
+      "observations": "On state change of: FRONT_BLOWER_MINUS_STATE, FRONT_BLOWER_PLUS_SWITCH_STATE, REAR_LEFT_BLOWER_MINUS_STATE, REAR_BLOWER_PLUS_SWITCH_STATE, AIR_INLET_SETPOINT, FRONT_BLOWER_MOTOR_SETPOINT, LUCH_WARNING_LAMP, IONIZER_STATE, CABIN_AIR_FILTER_STATE, CABIN_AIR_PURIFIER_STATE, CABIN_AIR_PURIFICATION_STATE",
+      "periodicity": [
+        "500ms",
+        "trigger"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "ICSV",
+        "CMB",
+        "FMUX",
+        "BTEL",
+        "OVIP",
+        "RAD"
+      ],
+      "signals": {
+        "AC_LCD_DISPLAY_OFF_REQUEST": {
+          "bits": "1.7",
+          "comment": "Climate control LCD display switch-off request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not requested",
+            "1": "Requested"
+          }
+        },
+        "RESTORE_MODE_ENABLED": {
+          "bits": "1.6",
+          "comment": "Restore mode enabled",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not authorized",
+            "1": "Authorised"
+          }
+        },
+        "LUCH_WARNING_LAMP": {
+          "bits": "1.5",
+          "comment": "LUCH warning lamp on",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not authorized",
+            "1": "Authorised"
+          }
+        },
+        "CENTER_TEMPERATURE_SETPOINT": {
+          "bits": "1.4-1.2",
+          "comment": "Centered temperature setpoint value",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "18°C or 64°F",
+            "1": "19°C or 66°F",
+            "2": "20 °C or 68 °F",
+            "3": "21°C or 70°F",
+            "4": "22°C or 72°F",
+            "5": "23 °C or 74 °F",
+            "6": "24 °C or 76 °F",
+            "7": "25 °C or 78 °F"
+          }
+        },
+        "AC_SYSTEM_TYPE": {
+          "bits": "1.1-1.0",
+          "comment": "Air conditioning system type",
+          "type": "enum",
+          "values": {
+            "0": "CH",
+            "1": "RF",
+            "2": "RFTA",
+            "3": "RFT"
+          }
+        },
+        "HEATED_WINDSHIELD_INDICATOR_REQUEST": {
+          "bits": "2.7",
+          "comment": "Heated windshield indicator light request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Off",
+            "1": "On"
+          }
+        },
+        "AIR_INLET_SETPOINT": {
+          "bits": "2.6-2.5",
+          "comment": "Air inlet actuator setpoint (outside/recirculation)",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Outside air",
+            "1": "Partial recycling",
+            "2": "Total recirculation",
+            "3": "Invalid"
+          }
+        },
+        "HEATED_VENTILATED_SEATS_CONFIG": {
+          "bits": "2.4-2.3",
+          "comment": "Heated and/or ventilated seats configuration",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Absent",
+            "1": "Heated seats",
+            "2": "Heated and ventilated seats",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "HEATED_WINDSHIELD_PRESENCE": {
+          "bits": "2.2",
+          "comment": "Heated windshield equipment presence",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Absent",
+            "1": "Present"
+          }
+        },
+        "REAR_CENTRAL_DISPLAY_PRESENCE": {
+          "bits": "2.1",
+          "comment": "Rear central HMI display presence",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Absent",
+            "1": "Present"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "2.0",
+          "unused": true
+        },
+        "FRONT_BLOWER_MOTOR_SETPOINT": {
+          "bits": "3.7-3.0",
+          "comment": "Front blower motor setpoint",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 255,
+          "default": 0
+        },
+        "FRONT_BLOWER_PLUS_SWITCH_STATE": {
+          "bits": "4.7-4.4",
+          "comment": "Front blower switch state when pressing the \"+\" button",
+          "type": "enum",
+          "default": 9,
+          "values": {
+            "0": {
+              "unused": true
+            },
+            "1": {
+              "unused": true
+            },
+            "2": "Speed 1",
+            "3": "Speed 2",
+            "4": "Speed 3",
+            "5": "Speed 4",
+            "6": "Speed5",
+            "7": "Speed 6",
+            "8": "Speed 7",
+            "9": "Speed 8",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "FRONT_BLOWER_MINUS_STATE": {
+          "bits": "4.3-4.0",
+          "comment": "Front blower speed state on minus button press",
+          "type": "enum",
+          "default": 2,
+          "values": {
+            "0": {
+              "unused": true
+            },
+            "1": {
+              "unused": true
+            },
+            "2": "Speed 1",
+            "3": "Speed 2",
+            "4": "Speed 3",
+            "5": "Speed 4",
+            "6": "Speed5",
+            "7": "Speed 6",
+            "8": "Speed 7",
+            "9": "Speed 8",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "REAR_BLOWER_PLUS_SWITCH_STATE": {
+          "bits": "5.7-5.4",
+          "comment": "Rear blower switch state when pressing the \"+\" button",
+          "type": "enum",
+          "default": 9,
+          "values": {
+            "0": {
+              "unused": true
+            },
+            "1": {
+              "unused": true
+            },
+            "2": "Speed 1",
+            "3": "Speed 2",
+            "4": "Speed 3",
+            "5": "Speed 4",
+            "6": "Speed5",
+            "7": "Speed 6",
+            "8": "Speed 7",
+            "9": "Speed 8",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "REAR_LEFT_BLOWER_MINUS_STATE": {
+          "bits": "5.3-5.0",
+          "comment": "Rear left blower speed state on minus button press",
+          "type": "enum",
+          "default": 2,
+          "values": {
+            "0": {
+              "unused": true
+            },
+            "1": {
+              "unused": true
+            },
+            "2": "Speed 1",
+            "3": "Speed 2",
+            "4": "Speed 3",
+            "5": "Speed 4",
+            "6": "Speed5",
+            "7": "Speed 6",
+            "8": "Speed 7",
+            "9": "Speed 8",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "IONIZER_STATE": {
+          "bits": "6.7-6.6",
+          "comment": "Ioniser activation state (validated by climate control)",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "ion_off",
+            "1": "Ion clean",
+            "2": "Ion comfort",
+            "3": "Unavailable"
+          }
+        },
+        "IONIZER_COMMAND": {
+          "bits": "6.5-6.4",
+          "comment": "Ioniser activation command (validated by climate control)",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "ion_off",
+            "1": "Ion clean",
+            "2": "Ion comfort",
+            "3": "Unavailable"
+          }
+        },
+        "CABIN_AIR_FILTER_STATE": {
+          "bits": "6.3-6.2",
+          "comment": "Cabin air filter state",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "OK",
+            "1": "To change",
+            "2": "Absent",
+            "3": "Unavailable"
+          }
+        },
+        "REAR_HEATED_VENTILATED_SEATS_CONFIG": {
+          "bits": "6.1-6.0",
+          "comment": "Rear climate panel heated/ventilated seat button configuration",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Absent",
+            "1": "Heated seats",
+            "2": "Heated and ventilated seats",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "REAR_LEFT_BLOWER_SETPOINT": {
+          "bits": "7.7-7.0",
+          "comment": "Rear left blower setpoint",
+          "type": "uint",
+          "factor": 1,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 255,
+          "default": 0
+        },
+        "CABIN_AIR_PURIFICATION_STATE": {
+          "bits": "8.7-8.6",
+          "comment": "Cabin air purification state",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "Off",
+            "1": "In progress",
+            "2": "PURE",
+            "3": "Unavailable"
+          }
+        },
+        "UNUSED_2": {
+          "bits": "8.5",
+          "unused": true
+        },
+        "CABIN_AIR_PURIFIER_STATE": {
+          "bits": "8.4-8.2",
+          "comment": "Cabin air purifier state",
+          "type": "enum",
+          "default": 7,
+          "values": {
+            "0": "Off",
+            "1": "Automatic",
+            "2": "Low",
+            "3": "Medium",
+            "4": "High",
+            "5": "Absent",
+            "6": {
+              "unused": true
+            },
+            "7": "Unavailable"
+          }
+        },
+        "CABIN_AIR_QUALITY_LEVEL": {
+          "bits": "8.1-8.0",
+          "comment": "Cabin air quality level",
+          "type": "enum",
+          "default": 3,
+          "values": {
+            "0": "Good",
+            "1": "Moderate",
+            "2": "Unhealthy",
+            "3": "Unavailable"
+          }
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/2AD.yml"
+    },
+    "350": {
+      "id": 848,
+      "name": "CSS_SUSPENSION_STATUS",
+      "type": "can",
+      "length": 8,
+      "comment": "Front air conditioning status: heated windscreen/rear window activation, blower fault, air distribution, A/C request and front seat heating/ventilation requests.",
+      "observations": "On state change of: REAR_WINDSHIELD_HEAT, MODE, FRONT_BLOWER_MANUAL_SPEED_DISPLAY, REST_MODE_STATUS, AC_MAX_STATUS, MONO_MODE_STATUS, RESTORE_FLAG_STATUS, AC_MODE_REQUEST, FRONT_LEFT_AIRFLOW_DISTRIBUTION, FRONT_RIGHT_AIRFLOW_DISTRIBUTION, VISIBILITY_REQUEST, TYPAGE, FRONT_LEFT_TEMP_SETPOINT_VALUE, FRONT_RIGHT_TEMP_SETPOINT_VALUE, ENERGY_SAVER_MODE_STATUS, AQS_STATUS, HEATED_WINDSCREEN_ACTIVATION_REQUEST",
+      "periodicity": [
+        "500ms",
+        "trigger"
+      ],
+      "senders": [
+        "ICSV",
+        "FMUX"
+      ],
+      "receivers": [
+        "CMB",
+        "BSI",
+        "BTEL",
+        "OVIP",
+        "CRT",
+        "RAD"
+      ],
+      "signals": {
+        "FRONT_BLOWER_MOTOR_FAULT": {
+          "bits": "1.7",
+          "comment": "Front blower motor fault",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Fault absent",
+            "1": "Fault present"
+          }
+        },
+        "REST_MODE_STATUS": {
+          "bits": "1.6",
+          "comment": "Rest function status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Function not active",
+            "1": "Function active"
+          }
+        },
+        "REAR_WINDSHIELD_HEAT": {
+          "bits": "1.5",
+          "comment": "Heated rear window activation request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Not requested",
+            "1": "Requested"
+          }
+        },
+        "VISIBILITY_REQUEST": {
+          "bits": "1.4",
+          "comment": "Visibility (demisting/defrosting) request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "AC_MODE_REQUEST": {
+          "bits": "1.3-1.2",
+          "comment": "A/C mode request (auto comfort, auto visibility, off, invalid)",
+          "type": "enum",
+          "default": 2,
+          "values": {
+            "0": "Auto comfort",
+            "1": "Auto visibility",
+            "2": "Off",
+            "3": "Invalid"
+          }
+        },
+        "AC_TYPE": {
+          "bits": "1.1-1.0",
+          "comment": "A/C system type (light, normal, strong)",
+          "type": "enum",
+          "default": 1,
+          "values": {
+            "0": "Light",
+            "1": "Normal",
+            "2": "Strong",
+            "3": {
+              "unused": true
+            }
+          }
+        },
+        "EVAPORATOR_SENSOR_TEMPERATURE": {
+          "bits": "2.7-3.0",
+          "comment": "Evaporator sensor temperature",
+          "type": "uint",
+          "factor": 0.1,
+          "offset": -40,
+          "min": -40,
+          "max": 85,
+          "invalid": 65535,
+          "default": 65535
+        },
+        "AC_MAX_STATUS": {
+          "bits": "4.7",
+          "comment": "Max A/C function status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "MONO_MODE_STATUS": {
+          "bits": "4.6",
+          "comment": "Single-zone (MONO) climate function status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "RESTORE_FLAG_STATUS": {
+          "bits": "4.5",
+          "comment": "Restore function flag status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "FRONT_LEFT_TEMP_SETPOINT_VALUE": {
+          "bits": "4.4-4.0",
+          "comment": "Front left temperature setpoint value",
+          "type": "enum",
+          "default": 11,
+          "values": {
+            "0": "Local",
+            "1": "X-7 °C or Y-14 °F",
+            "2": "X-6 °C or Y-12 °F",
+            "3": "X-5 °C or Y-10 °F",
+            "4": "X-4 °C or Y-8 °F",
+            "5": "X-3 °C or Y-6 °F",
+            "6": "X-2.5 °C or Y-5 °F",
+            "7": "X-2 °C or Y-4 °F",
+            "8": "X-1.5 °C or Y-3 °F",
+            "9": "X-1 °C or Y-2 °F",
+            "10": "X-0.5 °C or Y-1 °F",
+            "11": "Centred value X°C or Y°F",
+            "12": "X+0.5 °C or Y+1 °F",
+            "13": "X+1 °C or Y+2 °F",
+            "14": "X+1.5 °C or Y+3 °F",
+            "15": "X+2°C or Y+4°F",
+            "16": "X+2.5°C or Y+5°F",
+            "17": "X+3 °C or Y+6°F",
+            "18": "X+4 °C or Y+8 °F",
+            "19": "X+5 °C or Y+10°F",
+            "20": "X+6 °C or Y+12 °F",
+            "21": "X+7 °C or Y+14 °F",
+            "22": "HI"
+          }
+        },
+        "HEATED_WINDSCREEN_ACTIVATION_REQUEST": {
+          "bits": "5.7",
+          "comment": "Heated windscreen activation/deactivation request",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Requested"
+          }
+        },
+        "FRONT_LEFT_SEAT_VENTILATION_REQUEST": {
+          "bits": "5.6-5.5",
+          "comment": "Front left seat ventilation level requested by the user",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3"
+          }
+        },
+        "FRONT_RIGHT_TEMP_SETPOINT_VALUE": {
+          "bits": "5.4-5.0",
+          "comment": "Front right temperature setpoint value",
+          "type": "enum",
+          "default": 11,
+          "values": {
+            "0": "Local",
+            "1": "X-7 °C or Y-14 °F",
+            "2": "X-6 °C or Y-12 °F",
+            "3": "X-5 °C or Y-10 °F",
+            "4": "X-4 °C or Y-8 °F",
+            "5": "X-3 °C or Y-6 °F",
+            "6": "X-2.5 °C or Y-5 °F",
+            "7": "X-2 °C or Y-4 °F",
+            "8": "X-1.5 °C or Y-3 °F",
+            "9": "X-1 °C or Y-2 °F",
+            "10": "X-0.5 °C or Y-1 °F",
+            "11": "Centred value X°C or Y°F",
+            "12": "X+0.5 °C or Y+1 °F",
+            "13": "X+1 °C or Y+2 °F",
+            "14": "X+1.5 °C or Y+3 °F",
+            "15": "X+2°C or Y+4°F",
+            "16": "X+2.5°C or Y+5°F",
+            "17": "X+3 °C or Y+6°F",
+            "18": "X+4 °C or Y+8 °F",
+            "19": "X+5 °C or Y+10°F",
+            "20": "X+6 °C or Y+12 °F",
+            "21": "X+7 °C or Y+14 °F",
+            "22": "HI"
+          }
+        },
+        "AQS_STATUS": {
+          "bits": "6.7",
+          "comment": "Air quality sensor (AQS) function status, for a dedicated display",
+          "type": "bool",
+          "default": 1,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "MODE": {
+          "bits": "6.6-6.4",
+          "comment": "Air inlet mode (auto comfort, auto visibility, forced open, forced closed, auto comfort without AQS)",
+          "type": "enum",
+          "default": 4,
+          "values": {
+            "0": "Auto comfort",
+            "1": "Auto visibility",
+            "2": {
+              "unused": true
+            },
+            "3": "Forced closed",
+            "4": "Auto comfort without AQS (air quality sensor)",
+            "5": {
+              "unused": true
+            },
+            "6": {
+              "unused": true
+            },
+            "7": {
+              "unused": true
+            }
+          }
+        },
+        "FRONT_BLOWER_MANUAL_SPEED_DISPLAY": {
+          "bits": "6.3-6.0",
+          "comment": "Display status: front blower manual speed",
+          "type": "enum",
+          "default": 1,
+          "values": {
+            "0": "Automatic",
+            "1": "Speed 0",
+            "2": "Speed 1",
+            "3": "Speed 2",
+            "4": "Speed 3",
+            "5": "Speed 4",
+            "6": "Speed5",
+            "7": "Speed 6",
+            "8": "Speed 7",
+            "9": "Speed 8",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "FRONT_LEFT_AIRFLOW_DISTRIBUTION": {
+          "bits": "7.7-7.4",
+          "comment": "Front left air distribution mode",
+          "type": "enum",
+          "default": 4,
+          "values": {
+            "0": "Auto comfort",
+            "1": "Auto visibility",
+            "2": "Feet",
+            "3": "Ventilation",
+            "4": "Defrosting",
+            "5": "Foot vents",
+            "6": "Foot vent defrosting",
+            "7": "Ventilation defrosting",
+            "8": "Foot/windscreen air distribution",
+            "9": "Other than defrosting",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "FRONT_RIGHT_AIRFLOW_DISTRIBUTION": {
+          "bits": "7.3-7.0",
+          "comment": "Front right air distribution mode",
+          "type": "enum",
+          "default": 4,
+          "values": {
+            "0": "Auto comfort",
+            "1": "Auto visibility",
+            "2": "Feet",
+            "3": "Ventilation",
+            "4": "Defrosting",
+            "5": "Foot vents",
+            "6": "Foot vent defrosting",
+            "7": "Ventilation defrosting",
+            "8": "Foot/windscreen air distribution",
+            "9": "Other than defrosting",
+            "10": {
+              "unused": true
+            },
+            "11": {
+              "unused": true
+            },
+            "12": {
+              "unused": true
+            },
+            "13": {
+              "unused": true
+            },
+            "14": {
+              "unused": true
+            },
+            "15": {
+              "unused": true
+            }
+          }
+        },
+        "ENERGY_SAVER_MODE_STATUS": {
+          "bits": "8.7",
+          "comment": "Energy saver mode status",
+          "type": "bool",
+          "default": 0,
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          }
+        },
+        "FRONT_RIGHT_SEAT_HEATING_REQUEST": {
+          "bits": "8.6-8.5",
+          "comment": "Front right seat heating level requested by the user",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3"
+          }
+        },
+        "FRONT_LEFT_SEAT_HEATING_REQUEST": {
+          "bits": "8.4-8.3",
+          "comment": "Front left seat heating level requested by the user",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3"
+          }
+        },
+        "FRONT_RIGHT_SEAT_VENTILATION_REQUEST": {
+          "bits": "8.2-8.1",
+          "comment": "Front right seat ventilation level requested by the user",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "No request",
+            "1": "Level 1",
+            "2": "Level 2",
+            "3": "Level 3"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "8.0",
+          "unused": true
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/350.yml"
+    },
+    "396": {
+      "id": 918,
+      "name": "BSRF_COMMAND_11",
+      "type": "can",
+      "length": 6,
+      "comment": "Remote diagnostics authorisation and auxiliary battery state of charge / voltage, sent by the BSI.",
+      "periodicity": [
+        "1000880ms"
+      ],
+      "senders": [
+        "BSI"
+      ],
+      "receivers": [
+        "MDS"
+      ],
+      "signals": {
+        "REMOTE_DIAGNOSIS_AUTHORIZATION": {
+          "bits": "1.7-1.6",
+          "comment": "Remote diagnosis (TLDIAG) authorization",
+          "type": "enum",
+          "default": 0,
+          "values": {
+            "0": "Not available",
+            "1": "Available",
+            "2": {
+              "unused": true
+            },
+            "3": "Failure detected"
+          }
+        },
+        "UNUSED_1": {
+          "bits": "1.5-1.0",
+          "unused": true
+        },
+        "AUX_BATTERY_VOLTAGE": {
+          "bits": "2.7-2.1",
+          "comment": "Auxiliary (12V) battery voltage",
+          "type": "uint",
+          "factor": 0.1,
+          "offset": 5.5,
+          "min": 5.5,
+          "max": 18.1,
+          "units": "V",
+          "default": 127,
+          "alternatives": [
+            {
+              "note": "Also observed with another scaling (factor 0.15)",
+              "factor": 0.15
+            },
+            {
+              "note": "Also observed with another scaling (factor 5.5)",
+              "factor": 5.5
+            }
+          ]
+        },
+        "UNUSED_2": {
+          "bits": "2.0",
+          "unused": true
+        },
+        "AUX_BATTERY_SOC": {
+          "bits": "3.7-3.0",
+          "comment": "Auxiliary (12V) battery state of charge",
+          "type": "uint",
+          "factor": 0.5,
+          "min": 0,
+          "max": 100,
+          "units": "%",
+          "invalid": 255,
+          "default": 0
+        }
+      },
+      "alternatives": [
+        {
+          "note": "Also observed with a period of 1000ms",
+          "periodicity": [
+            "1000ms"
+          ]
+        },
+        {
+          "note": "Also observed with a period of 1000ms",
+          "periodicity": [
+            "1000ms"
+          ]
+        }
+      ],
+      "path": "buses/AEE2010.full/LS.INFO-DIV/396.yml"
+    }
+  },
+  "cmb_sender_inventory": [
+    {
+      "id_hex": "01C",
+      "name": "MOTION_SENSOR_COMMAND_RIGHT",
+      "source_senders": [
+        "ICSV",
+        "BTEL",
+        "MATT",
+        "EMF",
+        "OVIP",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/01C.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Preconditioning and cruise control menu commands: button presses, cruise info availability, preconditioning activation and type request.",
+      "observed_frames": 2
+    },
+    {
+      "id_hex": "0E9",
+      "name": "NAV_EXPORT_FLOW_CONTROL",
+      "source_senders": [
+        "ICSV",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/0E9.yml",
+      "dlc": null,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "ISO-TP flow-control frame for the second navigation export multi-frame transfer.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "122",
+      "name": "MULTIPLEXED_BUTTONS_STATUS_2",
+      "source_senders": [
+        "CMB",
+        "CRT",
+        "EMF",
+        "FMUX",
+        "ICSV"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/122.yml",
+      "dlc": 8,
+      "periodicity": [
+        "200ms",
+        "trigger"
+      ],
+      "comment": "Multiplexed push-button panel status: individual button states, scroll-wheel counters and ESP button.",
+      "observed_frames": 624
+    },
+    {
+      "id_hex": "15B",
+      "name": "PROFILE_SETTINGS_SCREEN",
+      "source_senders": [
+        "EMF",
+        "RAD",
+        "MATT",
+        "BTEL",
+        "CMB",
+        "ICSV",
+        "OVIP"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/15B.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Driver profile and settings screen requests (part 1): welcome, parking aid, units and language, lock/alert menus.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "19B",
+      "name": "SPEED_LIMITER_PRESETS_STATUS",
+      "source_senders": [
+        "CMB",
+        "ICSV",
+        "BTEL",
+        "OVIP"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/19B.yml",
+      "dlc": 7,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Speed limiter preset speeds (6 slots) and availability of cruise/limiter information.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "1D7",
+      "name": "LEFT_LED_HEADLAMP_DRIVER_DATA",
+      "source_senders": [
+        "CMB",
+        "OVIP"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/1D7.yml",
+      "dlc": 1,
+      "periodicity": [
+        "100ms",
+        "trigger"
+      ],
+      "comment": "Steering wheel button status: lane keep/positioning assist activation, driving mode selector, heated steering wheel request.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "1DB",
+      "name": "CRUISE_CONTROL_PRESETS_STATUS",
+      "source_senders": [
+        "CMB",
+        "ICSV",
+        "BTEL",
+        "OVIP"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/1DB.yml",
+      "dlc": 7,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Cruise control preset speeds (6 slots) and availability of cruise/limiter information.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "217",
+      "name": "ODOMETER_STATUS",
+      "source_senders": [
+        "CMB",
+        "BTEL"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/217.yml",
+      "dlc": 8,
+      "periodicity": [
+        "100ms",
+        "trigger"
+      ],
+      "comment": "Instrument cluster status to the body controller: hard-wired inputs acquired by the cluster (warnings, push-buttons, brake, fuel flap), fuel levels, lamp states, icon display, oil temperature, LPG state.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "21B",
+      "name": "PROFILE_SETTINGS_SCREEN_2",
+      "source_senders": [
+        "RAD",
+        "MATT",
+        "BTEL",
+        "CMB",
+        "ICSV",
+        "OVIP",
+        "EMF"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/21B.yml",
+      "dlc": 5,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Driver profile and settings screen requests (part 2): ambient lighting animation and colour, privacy mode.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "257",
+      "name": "CMB_ODOMETER",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/257.yml",
+      "dlc": 6,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Odometer value saved by the instrument cluster, transmitted three times in a row to protect the vehicle mileage integrity.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "269",
+      "name": "NAV_EXPORT_FLOW_CONTROL_2",
+      "source_senders": [
+        "MATT",
+        "CMB",
+        "VTH",
+        "ICSV"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/269.yml",
+      "dlc": null,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "ISO-TP flow-control frame for the navigation export multi-frame transfer.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "297",
+      "name": "LED_DRIVER_RIGHT_LEVELLING_POSITION",
+      "source_senders": [
+        "VTH",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/297.yml",
+      "dlc": 2,
+      "periodicity": [
+        "200ms",
+        "trigger"
+      ],
+      "comment": "Head-up display status: memory and recall, mirror movement, displayed speed.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "2D7",
+      "name": "CLUSTER_SETTINGS_STATUS",
+      "source_senders": [
+        "MATT",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/2D7.yml",
+      "dlc": 3,
+      "periodicity": [
+        "1000ms",
+        "trigger"
+      ],
+      "comment": "Instrument cluster settings: sound command, preconditioning time, language and display units (consumption, distance, temperature, volume).",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "2DC",
+      "name": "AUDIO_EXPORT_FLOW_CONTROL",
+      "source_senders": [
+        "ICSV",
+        "MATT",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/2DC.yml",
+      "dlc": null,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "ISO-TP flow-control frame for the audio export multi-frame transfer.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "2E7",
+      "name": "DISPLAY_MODE_REQUEST",
+      "source_senders": [
+        "ICSV",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/2E7.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Display appearance/skin list data (part 1), relayed between the infotainment sources and the instrument cluster.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "317",
+      "name": "CMB_CONFIG",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/317.yml",
+      "dlc": 8,
+      "periodicity": [
+        "10000ms"
+      ],
+      "comment": "Instrument cluster telltale lamp configuration: which fault/status indicators are fitted (ABS, ASR, steering assist, parking radar, battery, seatbelt, etc.).",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "31C",
+      "name": "TRIP_COMPUTER_STATUS",
+      "source_senders": [
+        "CMB",
+        "MATT"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/31C.yml",
+      "dlc": 5,
+      "periodicity": [
+        "200ms",
+        "trigger"
+      ],
+      "comment": "Trip computer status: vehicle info display, self-check request/stop, trip 1/2 and partial odometer reset requests, message acknowledgement.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "31F",
+      "name": "DISPLAY_LVDS_CONTROL",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/31F.yml",
+      "dlc": 3,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Instrument cluster LVDS video link control: object acknowledgement and retransmission requests.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "39B",
+      "name": "CLOCK_UPDATE_REQUEST",
+      "source_senders": [
+        "ICSV",
+        "BTEL",
+        "OVIP",
+        "CMB",
+        "EMF",
+        "MATT"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/39B.yml",
+      "dlc": 5,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Clock update request: year, month, day, hour, minute and time-format mode.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "3A7",
+      "name": "DISPLAY_APPEARANCE_LIST",
+      "source_senders": [
+        "ICSV",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/3A7.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Display appearance/skin list data (part 2), relayed between the infotainment sources and the instrument cluster.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "3E9",
+      "name": "GEARBOX_DATA",
+      "source_senders": [
+        "CMB",
+        "ICSV",
+        "MATT"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/3E9.yml",
+      "dlc": 1,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Acknowledgement of a multi-frame navigation export status message.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "49F",
+      "name": "INSTRUMENT_CLUSTER_FAULT_EVENT",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/49F.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Instrument cluster: fault event, logged in the BSI fault log.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "4A4",
+      "name": "TELEMATICS_FAULT_EVENT",
+      "source_senders": [
+        "ICSV",
+        "BTEL",
+        "OVIP",
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/4A4.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Telematics unit: fault event, logged in the BSI fault log.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "51F",
+      "name": "LANE_DEPARTURE_WARNING_LEFT_STATUS",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/51F.yml",
+      "dlc": 8,
+      "periodicity": [
+        "100075ms"
+      ],
+      "comment": "Network supervision: diagnostic session, network management state and communication fault counters",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "5DF",
+      "name": "CMB_VERSION",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/5DF.yml",
+      "dlc": 8,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Software and calibration version identification of the sending ECU",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "65F",
+      "name": "CMB_DIAG_RESPONSE",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/65F.yml",
+      "dlc": null,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Diagnostic response sent by the CMB ECU.",
+      "observed_frames": 0
+    },
+    {
+      "id_hex": "718",
+      "name": "OBJECT07_DATA",
+      "source_senders": [
+        "CMB"
+      ],
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/718.yml",
+      "dlc": null,
+      "periodicity": [
+        "trigger"
+      ],
+      "comment": "Diagnostic response sent by the LIN_CMB ECU.",
+      "observed_frames": 0
+    }
+  ],
+  "tx_definitions": {
+    "401": {
+      "id": 1025,
+      "name": "WAKEUP_BML",
+      "type": "can",
+      "length": 2,
+      "comment": "Sent by a node waking up the network; indicates the cause of the wake-up",
+      "observations": "On local wake-up of the ECU",
+      "periodicity": [
+        "trigger"
+      ],
+      "senders": [
+        "SDCM"
+      ],
+      "receivers": [
+        "BSI"
+      ],
+      "signals": {
+        "PSD_NETWORK_WAKEUP_PADDING": {
+          "bits": "1.7-1.0",
+          "comment": "8 zero bits used to wake up the network",
+          "type": "uint"
+        },
+        "WAKEUP_CAUSE_RF_REMOTE": {
+          "bits": "2.7",
+          "comment": "Wake-up caused by the RF remote control",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_COE": {
+          "bits": "2.6",
+          "comment": "Wake-up caused by the fuel filler flap open (COE) event",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_ML_LOCK_BUTTON": {
+          "bits": "2.5",
+          "comment": "Wake-up caused by pressing the tailgate (ML) locking button",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_ML_KEY_PRESENCE": {
+          "bits": "2.4",
+          "comment": "Wake-up caused by the presence of a tailgate (ML) key identifier",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_NFC": {
+          "bits": "2.3",
+          "comment": "Wake-up following communication between the smart device module (SDCM) and an authorized NFC device (smart device or NFC card)",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_BLUETOOTH": {
+          "bits": "2.2",
+          "comment": "Wake-up following communication between the smart device module (SDCM) and an authorized Bluetooth device (smart device)",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_INTERNAL": {
+          "bits": "2.1",
+          "comment": "Wake-up for an internal reason (e.g. refreshing vehicle status after a reset)",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        },
+        "WAKEUP_CAUSE_8": {
+          "bits": "2.0",
+          "comment": "Wake-up cause 8",
+          "type": "bool",
+          "values": {
+            "0": "Cause that did not trigger wake-up",
+            "1": "Wake-up cause"
+          }
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/401.yml"
+    },
+    "5DF": {
+      "id": 1503,
+      "name": "CMB_VERSION",
+      "type": "can",
+      "length": 8,
+      "comment": "Software and calibration version identification of the sending ECU",
+      "observations": "Sent when the network state transitions from WAKEUP to NORMAL",
+      "periodicity": [
+        "trigger"
+      ],
+      "senders": [
+        "CMB"
+      ],
+      "signals": {
+        "ECU_NUMBER": {
+          "bits": "1.7-1.0",
+          "comment": "ECU number.",
+          "type": "uint",
+          "min": 0,
+          "max": 254,
+          "invalid": 255
+        },
+        "SOFTWARE_VERSION_DAY": {
+          "bits": "2.7-2.0",
+          "comment": "Software version, day.",
+          "type": "uint",
+          "factor": 1,
+          "min": 1,
+          "max": 31,
+          "units": "day"
+        },
+        "SOFTWARE_VERSION_MONTH": {
+          "bits": "3.7-3.0",
+          "comment": "Software version, month.",
+          "type": "uint",
+          "factor": 1,
+          "min": 1,
+          "max": 12,
+          "units": "month"
+        },
+        "SOFTWARE_VERSION_YEAR": {
+          "bits": "4.7-4.0",
+          "comment": "Software version, year.",
+          "type": "uint",
+          "factor": 1,
+          "offset": 2000,
+          "min": 2000,
+          "max": 2200
+        },
+        "SOFTWARE_IDENTIFICATION": {
+          "bits": "5.7-6.0",
+          "comment": "Characterizes the software identification.",
+          "type": "uint",
+          "min": 0,
+          "max": 65534,
+          "invalid": 65535
+        },
+        "GENERATION_NUMBER_DIGIT_1": {
+          "bits": "7.7-7.4",
+          "comment": "Generation number (1st digit).",
+          "type": "uint",
+          "min": 0,
+          "max": 15
+        },
+        "GENERATION_NUMBER_DIGIT_2": {
+          "bits": "7.3-7.0",
+          "comment": "Generation number (2nd digit).",
+          "type": "enum",
+          "values": {
+            "15": "Forced value"
+          }
+        },
+        "EDITION_NUMBER": {
+          "bits": "8.7-8.0",
+          "comment": "Edition number.",
+          "type": "uint",
+          "min": 0,
+          "max": 254,
+          "invalid": 255
+        }
+      },
+      "path": "buses/AEE2010.full/LS.INFO-DIV/5DF.yml"
+    }
+  },
+  "latest_backport": "2026-10-31:12 RX handlers; one internal401 per eligible UDP;5DF500ms only normal"
+}

@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-04",
+  "feature": "Gateway-owned automatic vehicle refresh",
+  "defaults": {
+    "charging_min": 5,
+    "standby_min": 60,
+    "min_aux_soc_pct": 50,
+    "enabled": false
+  },
+  "timer": {
+    "during_refresh": "paused",
+    "known_low_aux_soc": "Pause remaining countdown",
+    "charging_change": "Clamp remaining countdown without restart or extension",
+    "reset": "Whole interval at end of manual/automatic refresh sequence, including failure",
+    "unknown_aux_soc": "Does not block"
+  },
+  "checks": {
+    "web": {
+      "tests": 49,
+      "command": "node --test --experimental-test-isolation=none tests/*ui.test.cjs",
+      "passed": 49,
+      "log": "build-host-tests/auto-refresh-web.log"
+    },
+    "firmware_build": {
+      "image_bytes": 1061168,
+      "image_sha256": "A329C085C96BCFA1501D4FD436942AC77EF73EC304AD814F9F15F03DEBF08C1C",
+      "log": "build-auto-refresh.log",
+      "mode": "ESP-IDF 5.3.2 sequential incremental: all project sources compiled, SDK objects reused"
+    },
+    "android_apk": {
+      "path": "C:/work/bev/ecmpilot/app/build/outputs/apk/debug/app-debug.apk",
+      "sha256": "12196E6E560B8F6D4BB14C802BC414EA61E6BDD5D95F1467B1262F79790CA86F"
+    },
+    "native": {
+      "tests": 248,
+      "passed": 248,
+      "log": "build-host-tests/auto-refresh-final.log"
+    },
+    "android": {
+      "build_log": "C:/work/bev/ecmpilot/artifacts/auto-refresh-build.log",
+      "instrumentation": "APK compiled, not run; no ADB device connected",
+      "jvm_tests": 40,
+      "passed": 40
+    }
+  },
+  "live_vehicle_commands_sent": false,
+  "firmware_flashed": false,
+  "phone_installed": false
+}

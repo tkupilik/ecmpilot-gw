@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-02",
+  "feature": "Passive polling and explicit INFO vehicle refresh/charge control",
+  "gw_profile": "INFO 125000 bit/s, normal, TX15/RX16",
+  "host_tests": 179,
+  "web_tests": 46,
+  "android_jvm_tests": 20,
+  "android_test_failures": 0,
+  "android_lint": "passed: 0 errors, 1 warning",
+  "idf_build": "sequential incremental build: all project translation units compiled; SDK objects reused",
+  "android_build": "testDebugUnitTest lintDebug assembleDebug passed",
+  "artifacts": [
+    {
+      "path": "C:\\work\\bev\\ecmpilot-gw\\build\\ecmpilot_gw.bin",
+      "bytes": 1036496,
+      "sha256": "03c54499dfcf0a1d436d786d43940dd8b10e48a1349589c3a157df0eade3ca84"
+    },
+    {
+      "path": "C:\\work\\bev\\ecmpilot\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+      "bytes": 30066361,
+      "sha256": "a2b7b5e26d3f19be42d9bf5261142c5278eaff8ea2b8e37629cc8469ca7335bc"
+    }
+  ],
+  "vehicle_io": false,
+  "deployed": false,
+  "limitations": [
+    "Independent vehicle validation of 394 refresh and immediate mode remains pending",
+    "Refresh success means raw SOC reception after TX, not proof of source measurement freshness",
+    "Varstore cache does not survive ESP restart/deep-sleep reboot"
+  ]
+}

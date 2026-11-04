@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-01",
+  "version": "0.5.0",
+  "build_log": "build-power.log",
+  "target_build_steps": 892,
+  "host_tests": 137,
+  "browser_tests": 19,
+  "signals": 170,
+  "appended_power_signals": 12,
+  "can": {
+    "enabled": true,
+    "profile": "HSCAN1",
+    "bitrate": 500000,
+    "mode": "listen-only",
+    "power_lifecycle_modified": false
+  },
+  "power": {
+    "startup": "normal",
+    "normal_mhz": [
+      160,
+      160
+    ],
+    "dfs_mhz": [
+      40,
+      160
+    ],
+    "light_sleep_policy_mhz": [
+      40,
+      80
+    ],
+    "automatic_mode_selection": false,
+    "tickless_idle": true,
+    "sleep_callbacks_in_iram": true,
+    "actual_sleep_blocked_by_twai": true,
+    "deep_sleep_timer_preparation_only": true,
+    "deep_sleep_trigger": false
+  },
+  "flashed": false,
+  "physical_measurements": false,
+  "image": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 987568,
+    "sha256": "79cd7d564fba9766ca856c34488559fea744b40a809325ec1ae1ac226b21a937"
+  }
+}

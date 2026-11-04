@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "gateway.h"
 #include "process_data.h"
+#include "auto_refresh.h"
+#include "ha_settings.h"
+#include "gvret.h"
+#include "vehicle_data.h"
+#include "vehicle_control.h"
+#include "power.h"
 #include "log_buffer.h"
 #include <atomic>
 #include "esp_log.h"
@@ -18,6 +24,7 @@ static std::atomic<int64_t> restart_at;
 
 class Application final : public Rntm::Process {
     Rntm::Timer timer{this};
+    Rntm::Timer control_timer{this};
     struct pt heartbeat_pt;
     int64_t next_heartbeat = 0;
     PT_THREAD(Heartbeat())
@@ -38,14 +45,23 @@ class Application final : public Rntm::Process {
     {
         configASSERT(xPortGetCoreID() == GW_APP_CORE);
         PT_INIT(&heartbeat_pt);
+        gw_vehicle_init();
         timer.Set(SIG_USER, 100000);
+        control_timer.Set(SIG_USER + 1, GW_CONTROL_TICK_MS * 1000);
         ESP_LOGI("app", "Hello eCMPilot GW, application CPU%d", xPortGetCoreID());
         return 0;
     }
     int Main(int signal) override
     {
+        if (signal == SIG_USER + 1) {
+            control_timer.GetTicks();
+            gw_vehicle_control_tick();
+            return 0;
+        }
         if (signal == SIG_USER) {
             timer.GetTicks();
+            gw_power_tick();
+            gw_vehicle_tick();
             (void)PT_SCHEDULE(Heartbeat());
             const int64_t deadline = restart_at.load();
             if (deadline && esp_timer_get_time() >= deadline) esp_restart();
@@ -69,6 +85,11 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(gw_settings_init());
     ESP_ERROR_CHECK(gw_process_data_init());
+    ESP_ERROR_CHECK(gw_auto_refresh_init());
+    ESP_ERROR_CHECK(gw_ha_settings_init());
+    ESP_ERROR_CHECK(gw_power_start());
+    ESP_ERROR_CHECK(gw_gvret_init());
+    ESP_ERROR_CHECK(gw_can_rx_start());
     ESP_ERROR_CHECK(application.Start("application", 4, application_stack,
                                     sizeof(application_stack), GW_APP_CORE));
     ESP_ERROR_CHECK(gw_network_start());

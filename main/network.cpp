@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "gateway.h"
+#include "gvret.h"
+#include "ha_bridge.h"
 #include "process_data.h"
 #include <cstdlib>
 #include <cstring>
@@ -32,10 +34,13 @@ class Network final : public Rntm::Process {
     esp_netif_t *station = nullptr;
     esp_netif_t *access_point = nullptr;
     int selected = -1;
+    bool power_requested = false;
+    bool power_suspended = false;
     bool scanning = false;
     bool connecting = false;
     bool connected = false;
     bool setup_ap = false;
+    bool setup_ap_allowed = false;
     int64_t scan_at = 0;
     int64_t connect_at = 0;
     int64_t offline_since = 0;
@@ -121,7 +126,8 @@ class Network final : public Rntm::Process {
         // Keep the serial credential announcement outside the web log capture.
         printf("Setup AP password: %s\n", password);
         gw_settings_get(&settings);
-        setup_ap = settings.count == 0;
+        setup_ap_allowed = gw_ap_enabled_get();
+        setup_ap = setup_ap_allowed && settings.count == 0;
         ESP_RETURN_ON_ERROR(esp_wifi_set_mode(setup_ap ? WIFI_MODE_APSTA : WIFI_MODE_STA), "network", "startup mode");
         ESP_RETURN_ON_ERROR(esp_wifi_start(), "network", "start");
         ESP_RETURN_ON_ERROR(esp_wifi_set_ps(WIFI_PS_MIN_MODEM), "network", "power save");
@@ -130,18 +136,38 @@ class Network final : public Rntm::Process {
         portEXIT_CRITICAL(&status_lock);
         offline_since = esp_timer_get_time();
         ESP_RETURN_ON_ERROR(gw_web_start(), "network", "web start");
-        return gw_udp_start();
+        ESP_RETURN_ON_ERROR(gw_udp_start(), "network", "UDP start");
+        esp_err_t gvret_error = gw_gvret_start();
+        if (gvret_error != ESP_OK) ESP_LOGW("network", "GVRET unavailable: %s", esp_err_to_name(gvret_error));
+        esp_err_t ha_error = gw_ha_start();
+        if (ha_error != ESP_OK) ESP_LOGW("network", "HA unavailable: %s", esp_err_to_name(ha_error));
+        return ESP_OK;
     }
 
     void EnableSetupAp()
     {
-        if (setup_ap) return;
+        if (!setup_ap_allowed || setup_ap) return;
         if (esp_wifi_set_mode(WIFI_MODE_APSTA) != ESP_OK) return;
         setup_ap = true;
         portENTER_CRITICAL(&status_lock);
         status.setup_ap = true;
         portEXIT_CRITICAL(&status_lock);
         ESP_LOGI("network", "Setup AP enabled at http://192.168.4.1/");
+    }
+
+    void DisableSetupAp()
+    {
+        if (!setup_ap) return;
+        esp_err_t error = esp_wifi_set_mode(WIFI_MODE_STA);
+        if (error != ESP_OK) {
+            ESP_LOGW("network", "Disable setup AP: %s", esp_err_to_name(error));
+            return; // Keep actual state visible; the timer retries disabling it.
+        }
+        setup_ap = false;
+        portENTER_CRITICAL(&status_lock);
+        status.setup_ap = false;
+        portEXIT_CRITICAL(&status_lock);
+        ESP_LOGI("network", "Setup AP disabled");
     }
 
     void Scan()
@@ -203,6 +229,8 @@ class Network final : public Rntm::Process {
 
     void Reload()
     {
+        setup_ap_allowed = gw_ap_enabled_get();
+        if (!setup_ap_allowed) DisableSetupAp();
         if (scanning) esp_wifi_scan_stop();
         esp_wifi_clear_ap_list();
         scanning = false;
@@ -223,8 +251,48 @@ class Network final : public Rntm::Process {
         if (!settings.count) EnableSetupAp();
     }
 
+    bool PowerStep()
+    {
+        const auto request = varstore_inspect(GW_VAR_REQUEST_NETWORK_SUSPEND, 0);
+        bool suspend = request.raw_valid && request.raw_value == 1;
+        if (suspend != power_requested) {
+            power_requested = suspend;
+            esp_err_t error = ESP_OK;
+            if (suspend) {
+                if (scanning) esp_wifi_scan_stop();
+                esp_wifi_clear_ap_list();
+                error = esp_wifi_stop();
+                if (error == ESP_ERR_WIFI_NOT_STARTED) error = ESP_OK;
+                if (error == ESP_OK) power_suspended = true;
+            } else if (power_suspended) {
+                error = esp_wifi_start();
+                if (error == ESP_OK) power_suspended = false;
+            }
+            connected = connecting = scanning = false;
+            selected = -1;
+            xQueueReset(events);
+            memset(blocked_until, 0, sizeof(blocked_until));
+            scan_at = offline_since = esp_timer_get_time();
+            portENTER_CRITICAL(&status_lock);
+            status.connected = false;
+            status.setup_ap = !power_suspended && setup_ap;
+            status.ip[0] = 0;
+            portEXIT_CRITICAL(&status_lock);
+            varstore_write(GW_VAR_WIFI_CONNECTED, 0);
+            varstore_invalidate(GW_VAR_WIFI_RSSI_DBM);
+            varstore_write(GW_VAR_NETWORK_SUSPEND_ERROR, error);
+            varstore_write(GW_VAR_NETWORK_SUSPENDED, power_suspended);
+            varstore_write(GW_VAR_NETWORK_SUSPEND_COMPLETED, suspend);
+            ESP_LOGI("network", "Wi-Fi power %s: %s", suspend ? "stop" : "resume", esp_err_to_name(error));
+        }
+        return suspend || power_suspended;
+    }
+
     int Init() override
     {
+        varstore_write(GW_VAR_NETWORK_SUSPENDED, 0);
+        varstore_write(GW_VAR_NETWORK_SUSPEND_ERROR, ESP_OK);
+        varstore_write(GW_VAR_NETWORK_SUSPEND_COMPLETED, 0);
         startup_result = InitWifi();
         xSemaphoreGive(startup_done);
         if (startup_result != ESP_OK) return 1;
@@ -235,6 +303,8 @@ class Network final : public Rntm::Process {
     int Main(int signal) override
     {
         configASSERT(xPortGetCoreID() == GW_NETWORK_CORE);
+        if (signal == SIG_USER + 1) timer.GetTicks();
+        if (PowerStep()) return 0;
         if (signal == SIG_USER + 2) Reload();
         if (signal == SIG_USER) {
             NetworkEvent event;
@@ -267,9 +337,9 @@ class Network final : public Rntm::Process {
             }
         }
         if (signal == SIG_USER + 1) {
-            timer.GetTicks();
             const int64_t now = esp_timer_get_time();
-            if (!connected && now - offline_since >= 30000000) EnableSetupAp();
+            if (!setup_ap_allowed) DisableSetupAp();
+            else if (!connected && now - offline_since >= 30000000) EnableSetupAp();
             if (connecting && now - connect_at >= 20000000) esp_wifi_disconnect();
             if (now >= scan_at) Scan();
             if (connected) {

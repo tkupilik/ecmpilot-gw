@@ -7,9 +7,9 @@ import uuid
 
 SEED = {
     'vehicle.awake': 1, 'vehicle.parked': 1, 'battery.soc_pct_x10': 682,
-    'vehicle.range_km_x10': 2180, 'temperature.cabin_c_x10': 160,
-    'temperature.outside_c_x10': 90, 'battery.min_c_x10': 240, 'battery.max_c_x10': 270,
-    'vehicle.odometer_km': 42810, 'battery.voltage_v_x10': 3600, 'battery.current_a_x10': 0,
+    'vehicle.range_km_x10': 2180, 'temperature.cabin_mc': 16000,
+    'temperature.outside_mc': 9000, 'battery.min_mc': 24000, 'battery.max_mc': 27000,
+    'vehicle.odometer_km': 42810, 'battery.voltage_mv': 360000, 'battery.current_ma': 0,
     'climate.state': 0, 'charge.state': 1, 'charge.mode': 0, 'charge.connected': 1,
     'charge.power_w': 0, 'charge.remaining_min': 135, 'charge.start_minute': 1380,
     'test.enabled': 1,

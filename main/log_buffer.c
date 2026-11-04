@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "log_buffer.h"
+#include "retained_log.h"
 #include <string.h>
 #ifdef ESP_PLATFORM
 #include "freertos/FreeRTOS.h"
@@ -33,6 +34,7 @@ void gw_log_buffer_append(const char *text)
     entry->sequence = next_sequence++;
     memcpy(entry->text, text, length);
     entry->text[length] = 0;
+    gw_retained_log_append(entry->text);
     leave();
 }
 gw_log_page_t gw_log_buffer_read(uint64_t after, gw_log_entry_t *entries, size_t capacity)

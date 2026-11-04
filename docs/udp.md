@@ -1,14 +1,53 @@
 # Android UDP and varstore bench testing
 
-Firmware **0.3.0** implements UDP v0 on IPv4 port **42840**. Use Android **0.2.0** for the explicit varstore test backend. No CAN access or physical vehicle command is implemented.
+See [correlation and loss recovery](udp-correlation.md) for the operation counter,
+message matching, deduplication, CAN trace and the phone's 5/6-second response
+budgets with a 15-second offline grace period. GW and phone builds should be
+updated together; the phone does not negotiate the correlation extension.
+
+Optional [automatic refresh settings](auto-refresh.md) use passive
+`auto_refresh.get` and boot-bound `auto_refresh.set`. They are advertised by
+`info.fields: auto_refresh`, stored in GW NVS and shared with the web editor.
+These operations do not issue a vehicle command. The enabled gateway timer
+submits refresh events to the existing vehicle-control process independently
+of any connected client.
+
+UDP v0 uses IPv4 port **42840**. Firmware **0.5.0** now defaults to INFO/125 kbit/s,
+with SOC, range, odometer, outside temperature and awake/parked observations;
+see [INFO mappings](can-rx.md). INFO has no pack-voltage producer. The optional
+HSCAN1/500 kbit/s profile publishes HV SOC and pack voltage from `0x5C3` through
+existing phone fields; see [HS1 mappings](can-telemetry.md). No Android rebuild or
+test mode is needed for monitoring. The original **0.3.0** bench flow below remains available with Android **0.2.0** or later; the INFO backend now provides experimental explicit refresh/charging-mode commands; immediate preconditioning is implemented through31B/11B and BSI2E0 feedback. See [vehicle control](vehicle-control.md).
+
+## Latest CAN telemetry
+
+Optional `state.bsi` exposes `power_management` (raw CAN 036 code 0-4) and its
+own `age_ms`. It is omitted when no valid phase is known. This age is independent
+of parked/awake data and SOC. The phone shows the actual last reported phase;
+missing traffic is never converted into a different BSI phase.
+
+Derived left/right climate setpoints retain last known numeric observations and
+the oldest input timestamp after traffic stops. The phone greys aged values;
+explicit LO/HI/reserved inputs still invalidate the numeric observation.
+
+INFO adds auxiliary12V SOC/voltage and climate_left_setpoint_c,
+climate_right_setpoint_c, evaporator_c to the existing v0 metrics. Ages and null
+unknowns are preserved. Selected temperatures never replace cabin_c. Payloads
+remain bounded to1024 bytes, with existing optional fields omitted if necessary.
+No Android rebuild or new binding is required when upgrading the same board.
 
 ## Connect and test
 
-The UDP task, socket, protocol, command cache and request-signal producer run on **CPU0**; application/vehicle work stays on CPU1. The listener binds station and setup-AP interfaces and replies to the actual sender's IP and ephemeral port. Android sends unicast requests to the configured IP. There is no discovery or MQTT binding.
+The UDP task, socket, protocol, command cache and request-signal producer run on **CPU0**; application/vehicle work stays on CPU1. The listener binds station and setup-AP interfaces and replies to the actual sender's IP and ephemeral port. Android sends unicast requests to the configured IP. There is no UDP discovery; [HA/MQTT](ha.md) is a separate optional publisher.
 
 Identity is `ecmpilot-` followed by the Wi-Fi station MAC in lowercase hex; a random 128-bit boot ID changes at restart. The app learns identity with `info.get`. Use **Forget saved gateway** when moving from the simulator or another board.
 
-Default mode is monitoring only: `test.enabled` starts invalid/false, info has no control operations, and observations are unknown. UDP reads never refresh observations or wake a vehicle.
+Opening, polling and reconnecting are passive: reads never wake BSI or refresh
+vehicle timestamps. INFO advertises experimental explicit `vehicle.refresh` and
+`charge.mode.set`; the first can wake BSI/send394 and the second adds35B with
+vehicle readback. See [current policy and validation](vehicle-control.md).
+`test.enabled` remains false initially; enabling it selects a no-CAN bench backend.
+HSCAN1 remains listen-only. Version5DF TX is removed from both profiles.
 
 After installing the firmware and Android APK, seed reproducible test inputs:
 
@@ -43,17 +82,17 @@ Reboot clears all values/forces. Disabling test mode fails pending commands as `
 
 ## Varstore mapping
 
-All values are int32; metadata is available through the web. Vehicle observations and `test.enabled` are manual inputs until CAN has a single producer. The UDP task owns `request.*` and `udp.*`; direct web writes are disabled for those signals.
+All values are int32; metadata is available through the web. In INFO mode CAN owns SOC, range, odometer, outside temperature, awake/parked and additional speed/gear/button diagnostics. Direct web Write/Touch/Invalidate is disabled for CAN-owned fields, with independent Force/Release available. Pack voltage and legacy HS1 candidate fields stay invalid on INFO. Other vehicle observations and `test.enabled` remain manual bench inputs. The UDP task owns `request.*` and `udp.*`. The removed GPIO wake experiment has no current request/API signal.
 
 | Varstore signal | UDP meaning |
 | --- | --- |
 | `vehicle.awake`, `vehicle.parked` | `state.vehicle.*`, 0/1 |
 | `battery.soc_pct_x10` | SOC percent / 10 |
 | `vehicle.range_km_x10` | Range km / 10 |
-| `temperature.cabin_c_x10`, `temperature.outside_c_x10` | Temperature C / 10 |
-| `battery.min_c_x10`, `battery.max_c_x10` | Battery temperature C / 10 |
+| `temperature.cabin_mc`, `temperature.outside_mc` | Millicelsius / 1000 → phone C |
+| `battery.min_mc`, `battery.max_mc` | Battery millicelsius / 1000 → phone C |
 | `vehicle.odometer_km` | Odometer km |
-| `battery.voltage_v_x10`, `battery.current_a_x10` | V/A / 10; positive current is discharge |
+| `battery.voltage_mv`, `battery.current_ma` | mV/mA / 1000 → phone V/A; positive current is discharge |
 | `climate.state` | 0 off, 1 on |
 | `charge.state` | 0 disconnected, 1 waiting, 2 charging, 3 complete, 4 fault |
 | `charge.mode`, `charge.connected` | 0 immediate / 1 deferred; cable 0/1 |

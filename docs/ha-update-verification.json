@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-04",
+  "scope": "Publish-only HA telemetry parity and persistent web broker configuration",
+  "entity_count": 52,
+  "native_tests": {"passed": 264, "log": "build-host-tests/ha-update-tests.log"},
+  "web_tests": {"passed": 53, "log": "build-host-tests/ha-update-web-tests.log"},
+  "final_targeted_tests": {"passed": 12, "log": "build-host-tests/ha-targeted-tests.log"},
+  "firmware": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1197904,
+    "sha256": "586172a6a4018ed046b1224ba987de2a7cbe6a53b0487da69ab6d63245379b86",
+    "build_log": "build-ha-update.log",
+    "sdk": "ESP-IDF 5.3.2",
+    "method": "Sequential incremental build: all project-owned files compiled, SDK objects reused",
+    "ota_slot_free_percent": 41
+  },
+  "mqtt_commands_implemented": false,
+  "device_flashed": false,
+  "live_broker_tested": false,
+  "can_transmissions_performed": false
+}

@@ -1,0 +1,225 @@
+{
+  "date": "2026-11-03",
+  "source_commit": "67f7581e7622410efdbb29c7eda3b86982b9b450",
+  "vehicle": "owner Opel Corsa-e, INFO CAN",
+  "unknown_messages": {
+    "3E1": {
+      "name": "HYBRID_START_STOP_INFO",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/3E1.yml",
+      "length": 7,
+      "reason": "No validated Corsa-e charging interpretation: all376 samples in info_charging.csv are 00 00 00 80 00 00 00 while the owner confirms continuous AC charging before the final delayed-mode request. Upstream CHARGE_STATUS stays0; it cannot be used to report external charging. Preserve raw bytes until an EV layout is established."
+    },
+    "161": {
+      "name": "BSI_GAUGES",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/161.yml",
+      "length": 7,
+      "reason": "No supported EV interpretation: all353 captured payloads are 00 00 3C 00 00 00 FD; upstream oil/fuel labels are not vehicle measurements and no battery mapping is established."
+    },
+    "3F0": {
+      "name": "ENGINE_HYBRID_DYNAMIC_DATA_18",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/3F0.yml",
+      "length": 8,
+      "reason": "Upstream ActualTorque conflicts with capture evidence: byte2 low nibble advances +5 modulo16 in all3528 adjacent pairs, and all3532 payloads have total nibble sum5 modulo16. Counter/checksum interpretation is a hypothesis; no torque scale is supported."
+    }
+  },
+  "wake_causes": {
+    "412": {
+      "name": "BSI_CABIN_DATA_4",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/412.yml",
+      "length": 8,
+      "signal": "BSI_WAKEUP_INFO_0",
+      "bits": "2.7-2.0",
+      "values": {
+        "32": "OBC cause (AC cable insertion)"
+      },
+      "evidence": "Owner-labelled AC cable insertion capture logs/info_buzeni_obc.csv starts with five 412 frames 00 20 00 00 00 00 00 00. This labels the observed full-byte value, not an isolated verified cause bit or an observed OBC transmitter.",
+      "scope": "Observed event correlation; original signal layout retained. Capture begins with BSI announcement; no preceding OBC request or transaction ACK is captured."
+    }
+  },
+  "message_sources": {
+    "1D7": {
+      "name": "LEFT_LED_HEADLAMP_DRIVER_DATA",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/1D7.yml",
+      "length": 1,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "217": {
+      "name": "ODOMETER_STATUS",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/217.yml",
+      "length": 8,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "257": {
+      "name": "CMB_ODOMETER",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/257.yml",
+      "length": 6,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "2D7": {
+      "name": "CLUSTER_SETTINGS_STATUS",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/2D7.yml",
+      "length": 3,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "2E7": {
+      "name": "DISPLAY_MODE_REQUEST",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/2E7.yml",
+      "length": 8,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "317": {
+      "name": "CMB_CONFIG",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/317.yml",
+      "length": 8,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "31C": {
+      "name": "TRIP_COMPUTER_STATUS",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/31C.yml",
+      "length": 5,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "51F": {
+      "name": "LANE_DEPARTURE_WARNING_LEFT_STATUS",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/51F.yml",
+      "length": 8,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    },
+    "5DF": {
+      "name": "CMB_VERSION",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/5DF.yml",
+      "length": 8,
+      "sender": "IC",
+      "unit": "004",
+      "evidence": "Owner reports original instrument cluster unit004 connected for info_buzeni_obc.csv and absent in earlier captures. This ID is absent in info_standby.csv and fully operational info_start_jizda.csv; upstream lists CMB among possible senders. Owner approved limiting IC attribution to these nine messages.",
+      "scope": "Vehicle-specific sender attribution from installation report/capture comparison and compatible source alias; does not validate signal meanings or exclude gateway forwarding."
+    }
+  },
+  "source_comparison_captures": {
+    "info_buzeni_obc.csv": "4270ed38bb56b23e8301996d1d39e912fcc4bab3adcd4792aa672d3479d178b8",
+    "info_standby.csv": "75900510806da48b03345f8e4a881a4a90876576bf47b319c60a7b0e2232cafa",
+    "info_start_jizda.csv": "1467c523cf6b396ad5b9e92d4432d268e8eae3d298d486f58abc00c4233af52c"
+  },
+  "signal_scales": {
+    "31A": {
+      "ZEV_RANGE_DISPLAY": {
+        "name": "ZEV_TRIP_INFO",
+        "path": "buses/AEE2010.full/LS.INFO-DIV/31A.yml",
+        "length": 8,
+        "source_spec": {
+          "bits": "1.7-2.7",
+          "factor": 1,
+          "offset": 0,
+          "min": 0,
+          "max": 500,
+          "units": "km",
+          "invalid": 511
+        },
+        "export_spec": {
+          "factor": 2,
+          "max": 1000
+        },
+        "evidence": "Owner supplied MyOpel screenshot showing 57% SOC and 120 km for logs/info_soc57_refresh.csv. All45 SOC frames contain byte0=0x39 (57). 44 valid31A frames start 1E00, raw9-bit range60; one startup frame is FF80, unavailable511. Thus this operating point requires 2 km/count, not the pinned source factor1. See docs/range-calibration.md.",
+        "scope": "Vehicle-specific linear scale correction anchored by one simultaneous app/capture reference. Other operating points, rounding, upper bounds and upstream alternative vehicles remain unvalidated; source JSON stays unchanged."
+      }
+    }
+  },
+  "signal_layouts": {
+    "396": {
+      "name": "BSRF_COMMAND_11",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/396.yml",
+      "length": 6,
+      "source_bits": {
+        "UNUSED_1": "1.5-1.0"
+      },
+      "export_signals": {
+        "CHARGING_HMI_STATE": {
+          "bits": "1.4-1.2",
+          "type": "enum",
+          "values": {
+            "0": "Disconnected (reported; driving capture)",
+            "1": "Charging (continuous-charge capture)",
+            "2": "Fault (HS3 source only; not observed)",
+            "3": "Stopped (delayed-mode captures)",
+            "4": "Finished (HS3 source only; not observed)",
+            "5": "Unknown 5",
+            "6": "Unknown 6",
+            "7": "Unknown 7"
+          },
+          "comment": "BSI reported charging HMI state. Source-reserved INFO span corroborated by two start/delay captures and driving contrast, consistent with HS3/396 CHARGING_HMI_STATE; not proof of current physical power flow or independent cable sensing."
+        },
+        "UNUSED_1": {
+          "bits": "1.5",
+          "type": "uint",
+          "unused": true
+        },
+        "UNUSED_CHARGE_HMI_LOW": {
+          "bits": "1.1-1.0",
+          "type": "uint",
+          "unused": true
+        }
+      },
+      "evidence": "info_charging.csv: first byte00 ->04 at1.940s, then0C at483.603s after160 deferred mode at480.965s; owner confirms continuous AC charging around2.5kW before delay. info_start_odlozeni.csv repeats00 ->04 ->0C. Driving capture uses01/03, yielding HMI0; preconditioning/standby captures yield0. AEE2010.full/HS.HS3/396.yml defines exactly1.4-1.2 as CHARGING_HMI_STATE. Other HS3 fields/DLC are not imported.",
+      "scope": "Vehicle-specific reported-HMI candidate supported for observed0/1/3, not a physical-current measurement. States2/4 follow the corroborating HS3 source enum and are unobserved;5..7 remain unknown. Older low-SOC charging-named captures report0, so stale/default BSI data can disagree with physical charging until refresh. Preserve the original INFO definition and unused bits."
+    },
+    "2E0": {
+      "name": "CLIMATE_PRECONDITIONING_SCHEDULE",
+      "path": "buses/AEE2010.full/LS.INFO-DIV/2E0.yml",
+      "length": 7,
+      "source_bits": {
+        "UNUSED_1": "1.6-1.0"
+      },
+      "export_signals": {
+        "AC_PRECOND_STATUS_FEEDBACK": {
+          "bits": "1.6-1.3",
+          "type": "uint",
+          "values": {
+            "0": "Inactive (capture observed)",
+            "1": "Active (capture observed)"
+          },
+          "comment": "Preconditioning feedback; other codes unverified on this car. Layout agrees with source002 feedback."
+        },
+        "AC_PRECOND_ASAP_MODE_ACTIVE": {
+          "bits": "1.2",
+          "type": "bool",
+          "values": {
+            "0": "Inactive",
+            "1": "Active"
+          },
+          "comment": "Accepted immediate-preconditioning request; running state is reported separately."
+        },
+        "UNUSED_1": {
+          "bits": "1.1-1.0",
+          "type": "uint",
+          "unused": true
+        }
+      },
+      "evidence": "logs/info_precond.csv contains first-byte transitions80 ->84 ->8C after31B/C0, then88 ->80 after31B/80. ASAP bit2 changes before feedback0/1. User confirms only app acknowledgement, not physical HVAC operation.",
+      "scope": "Vehicle-specific status layout from Start/Stop CAN correlation, consistent with source002 header. Only feedback0/1 observed; no physical heating, other feedback codes or other vehicle variants validated."
+    }
+  }
+}

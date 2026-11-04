@@ -26,3 +26,8 @@ void esp_fill_random(void *data, size_t size)
     unsigned char *p = data; ++generation;
     for (size_t i = 0; i < size; ++i) p[i] = (unsigned char)(generation + i);
 }
+
+#include "esp_system.h"
+static esp_reset_reason_t reset_reason = ESP_RST_POWERON;
+esp_reset_reason_t esp_reset_reason(void) { return reset_reason; }
+void gw_test_reset_reason(int reason) { reset_reason = (esp_reset_reason_t)reason; callback = sink; }

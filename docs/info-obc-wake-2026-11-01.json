@@ -1,0 +1,673 @@
+{
+  "date": "2026-11-01",
+  "reference": "Times relative to first captured 0x412, not physical plug-in time; files never share a clock",
+  "dbc_sha256": "c2a18ee92dc43b518dd14fdb98bf3f3c0861cd46ac2366f62d1ead48756f5306",
+  "captures": {
+    "info_buzeni_obc.csv": {
+      "sha256": "4270ed38bb56b23e8301996d1d39e912fcc4bab3adcd4792aa672d3479d178b8",
+      "frames": 9533,
+      "ids": 99,
+      "duration_s": 34.13994,
+      "timestamp_regressions": []
+    },
+    "info_standby.csv": {
+      "sha256": "75900510806da48b03345f8e4a881a4a90876576bf47b319c60a7b0e2232cafa",
+      "frames": 13163,
+      "ids": 85,
+      "duration_s": 66.828178,
+      "timestamp_regressions": []
+    },
+    "info_start_jizda.csv": {
+      "sha256": "1467c523cf6b396ad5b9e92d4432d268e8eae3d298d486f58abc00c4233af52c",
+      "frames": 9520,
+      "ids": 93,
+      "duration_s": 36.116634,
+      "timestamp_regressions": []
+    },
+    "infocan.csv": {
+      "sha256": "51971e3a0c72125082d2c8524a5244d1bd944bfba51a553a15fb6a907441de13",
+      "frames": 14137,
+      "ids": 97,
+      "duration_s": 61.519853,
+      "timestamp_regressions": []
+    },
+    "info_apka.csv": {
+      "sha256": "2a90da0c09e3f31bafda5bb4b4ba9977ebd09f317a29fbac5dd762a2a15a4849",
+      "frames": 7618,
+      "ids": 94,
+      "duration_s": 31.304387,
+      "timestamp_regressions": []
+    }
+  },
+  "comparisons": {
+    "info_standby.csv": {
+      "added_ids": [
+        "01C",
+        "1D7",
+        "217",
+        "257",
+        "2D7",
+        "2E7",
+        "317",
+        "31C",
+        "412",
+        "4A4",
+        "51F",
+        "5C1",
+        "5D2",
+        "5DF",
+        "5E4",
+        "5FB",
+        "5FC"
+      ],
+      "absent_ids": [
+        "01E",
+        "04D",
+        "070"
+      ]
+    },
+    "info_start_jizda.csv": {
+      "added_ids": [
+        "01C",
+        "1D7",
+        "217",
+        "257",
+        "2D7",
+        "2E7",
+        "317",
+        "31C",
+        "412",
+        "4A4",
+        "51F",
+        "5C1",
+        "5D2",
+        "5DF",
+        "5E4",
+        "5FB",
+        "5FC"
+      ],
+      "absent_ids": [
+        "01D",
+        "01E",
+        "04D",
+        "04F",
+        "070",
+        "073",
+        "07F",
+        "08D",
+        "10B",
+        "120",
+        "328"
+      ]
+    }
+  },
+  "new_vs_all_older": [
+    "1D7",
+    "217",
+    "257",
+    "2D7",
+    "2E7",
+    "317",
+    "31C",
+    "4A4",
+    "51F",
+    "5DF"
+  ],
+  "cluster_ids": [
+    "1D7",
+    "217",
+    "257",
+    "2D7",
+    "2E7",
+    "317",
+    "31C",
+    "51F",
+    "5DF"
+  ],
+  "added_id_details": [
+    {
+      "id": "01C",
+      "name": "ICSV_MotionSensorCommandRight",
+      "dbc_senders": [
+        "ICSV",
+        "BTEL",
+        "MATT",
+        "EMF",
+        "OVIP",
+        "CMB"
+      ],
+      "upstream_senders": [
+        "ICSV",
+        "BTEL",
+        "MATT",
+        "EMF",
+        "OVIP",
+        "CMB"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv",
+        "info_apka.csv"
+      ],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 11815.254,
+      "last_ms": 11815.254,
+      "median_period_ms": null,
+      "first_payload": "07 FF 00 28 28 28 28 28"
+    },
+    {
+      "id": "1D7",
+      "name": "IC_LeftLedHeadlampDriverData",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB",
+        "OVIP"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 339,
+      "dlcs": [
+        1
+      ],
+      "first_ms": 233.89,
+      "last_ms": 34059.273,
+      "median_period_ms": 100.061,
+      "first_payload": "00"
+    },
+    {
+      "id": "217",
+      "name": "IC_OdometerStatus",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB",
+        "BTEL"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 340,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 229.202,
+      "last_ms": 34075.232,
+      "median_period_ms": 100.055,
+      "first_payload": "60 80 00 00 00 00 00 01"
+    },
+    {
+      "id": "257",
+      "name": "IC_Odometer",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 3,
+      "dlcs": [
+        6
+      ],
+      "first_ms": 273.5,
+      "last_ms": 344.125,
+      "median_period_ms": 35.3125,
+      "first_payload": "09 06 F9 F6 F9 06"
+    },
+    {
+      "id": "2D7",
+      "name": "IC_ClusterSettingsStatus",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "MATT",
+        "CMB"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 34,
+      "dlcs": [
+        3
+      ],
+      "first_ms": 809.693,
+      "last_ms": 33834.594,
+      "median_period_ms": 1000.725,
+      "first_payload": "20 01 1A"
+    },
+    {
+      "id": "2E7",
+      "name": "IC_DisplayModeRequest",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "ICSV",
+        "CMB"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 2,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 250.048,
+      "last_ms": 11859.958,
+      "median_period_ms": 11609.91,
+      "first_payload": "01 00 00 00 00 00 00 00"
+    },
+    {
+      "id": "317",
+      "name": "IC_Config",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 34,
+      "dlcs": [
+        5
+      ],
+      "first_ms": 223.931,
+      "last_ms": 33252.279,
+      "median_period_ms": 1000.687,
+      "first_payload": "13 BD 00 C4 B0"
+    },
+    {
+      "id": "31C",
+      "name": "IC_TripComputerStatus",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB",
+        "MATT"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 170,
+      "dlcs": [
+        5
+      ],
+      "first_ms": 252.648,
+      "last_ms": 34078.005,
+      "median_period_ms": 200.044,
+      "first_payload": "02 FF FE 00 00"
+    },
+    {
+      "id": "412",
+      "name": "BSI_WakeupCause",
+      "dbc_senders": [
+        "BSI"
+      ],
+      "upstream_senders": [
+        "BSI"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv"
+      ],
+      "count": 5,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 0.0,
+      "last_ms": 39.995,
+      "median_period_ms": 9.9765,
+      "first_payload": "00 20 00 00 00 00 00 00"
+    },
+    {
+      "id": "4A4",
+      "name": "ICSV_TelematicsFaultEvent",
+      "dbc_senders": [
+        "ICSV",
+        "BTEL",
+        "OVIP",
+        "CMB"
+      ],
+      "upstream_senders": [
+        "ICSV",
+        "BTEL",
+        "OVIP",
+        "CMB"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [],
+      "count": 18,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 8744.971,
+      "last_ms": 12444.854,
+      "median_period_ms": 99.99,
+      "first_payload": "99 95 03 13 05 AC 19 B2"
+    },
+    {
+      "id": "51F",
+      "name": "IC_LaneDepartureWarningLe_3b5323",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 34,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 299.303,
+      "last_ms": 33324.266,
+      "median_period_ms": 1000.719,
+      "first_payload": "00 00 00 00 00 00 00 00"
+    },
+    {
+      "id": "5C1",
+      "name": "SDCM_BmlVersion",
+      "dbc_senders": [
+        "SDCM"
+      ],
+      "upstream_senders": [
+        "SDCM"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv",
+        "info_apka.csv"
+      ],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 66.339,
+      "last_ms": 66.339,
+      "median_period_ms": null,
+      "first_payload": "01 03 02 14 09 01 3F 31"
+    },
+    {
+      "id": "5D2",
+      "name": "BSI_HybridControlRequests",
+      "dbc_senders": [
+        "BSI"
+      ],
+      "upstream_senders": [
+        "BSI"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv",
+        "info_apka.csv"
+      ],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 45.196,
+      "last_ms": 45.196,
+      "median_period_ms": null,
+      "first_payload": "00 00 00 00 00 01 00 00"
+    },
+    {
+      "id": "5DF",
+      "name": "IC_Version",
+      "dbc_senders": [
+        "IC"
+      ],
+      "upstream_senders": [
+        "CMB"
+      ],
+      "cluster_attribution": true,
+      "older_captures": [],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 242.45,
+      "last_ms": 242.45,
+      "median_period_ms": null,
+      "first_payload": "1F 1C 01 15 4C 5E 3F 34"
+    },
+    {
+      "id": "5E4",
+      "name": "ICSV_BtelVersion",
+      "dbc_senders": [
+        "ICSV",
+        "BTEL",
+        "OVIP"
+      ],
+      "upstream_senders": [
+        "ICSV",
+        "BTEL",
+        "OVIP"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv",
+        "info_apka.csv"
+      ],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 7812.945,
+      "last_ms": 7812.945,
+      "median_period_ms": null,
+      "first_payload": "24 08 0A 18 04 31 3F 2C"
+    },
+    {
+      "id": "5FB",
+      "name": "FMUX_LaneLeft1CurveData",
+      "dbc_senders": [
+        "FMUX"
+      ],
+      "upstream_senders": [
+        "FMUX"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv",
+        "info_apka.csv"
+      ],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 57.78,
+      "last_ms": 57.78,
+      "median_period_ms": null,
+      "first_payload": "3B 1F 01 13 02 14 3F 20"
+    },
+    {
+      "id": "5FC",
+      "name": "MDS_Version",
+      "dbc_senders": [
+        "MDS"
+      ],
+      "upstream_senders": [
+        "MDS"
+      ],
+      "cluster_attribution": false,
+      "older_captures": [
+        "infocan.csv",
+        "info_apka.csv"
+      ],
+      "count": 1,
+      "dlcs": [
+        8
+      ],
+      "first_ms": 59.199,
+      "last_ms": 59.199,
+      "median_period_ms": null,
+      "first_payload": "3C 0B 03 14 1E 8E 30 35"
+    }
+  ],
+  "sequence": [
+    {
+      "line": 2,
+      "raw_us": 90845916,
+      "relative_ms": 0.0,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00",
+      "meaning": "BSI wake cause, byte1=0x20: OBC cause / AC insertion"
+    },
+    {
+      "line": 3,
+      "raw_us": 90856072,
+      "relative_ms": 10.156,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00",
+      "meaning": "BSI wake cause, byte1=0x20: OBC cause / AC insertion"
+    },
+    {
+      "line": 4,
+      "raw_us": 90865990,
+      "relative_ms": 20.074,
+      "id": "036",
+      "payload": "0E 00 83 0F 13 04 01 A8",
+      "power_management": 3,
+      "meaning": "BSI PowerManagement=3"
+    },
+    {
+      "line": 5,
+      "raw_us": 90866896,
+      "relative_ms": 20.98,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00",
+      "meaning": "BSI wake cause, byte1=0x20: OBC cause / AC insertion"
+    },
+    {
+      "line": 6,
+      "raw_us": 90876114,
+      "relative_ms": 30.198,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00",
+      "meaning": "BSI wake cause, byte1=0x20: OBC cause / AC insertion"
+    },
+    {
+      "line": 7,
+      "raw_us": 90885911,
+      "relative_ms": 39.995,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00",
+      "meaning": "BSI wake cause, byte1=0x20: OBC cause / AC insertion"
+    },
+    {
+      "line": 8,
+      "raw_us": 90891112,
+      "relative_ms": 45.196,
+      "id": "5D2",
+      "payload": "00 00 00 00 00 01 00 00",
+      "meaning": "BSI version-layout identification, not an OBC transaction ACK"
+    },
+    {
+      "line": 9,
+      "raw_us": 90900666,
+      "relative_ms": 54.75,
+      "id": "036",
+      "payload": "0E 00 83 0F 11 04 01 A8",
+      "power_management": 1,
+      "meaning": "BSI PowerManagement=1"
+    },
+    {
+      "line": 63,
+      "raw_us": 91069847,
+      "relative_ms": 223.931,
+      "id": "317",
+      "payload": "13 BD 00 C4 B0",
+      "meaning": "First cluster configuration"
+    },
+    {
+      "line": 64,
+      "raw_us": 91075118,
+      "relative_ms": 229.202,
+      "id": "217",
+      "payload": "60 80 00 00 00 00 00 01",
+      "meaning": "First cluster odometer status"
+    },
+    {
+      "line": 71,
+      "raw_us": 91088366,
+      "relative_ms": 242.45,
+      "id": "5DF",
+      "payload": "1F 1C 01 15 4C 5E 3F 34",
+      "meaning": "Original cluster version"
+    }
+  ],
+  "bsi_phase_changes": [
+    {
+      "line": 4,
+      "raw_us": 90865990,
+      "relative_ms": 20.074,
+      "id": "036",
+      "payload": "0E 00 83 0F 13 04 01 A8",
+      "power_management": 3
+    },
+    {
+      "line": 9,
+      "raw_us": 90900666,
+      "relative_ms": 54.75,
+      "id": "036",
+      "payload": "0E 00 83 0F 11 04 01 A8",
+      "power_management": 1
+    }
+  ],
+  "wake_frames": [
+    {
+      "line": 2,
+      "raw_us": 90845916,
+      "relative_ms": 0.0,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00"
+    },
+    {
+      "line": 3,
+      "raw_us": 90856072,
+      "relative_ms": 10.156,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00"
+    },
+    {
+      "line": 5,
+      "raw_us": 90866896,
+      "relative_ms": 20.98,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00"
+    },
+    {
+      "line": 6,
+      "raw_us": 90876114,
+      "relative_ms": 30.198,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00"
+    },
+    {
+      "line": 7,
+      "raw_us": 90885911,
+      "relative_ms": 39.995,
+      "id": "412",
+      "payload": "00 20 00 00 00 00 00 00"
+    }
+  ],
+  "wake_repetition_intervals_ms": [
+    10.156,
+    10.824,
+    9.218,
+    9.797
+  ],
+  "wake_to_normal_ms": 54.75,
+  "bsi_phase3_to_phase1_ms": 34.676,
+  "upstream_wake_request_ids_observed": [],
+  "direct_obc_request_observed": false,
+  "explicit_transaction_ack_observed": false,
+  "vehicle_io": false
+}

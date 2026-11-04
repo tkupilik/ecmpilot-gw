@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-31",
+  "vehicle": "owner Opel Corsa-e",
+  "bus": "LS.INFO-DIV",
+  "source_commit": "67f7581e7622410efdbb29c7eda3b86982b9b450",
+  "evidence": "Owner reports from the installed dashboard and CAN viewer in this conversation. Not a new automated vehicle test.",
+  "messages": {
+    "0B6": {
+      "source_name": "FAST_BSI_DATA",
+      "length": 8,
+      "path": "buses/AEE2010.full/LS.INFO-DIV/0B6.yml",
+      "evidence": "Owner confirms vehicle speed works on the installed dashboard.",
+      "scope": "Displayed speed; other FastBsiData fields are unverified.",
+      "signals": {
+        "SPEED": {
+          "bits": "3.7-4.0",
+          "factor": 0.01,
+          "offset": 0
+        }
+      }
+    },
+    "128": {
+      "source_name": "CLUSTER_SIGNAL_COMMAND",
+      "length": 8,
+      "path": "buses/AEE2010.full/LS.INFO-DIV/128.yml",
+      "evidence": "Owner confirms selected gear and parking-brake indication work on the installed dashboard.",
+      "scope": "Gear indication and parking-brake polarity; other cluster flags and exhaustive enum/sentinel behavior are unverified.",
+      "signals": {
+        "GEAR_POSITION_TO_DISPLAY": {
+          "bits": "2.7-2.4",
+          "factor": 1,
+          "offset": 0
+        },
+        "PARKING_BRAKES": {
+          "bits": "4.1",
+          "factor": 1,
+          "offset": 0
+        }
+      }
+    },
+    "0F6": {
+      "source_name": "BSI_SLOW_DATA_2",
+      "length": 8,
+      "path": "buses/AEE2010.full/LS.INFO-DIV/0F6.yml",
+      "evidence": "Owner confirms BSI_SlowData2 data matches the vehicle.",
+      "scope": "Currently consumed odometer and filtered outside temperature; remaining fields have not been checked individually.",
+      "signals": {
+        "TOTAL_MILEAGE": {
+          "bits": "3.7-5.0",
+          "factor": 0.1,
+          "offset": 0
+        },
+        "EXTERNAL_FILTERED_TEMPERATURE": {
+          "bits": "7.7-7.0",
+          "factor": 0.5,
+          "offset": -40
+        }
+      }
+    },
+    "3E7": {
+      "source_name": "MAINTENANCE_STATUS_EV",
+      "length": 5,
+      "path": "buses/AEE2010.full/LS.INFO-DIV/3E7.yml",
+      "evidence": "Owner confirms ICSV_MaintenanceStatusEv data matches the vehicle.",
+      "scope": "Service reminder interpretation at observed values; exhaustive flag combinations, limits and unavailable codes have not been tested.",
+      "signals": {
+        "MAINTENANCE_TYPE": {
+          "bits": "1.7",
+          "factor": 1,
+          "offset": 0
+        },
+        "MAINTENANCE_TYPE_2": {
+          "bits": "1.6",
+          "factor": 1,
+          "offset": 0
+        },
+        "MAINTENANCE_WRENCH_ICON_DISPLAY": {
+          "bits": "1.5",
+          "factor": 1,
+          "offset": 0
+        },
+        "DISTANCE_BLINKING": {
+          "bits": "1.4",
+          "factor": 1,
+          "offset": 0
+        },
+        "DISTANCE_SYMBOL": {
+          "bits": "1.3",
+          "factor": 1,
+          "offset": 0
+        },
+        "TIME_SYMBOL": {
+          "bits": "1.2",
+          "factor": 1,
+          "offset": 0
+        },
+        "TIME": {
+          "bits": "2.3-3.0",
+          "factor": 1,
+          "offset": 0
+        },
+        "DISTANCE": {
+          "bits": "4.7-5.0",
+          "factor": 20,
+          "offset": 0
+        }
+      }
+    }
+  }
+}

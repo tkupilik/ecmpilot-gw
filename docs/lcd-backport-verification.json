@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-31",
+  "version": "0.5.0",
+  "host_tests": 130,
+  "varstore_concurrency": "150000 writes +225000 overrides +two readers; PASS",
+  "units": "mV/mA/mC/W/percent x10; range km x10",
+  "signals": 158,
+  "appended_ids": 45,
+  "can": {
+    "profile": "HSCAN1",
+    "bitrate": 500000,
+    "tx_gpio": 15,
+    "rx_gpio": 16,
+    "mode": "listen-only",
+    "wake_version_enabled": false,
+    "rx_handlers": 7,
+    "battery_source": "5C3 SOC/pack voltage",
+    "optional_profile": "INFO/125000 normal",
+    "wake": {
+      "enabled": false,
+      "id": "401",
+      "dlc": 2,
+      "payload": "00 02",
+      "cause": "Internal",
+      "one_per_udp": true,
+      "skip_phase": 1
+    },
+    "version": {
+      "enabled": false,
+      "id": "5DF",
+      "period_ms": 500,
+      "only_phase": 1
+    },
+    "queue_length": 0,
+    "single_shot": true
+  },
+  "gvret": {
+    "port": 23,
+    "queue_records": 64,
+    "external_memory": false,
+    "socket_tx_supported": false
+  },
+  "ha": {
+    "default_enabled": false,
+    "enabled_target_compile": true,
+    "enabled_target_link": true,
+    "entities": 24,
+    "client_core": 0,
+    "publisher_core": 0,
+    "outbox_limit": 8192,
+    "live_broker_test": false,
+    "telemetry_wakes_vehicle": false
+  },
+  "no_ufrm": true,
+  "no_psram": true,
+  "flashed": false,
+  "evidence": {
+    "build_log": "build-hscan-default.log",
+    "final_build_log": "build-hscan-final.log",
+    "test_log": "hscan-tests.log"
+  },
+  "image": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 962000,
+    "sha256": "8d70ab2cf3619a166b955244a9197452d86da9a078752354f8cb42aa1baa71a1"
+  }
+}

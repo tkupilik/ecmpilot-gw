@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-03",
+  "scope": "Range scaling, independent BSI phase, cached climate setpoints and Android review changes",
+  "range_reference": {
+    "capture": "logs/info_soc57_refresh.csv",
+    "sha256": "4d1834739844c35d9462064bb11e61668cebb26aa4369c716a4140aa67d53ea9",
+    "soc_pct": 57,
+    "range_km": 120,
+    "raw_range": 60,
+    "km_per_count": 2,
+    "valid_range_frames": 44,
+    "unavailable_range_frames": 1,
+    "soc_frames": 45,
+    "notes": "One simultaneous MyOpel screenshot/capture reference; not exhaustive calibration."
+  },
+  "gateway": {
+    "tests": 189,
+    "result": "passed",
+    "log": "build-host-tests/range-status-final.log",
+    "build_log": "build-range-status.log",
+    "image": "build/ecmpilot_gw.bin",
+    "bytes": 1040080,
+    "sha256": "2049cac7cf00cfb7064b97550a3d5dc75de75ecd30f42b444a1eada4dfcf94e1",
+    "flashed": false,
+    "ota_uploaded": false,
+    "can_io": false
+  },
+  "dbc": {
+    "path": "dbc/opel_corsa_e_info.dbc",
+    "sha256": "2a82b6f3a2770e460f8b1cf3d906f0f70bd8f13e24447dd82639d1cb865ee86f",
+    "source_preserved": true,
+    "overlay": "dbc/opel_corsa_e_info.vehicle-review.json"
+  },
+  "android": {
+    "tests": 22,
+    "test_result": "passed",
+    "lint": "passed",
+    "build_log": "C:\\work\\bev\\ecmpilot\\artifacts\\status-ui-build.log",
+    "apk": "C:\\work\\bev\\ecmpilot\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+    "sha256": "96e0b4a96887514d529f33feccfbf1a7226ae460e70488a060cf1538dbf95956",
+    "installed": true,
+    "device_model": "Samsung SM-A556B",
+    "launched": true,
+    "pid_at_check": 14613,
+    "screenshot": "C:\\work\\bev\\ecmpilot\\artifacts\\status-ui-phone.png",
+    "source_sha256": {
+      "app\\src\\main\\java\\cz\\ecmpilot\\ui\\PilotApp.kt": "dc00cfa4425f841d48652319e4f1f952b785dcb3c921692f81ea860601cf51d5",
+      "app\\src\\main\\java\\cz\\ecmpilot\\model\\Vehicle.kt": "74a5245dcda6ecc5614d484b4ebbbea0df0a25e8c6fb068ff92a4c00a3393164",
+      "app\\src\\main\\java\\cz\\ecmpilot\\protocol\\Protocol.kt": "9dd12dddc754888410a1aa83969894200117b9ad475130aa47cab17ff856b311",
+      "app\\src\\main\\java\\cz\\ecmpilot\\protocol\\DemoConnection.kt": "b2e8c559c9d430b6993fb0d2da90680e675b2254abb6f47b4517a33bc5c90aad"
+    }
+  },
+  "source_sha256": {
+    "main/can_info_decode.c": "8c0225aca79894d2ea9917698a42ac942ef8458c2572a192a6a40e496ffa2601",
+    "main/vehicle_data.c": "f835088f21acfb2b1a05a449207c8c603a239ac07e86f24112a720fe197d7812",
+    "main/udp_protocol.c": "02bdf408f8f7a7b449936c711f865cdd0926ddea0caa4c9d2adab285cfef050f",
+    "tools/generate_info_can_dbc.py": "633a7799ab0e3f33d60817c51a2bbc04684cf52a07921c7df1421a3e9188d65e",
+    "tests/test_can_info.py": "0ead5b273fdcf819d85e02d4490f49a7300917ee62bb6981ba04f3fd50225711",
+    "tests/test_lcd_telemetry.py": "28807a81785821cbfcaf0e137b9cdc7ce915fa4c09dfe3e13f6fd57e41456457",
+    "tests/test_info_can_dbc.py": "ed2c353b0f327fe231643d54dc138f15cf6ef7161167aa08d0f90247760105c0",
+    "tests/test_udp.py": "ea496e4ea5007b8f861731b1ed5aedf50f54b06b4a35c1d2c3475d093c6b0e62"
+  },
+  "limits": [
+    "No live vehicle refresh or charging command was sent.",
+    "Phone was connected to a gateway with no current vehicle readings at the launch check.",
+    "The new bsi object, range correction and retained climate values require the new GW firmware, which was built but not uploaded.",
+    "The three-second success dismissal is implemented in the keyed Compose effect; no vehicle command was issued to trigger it during this launch check."
+  ]
+}

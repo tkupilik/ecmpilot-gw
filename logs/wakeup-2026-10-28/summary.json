@@ -1,0 +1,90 @@
+[
+  {
+    "file": "20261028T114701Z-probe.json",
+    "utc": "20261028T114701Z",
+    "case": "probe",
+    "request_id": "",
+    "payload": "",
+    "baseline_frames": 0,
+    "tx_window_frames": 0,
+    "post_reset_frames": 0,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T114721Z-bsi-tester.json",
+    "utc": "20261028T114721Z",
+    "case": "bsi-tester",
+    "request_id": "752",
+    "payload": "02 3E 00 00 00 00 00 00",
+    "baseline_frames": 0,
+    "tx_window_frames": 0,
+    "post_reset_frames": 0,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T114739Z-vcu-tester.json",
+    "utc": "20261028T114739Z",
+    "case": "vcu-tester",
+    "request_id": "6A2",
+    "payload": "02 3E 00 00 00 00 00 00",
+    "baseline_frames": 0,
+    "tx_window_frames": 0,
+    "post_reset_frames": 0,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T114758Z-battery-soc.json",
+    "utc": "20261028T114758Z",
+    "case": "battery-soc",
+    "request_id": "6B4",
+    "payload": "03 22 D4 10 00 00 00 00",
+    "baseline_frames": 0,
+    "tx_window_frames": 0,
+    "post_reset_frames": 0,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T115028Z-bsi-tester.json",
+    "utc": "20261028T115028Z",
+    "case": "bsi-tester",
+    "request_id": "752",
+    "payload": "02 3E 00 00 00 00 00 00",
+    "baseline_frames": 2173,
+    "tx_window_frames": 879,
+    "post_reset_frames": 3260,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T115044Z-vcu-read.json",
+    "utc": "20261028T115044Z",
+    "case": "vcu-read",
+    "request_id": "6A2",
+    "payload": "03 22 D8 CA 00 00 00 00",
+    "baseline_frames": 2169,
+    "tx_window_frames": 879,
+    "post_reset_frames": 3258,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T115114Z-battery-soc.json",
+    "utc": "20261028T115114Z",
+    "case": "battery-soc",
+    "request_id": "6B4",
+    "payload": "03 22 D4 10 00 00 00 00",
+    "baseline_frames": 2169,
+    "tx_window_frames": 857,
+    "post_reset_frames": 2870,
+    "all_cleanup_ok": true
+  },
+  {
+    "file": "20261028T115316Z-probe.json",
+    "utc": "20261028T115316Z",
+    "case": "probe",
+    "request_id": "",
+    "payload": "",
+    "baseline_frames": 0,
+    "tx_window_frames": 0,
+    "post_reset_frames": 0,
+    "all_cleanup_ok": true
+  }
+]

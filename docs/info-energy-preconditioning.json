@@ -1,0 +1,2572 @@
+{
+  "date": "2026-11-03",
+  "physical_can_io": false,
+  "cloud_reference": {
+    "old_kwh_approx": 3,
+    "new_kwh": 19.88,
+    "synchronized_to_capture": false,
+    "new_observed_after": "preconditioning start"
+  },
+  "scope": {
+    "width_bits": [
+      8,
+      32
+    ],
+    "unsigned": true,
+    "offset": 0,
+    "scales_kwh": [
+      0.0001,
+      0.0005,
+      0.001,
+      0.002,
+      0.00390625,
+      0.004,
+      0.005,
+      0.0078125,
+      0.008,
+      0.01,
+      0.015625,
+      0.016,
+      0.02,
+      0.025,
+      0.03125,
+      0.032,
+      0.035,
+      0.05,
+      0.0625,
+      0.064,
+      0.1,
+      0.125,
+      0.128,
+      0.2,
+      0.25,
+      0.256,
+      0.5,
+      1
+    ],
+    "old_tolerance_kwh": 0.5,
+    "new_tolerance_kwh": 0.06,
+    "minimum_fraction": 0.8,
+    "minimum_samples_per_id": 1,
+    "start_convention": "BE MSB-first; LE LSB-first; zero-based linear position"
+  },
+  "inputs": [
+    {
+      "name": "info_soc57_refresh.csv",
+      "sha256": "4d1834739844c35d9462064bb11e61668cebb26aa4369c716a4140aa67d53ea9",
+      "frames": 12355,
+      "duration_s": 65.829567,
+      "ids": 98
+    },
+    {
+      "name": "info_precond.csv",
+      "sha256": "b1460c2bf4f5dbf717dcde1925711cd5b4e6b0074f3697395f36cbfb10454998",
+      "frames": 36565,
+      "duration_s": 149.039358,
+      "ids": 100
+    }
+  ],
+  "old_only_ids": [
+    "4BC"
+  ],
+  "new_only_ids": [
+    "11B",
+    "31B",
+    "4A4"
+  ],
+  "hscan_ids_present": {
+    "543": [
+      0,
+      0
+    ],
+    "5C3": [
+      0,
+      0
+    ],
+    "22F": [
+      0,
+      0
+    ]
+  },
+  "across_captures": {
+    "shared_ids": 97,
+    "checked_fields": 166170,
+    "matches": [],
+    "match_count": 0
+  },
+  "within_preconditioning": {
+    "shared_ids": 88,
+    "checked_fields": 146720,
+    "matches": [],
+    "match_count": 0
+  },
+  "low_soc_inputs": [
+    {
+      "name": "info_nabijeni_8soc.csv",
+      "sha256": "438d891e89e1d32a60545c5c09388526843e5007f75f4a98318a96b95a86839b",
+      "frames": 18293,
+      "soc_raw": {
+        "8": 83
+      }
+    },
+    {
+      "name": "info_nabijeni_8soc_2.csv",
+      "sha256": "627ccedaed5423bacf0220bc5a2b9fd002aa9a88e6ef2354268dbf00885d7e58",
+      "frames": 8269,
+      "soc_raw": {
+        "8": 37
+      }
+    },
+    {
+      "name": "info_nabijeni_8soc_3.csv",
+      "sha256": "7e62707aa77e2ccb3762a1c3bc7800f9d72fcbc77477adee167c490af2cb94b3",
+      "frames": 5991,
+      "soc_raw": {
+        "8": 27
+      }
+    }
+  ],
+  "low_soc_combined_to_preconditioning": {
+    "shared_ids": 85,
+    "checked_fields": 146562,
+    "matches": [],
+    "match_count": 0
+  },
+  "absolute_reference_search": {
+    "width_bits": [
+      8,
+      16
+    ],
+    "scales_kwh": [
+      0.001,
+      0.005,
+      0.01,
+      0.015625,
+      0.016,
+      0.02,
+      0.025,
+      0.03125,
+      0.032,
+      0.05,
+      0.1,
+      0.125,
+      0.25,
+      0.5,
+      1
+    ],
+    "match_count": 399,
+    "ids": [
+      "0E0",
+      "0F6",
+      "131",
+      "19C",
+      "1A1",
+      "1A8",
+      "1A9",
+      "1DC",
+      "1E7",
+      "1E8",
+      "217",
+      "221",
+      "228",
+      "236",
+      "268",
+      "276",
+      "2AD",
+      "2B6",
+      "2E0",
+      "2E8",
+      "317",
+      "31A",
+      "31C",
+      "350",
+      "364",
+      "368",
+      "396",
+      "3A3",
+      "3A8",
+      "3DA",
+      "3E7",
+      "3E8"
+    ],
+    "matches_without_nonreserved_overlap": [
+      {
+        "id_hex": "396",
+        "endian": "BE",
+        "linear_start": 34,
+        "length": 9,
+        "scale_kwh": 0.1,
+        "near_reference_count": 180,
+        "total_count": 180,
+        "min_kwh": 19.900000000000002,
+        "max_kwh": 19.900000000000002,
+        "unique_raw_values": 1,
+        "source_message": "BSRF_COMMAND_11",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "199": 180
+        }
+      },
+      {
+        "id_hex": "396",
+        "endian": "BE",
+        "linear_start": 34,
+        "length": 10,
+        "scale_kwh": 0.05,
+        "near_reference_count": 180,
+        "total_count": 180,
+        "min_kwh": 19.900000000000002,
+        "max_kwh": 19.900000000000002,
+        "unique_raw_values": 1,
+        "source_message": "BSRF_COMMAND_11",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "398": 180
+        }
+      },
+      {
+        "id_hex": "396",
+        "endian": "BE",
+        "linear_start": 34,
+        "length": 11,
+        "scale_kwh": 0.025,
+        "near_reference_count": 180,
+        "total_count": 180,
+        "min_kwh": 19.925,
+        "max_kwh": 19.925,
+        "unique_raw_values": 1,
+        "source_message": "BSRF_COMMAND_11",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "797": 180
+        }
+      },
+      {
+        "id_hex": "396",
+        "endian": "BE",
+        "linear_start": 35,
+        "length": 8,
+        "scale_kwh": 0.1,
+        "near_reference_count": 180,
+        "total_count": 180,
+        "min_kwh": 19.900000000000002,
+        "max_kwh": 19.900000000000002,
+        "unique_raw_values": 1,
+        "source_message": "BSRF_COMMAND_11",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "199": 180
+        }
+      },
+      {
+        "id_hex": "396",
+        "endian": "BE",
+        "linear_start": 35,
+        "length": 9,
+        "scale_kwh": 0.05,
+        "near_reference_count": 180,
+        "total_count": 180,
+        "min_kwh": 19.900000000000002,
+        "max_kwh": 19.900000000000002,
+        "unique_raw_values": 1,
+        "source_message": "BSRF_COMMAND_11",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "398": 180
+        }
+      },
+      {
+        "id_hex": "396",
+        "endian": "BE",
+        "linear_start": 35,
+        "length": 10,
+        "scale_kwh": 0.025,
+        "near_reference_count": 180,
+        "total_count": 180,
+        "min_kwh": 19.925,
+        "max_kwh": 19.925,
+        "unique_raw_values": 1,
+        "source_message": "BSRF_COMMAND_11",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "797": 180
+        }
+      },
+      {
+        "id_hex": "3DA",
+        "endian": "BE",
+        "linear_start": 38,
+        "length": 10,
+        "scale_kwh": 0.02,
+        "near_reference_count": 174,
+        "total_count": 180,
+        "min_kwh": 0.0,
+        "max_kwh": 19.84,
+        "unique_raw_values": 2,
+        "source_message": "ZEV_TRIP_INFO_3",
+        "source_nonreserved_overlaps": [],
+        "raw_histogram": {
+          "0": 6,
+          "992": 174
+        }
+      }
+    ],
+    "interpretation": "Numeric coincidences, not energy validation; neither capture contrast nor low-SOC contrast supports them."
+  },
+  "changed_payloads": [
+    {
+      "id": "036",
+      "source_name": "RADIO_COMMANDS",
+      "old": [
+        {
+          "data": "0E 00 03 06 31 04 01 A8",
+          "count": 430
+        },
+        {
+          "data": "0E 00 03 06 12 04 01 A8",
+          "count": 208
+        },
+        {
+          "data": "0E 00 03 06 11 04 01 A8",
+          "count": 21
+        },
+        {
+          "data": "0E 00 03 06 13 04 01 A8",
+          "count": 2
+        },
+        {
+          "data": "0E 00 03 06 12 04 01 50",
+          "count": 1
+        },
+        {
+          "data": "0E 00 03 06 10 04 01 A8",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "0E 00 03 06 31 04 01 A8",
+          "count": 1330
+        },
+        {
+          "data": "0E 00 03 06 12 04 01 A8",
+          "count": 139
+        },
+        {
+          "data": "0E 00 03 06 11 04 01 A8",
+          "count": 21
+        },
+        {
+          "data": "0E 00 03 06 32 04 01 A8",
+          "count": 2
+        },
+        {
+          "data": "0E 00 03 06 13 04 01 50",
+          "count": 1
+        },
+        {
+          "data": "0E 00 03 06 10 04 01 A8",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "0E6",
+      "source_name": "BRAKE_UNIT_STATUS",
+      "old": [
+        {
+          "data": "00 00 00 00 00 73 8E 75",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 84",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 93",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E A2",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E B1",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E C0",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E DF",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E EE",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E FD",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 0C",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 1B",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 2A",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 39",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 57",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 49",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 67",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 76",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 85",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 94",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E A3",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E B2",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E C1",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E D0",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E EF",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 72 8E FE",
+          "count": 2
+        },
+        {
+          "data": "C1 00 00 00 00 73 8E 1E",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 74 8E 2C",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 74 8E 3B",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 74 8E 4A",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 74 8E 56",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 74 8E 65",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 48",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 73 8E 66",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 0D",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 1C",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 2B",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 3A",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 72 8E 58",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "00 00 00 00 00 83 8E FC",
+          "count": 4
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 29",
+          "count": 4
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 38",
+          "count": 4
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 47",
+          "count": 4
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 89",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 98",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E A7",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E B6",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E C5",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E D4",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E E3",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 73",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 82",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 84 8E CE",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E DE",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E ED",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 0B",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 1A",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 56",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 65",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 74",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 83",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E 92",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E A1",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 83 8E B0",
+          "count": 3
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 5A",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 69",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 78",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E F2",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 01",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 10",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 2F",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 3E",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 4D",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 5C",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 6B",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6F 8E 7A",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 5F",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 6E",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 7D",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 8C",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 9B",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E AA",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E B9",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E C8",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E D7",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E E6",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E F5",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 04",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 91",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E A0",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E BF",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E DD",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E EC",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 0A",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 19",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 55",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 64",
+          "count": 2
+        },
+        {
+          "data": "00 00 00 00 00 83 8E CF",
+          "count": 2
+        },
+        {
+          "data": "C1 00 00 00 00 70 8E 11",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 71 8E 2F",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 71 8E 3E",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 70 8E 4E",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 87",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 96",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E A5",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E B4",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E C3",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E D2",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E E1",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E F0",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 0F",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 1E",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 2D",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 3C",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 70 8E 4B",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6E 8E F3",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 6B 8E 17",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 6C 8E 25",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 6C 8E 34",
+          "count": 1
+        },
+        {
+          "data": "C1 00 00 00 00 6C 8E 43",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 13",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 22",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 31",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6C 8E 40",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6B 8E 14",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6B 8E 23",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6B 8E 32",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6B 8E 41",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 6B 8E 50",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 85 8E 63",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 84 8E FB",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 28",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 37",
+          "count": 1
+        },
+        {
+          "data": "00 00 00 00 00 84 8E 46",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "0F6",
+      "source_name": "BSI_SLOW_DATA_2",
+      "old": [
+        {
+          "data": "80 3C 09 0D 8D 5F 5F 20",
+          "count": 90
+        }
+      ],
+      "new": [
+        {
+          "data": "80 3C 09 0D 8D 5D 5D 20",
+          "count": 214
+        },
+        {
+          "data": "80 3C 09 0D 8D 5D 5C 20",
+          "count": 47
+        },
+        {
+          "data": "80 3C 09 0D 8D 5C 5D 20",
+          "count": 6
+        },
+        {
+          "data": "80 3C 09 0D 8D 5D FF 20",
+          "count": 2
+        },
+        {
+          "data": "80 3C 09 0D 8D 5C 5C 20",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "128",
+      "source_name": "CLUSTER_SIGNAL_COMMAND",
+      "old": [
+        {
+          "data": "00 A0 00 22 00 00 00 00",
+          "count": 225
+        },
+        {
+          "data": "00 A0 00 20 00 00 00 00",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "00 A0 00 22 00 00 00 00",
+          "count": 673
+        },
+        {
+          "data": "00 A0 00 20 00 00 00 00",
+          "count": 2
+        },
+        {
+          "data": "00 A0 00 23 00 00 00 00",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "217",
+      "source_name": "ODOMETER_STATUS",
+      "old": [
+        {
+          "data": "60 80 00 00 00 FF 00 01",
+          "count": 448
+        },
+        {
+          "data": "62 80 00 00 00 00 00 01",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "60 80 00 00 00 FF 00 01",
+          "count": 1348
+        },
+        {
+          "data": "82 80 00 00 00 00 00 01",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "227",
+      "source_name": "PUSH_BUTTON_LED_CONTROL",
+      "old": [
+        {
+          "data": "00 40 00 00 00 00 00 93",
+          "count": 41
+        },
+        {
+          "data": "00 40 00 00 00 00 00 92",
+          "count": 20
+        },
+        {
+          "data": "00 40 00 00 00 00 00 95",
+          "count": 9
+        },
+        {
+          "data": "00 40 00 00 00 00 00 90",
+          "count": 9
+        },
+        {
+          "data": "00 40 00 00 00 00 00 94",
+          "count": 7
+        },
+        {
+          "data": "00 40 00 00 00 00 00 91",
+          "count": 4
+        },
+        {
+          "data": "00 00 00 00 00 00 00 95",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "00 40 00 00 00 00 00 00",
+          "count": 270
+        },
+        {
+          "data": "00 00 00 00 00 00 00 00",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "236",
+      "source_name": "BSI_SLOW_DATA_3",
+      "old": [
+        {
+          "data": "04 05 C4 EA A7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA B1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA BB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA C5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA CF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA D9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA E3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA ED 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EA F7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 01 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 0B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 15 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 1F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 29 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 33 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 3D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 47 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 51 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 5B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 65 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 6F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 79 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 83 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 8D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB 97 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB A1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB AB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB B5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB BF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB C9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB D3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB DD 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB E7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB F1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EB FB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 05 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 0F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 19 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 23 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 2D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 37 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 41 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 4B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 55 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C4 EC 5F 0C FE 40",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "04 05 C8 AB 09 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 13 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 1D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 27 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 31 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 3B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 45 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 4F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 59 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 63 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 6D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 77 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 81 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 8B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 95 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB 9F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB A9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB B3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB BD 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB C7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB D1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB DB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB E5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB EF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AB F9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 03 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 0D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 17 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 21 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 2B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 35 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 3F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 49 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 53 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 5D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 67 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 71 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 7B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 85 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 8F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC 99 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC A3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC AD 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC B7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC C1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC CB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC D5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC DF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC E9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC F3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AC FD 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 07 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 11 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 1B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 25 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 2F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 39 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 43 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 4D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 57 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 61 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 6B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 75 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 7F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 89 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 93 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD 9D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD A7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD B1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD BB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD C5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD CF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD D9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD E3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD ED 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AD F7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 01 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 0B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 15 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 1F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 29 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 33 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 3D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 47 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 51 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 5B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 65 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 6F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 79 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 83 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 8D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE 97 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE A1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE AB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE B5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE BF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE C9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE D3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE DD 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE E7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE F1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AE FB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 05 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 0F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 19 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 23 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 2D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 37 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 41 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 4B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 55 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 5F 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 69 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 73 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 7D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 87 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 91 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF 9B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF A5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF AF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF B9 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF C3 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF CD 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF D7 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF E1 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF EB 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF F5 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 AF FF 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 09 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 13 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 1D 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 27 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 31 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 3B 0C FE 40",
+          "count": 1
+        },
+        {
+          "data": "04 05 C8 B0 45 0C FE 40",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "25C",
+      "source_name": "ECO_DRIVING_HISTORY",
+      "old": [
+        {
+          "data": "E0 EE EE E0 00 00 00 00",
+          "count": 45
+        }
+      ],
+      "new": [
+        {
+          "data": "E0 EE EE E0 00 00 00 00",
+          "count": 134
+        },
+        {
+          "data": "EE EE EE E0 00 00 00 00",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "276",
+      "source_name": "VSM_SLOW_DATA",
+      "old": [
+        {
+          "data": "9A 2B 83 0B 13 3F FE 44",
+          "count": 26
+        },
+        {
+          "data": "9A 2B 83 0B 12 3F FE 44",
+          "count": 19
+        },
+        {
+          "data": "9A 2B 03 0B 12 3F FE 44",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "9A 2B 03 12 0A 3F FE 44",
+          "count": 42
+        },
+        {
+          "data": "9A 2B 83 12 08 3F FE 44",
+          "count": 33
+        },
+        {
+          "data": "9A 2B 03 12 09 3F FE 44",
+          "count": 33
+        },
+        {
+          "data": "9A 2B 83 12 09 3F FE 44",
+          "count": 28
+        },
+        {
+          "data": "9A 2B 03 12 08 3F FE 44",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "2AD",
+      "source_name": "CLIMATE_HMI_COMMAND",
+      "old": [
+        {
+          "data": "8E 08 00 43 32 F8 00 03",
+          "count": 87
+        },
+        {
+          "data": "8E 08 00 54 32 F8 00 03",
+          "count": 4
+        }
+      ],
+      "new": [
+        {
+          "data": "8E 08 00 43 32 F8 00 03",
+          "count": 155
+        },
+        {
+          "data": "8E 08 00 54 32 F8 00 03",
+          "count": 59
+        },
+        {
+          "data": "8E 08 00 65 32 F8 00 03",
+          "count": 23
+        },
+        {
+          "data": "8E 08 00 76 32 F8 00 03",
+          "count": 19
+        },
+        {
+          "data": "8E 08 00 87 32 F8 00 03",
+          "count": 12
+        },
+        {
+          "data": "8E 08 00 32 32 F8 00 03",
+          "count": 7
+        },
+        {
+          "data": "8E 08 00 64 32 F8 00 03",
+          "count": 3
+        },
+        {
+          "data": "8E 08 00 53 32 F8 00 03",
+          "count": 2
+        },
+        {
+          "data": "8E 08 00 75 32 F8 00 03",
+          "count": 1
+        },
+        {
+          "data": "8E 08 00 86 32 F8 00 03",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "2E0",
+      "source_name": "CLIMATE_PRECONDITIONING_SCHEDULE",
+      "old": [
+        {
+          "data": "80 58 01 C2 00 07 FF",
+          "count": 91
+        }
+      ],
+      "new": [
+        {
+          "data": "80 58 01 C2 00 07 FF",
+          "count": 143
+        },
+        {
+          "data": "8C 58 01 C2 00 07 FF",
+          "count": 114
+        },
+        {
+          "data": "84 58 01 C2 00 07 FF",
+          "count": 12
+        },
+        {
+          "data": "88 58 01 C2 00 07 FF",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "2E9",
+      "source_name": "GEARBOX_TORQUE_CALIBRATION",
+      "old": [
+        {
+          "data": "01 0C 50 00",
+          "count": 171
+        },
+        {
+          "data": "01 00 00 00",
+          "count": 57
+        }
+      ],
+      "new": [
+        {
+          "data": "01 0C 50 00",
+          "count": 634
+        },
+        {
+          "data": "01 00 00 00",
+          "count": 43
+        },
+        {
+          "data": "01 0C 00 00",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "317",
+      "source_name": "CMB_CONFIG",
+      "old": [
+        {
+          "data": "33 BD 82 C6 B0",
+          "count": 44
+        },
+        {
+          "data": "13 BD 00 C4 B0",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "33 BD 82 C6 B0",
+          "count": 134
+        },
+        {
+          "data": "00 00 00 00 00",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "31A",
+      "source_name": "ZEV_TRIP_INFO",
+      "old": [
+        {
+          "data": "1E 00 00 00 3F E0 05 A0",
+          "count": 44
+        },
+        {
+          "data": "FF 80 00 00 3F E0 05 A0",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "1D 80 00 00 3F E0 05 A0",
+          "count": 133
+        },
+        {
+          "data": "FF 80 00 00 00 00 05 A0",
+          "count": 1
+        },
+        {
+          "data": "FF 80 00 00 3F E0 05 A0",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "id": "396",
+      "source_name": "BSRF_COMMAND_11",
+      "old": [
+        {
+          "data": "00 8C AF 00 58 E8",
+          "count": 25
+        },
+        {
+          "data": "00 8E AF 00 58 E8",
+          "count": 12
+        },
+        {
+          "data": "00 FE AF 00 58 E8",
+          "count": 8
+        }
+      ],
+      "new": [
+        {
+          "data": "00 A0 AD 00 58 E8",
+          "count": 59
+        },
+        {
+          "data": "00 A2 AD 00 58 E8",
+          "count": 42
+        },
+        {
+          "data": "00 8A AD 00 58 E8",
+          "count": 16
+        },
+        {
+          "data": "00 FE AD 00 58 E8",
+          "count": 8
+        },
+        {
+          "data": "00 9A AD 00 58 E8",
+          "count": 4
+        },
+        {
+          "data": "00 8C AD 00 58 E8",
+          "count": 3
+        },
+        {
+          "data": "00 9C AD 00 58 E8",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "id": "7A4",
+      "source_name": null,
+      "old": [
+        {
+          "data": "00 00 00 00 00 00 00 00",
+          "count": 28
+        },
+        {
+          "data": "00 00 9D 7C 02 00 00 04",
+          "count": 16
+        },
+        {
+          "data": "00 00 9D 7C 02 00 00 00",
+          "count": 1
+        }
+      ],
+      "new": [
+        {
+          "data": "00 00 4B C9 01 00 00 04",
+          "count": 109
+        },
+        {
+          "data": "00 00 00 00 00 00 00 00",
+          "count": 25
+        },
+        {
+          "data": "00 00 4B C9 01 00 00 00",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "watched": [
+    {
+      "capture": "info_soc57_refresh.csv",
+      "changes": [
+        {
+          "id": "3A8",
+          "line": 117,
+          "time_s": 6.981117,
+          "data": "FC FC FC 00 00 00 00 00"
+        },
+        {
+          "id": "4BC",
+          "line": 129,
+          "time_s": 7.026588,
+          "data": "5C FD 8C 81 FF FF FF FF"
+        },
+        {
+          "id": "3E0",
+          "line": 165,
+          "time_s": 7.130174,
+          "data": "39 00 00 00 00 00 00 00"
+        },
+        {
+          "id": "31A",
+          "line": 192,
+          "time_s": 7.240453,
+          "data": "FF 80 00 00 3F E0 05 A0"
+        },
+        {
+          "id": "39A",
+          "line": 193,
+          "time_s": 7.241493,
+          "data": "59 55 17 55 60 00 00 00"
+        },
+        {
+          "id": "3DA",
+          "line": 195,
+          "time_s": 7.242835,
+          "data": "0E 31 8E 38 00 00"
+        },
+        {
+          "id": "7A4",
+          "line": 340,
+          "time_s": 7.782427,
+          "data": "00 00 00 00 00 00 00 00"
+        },
+        {
+          "id": "31A",
+          "line": 470,
+          "time_s": 8.240697,
+          "data": "1E 00 00 00 3F E0 05 A0"
+        },
+        {
+          "id": "3DA",
+          "line": 1030,
+          "time_s": 10.244444,
+          "data": "0E 31 8E 38 FF E0"
+        },
+        {
+          "id": "4BC",
+          "line": 1730,
+          "time_s": 12.781337,
+          "data": "50 FD 8C 81 FF FF FF FF"
+        },
+        {
+          "id": "7A4",
+          "line": 7918,
+          "time_s": 35.782828,
+          "data": "00 00 9D 7C 02 00 00 00"
+        },
+        {
+          "id": "7A4",
+          "line": 8186,
+          "time_s": 36.782809,
+          "data": "00 00 9D 7C 02 00 00 04"
+        }
+      ],
+      "histograms": {
+        "7A4": [
+          {
+            "data": "00 00 00 00 00 00 00 00",
+            "count": 28
+          },
+          {
+            "data": "00 00 9D 7C 02 00 00 04",
+            "count": 16
+          },
+          {
+            "data": "00 00 9D 7C 02 00 00 00",
+            "count": 1
+          }
+        ],
+        "3E0": [
+          {
+            "data": "39 00 00 00 00 00 00 00",
+            "count": 45
+          }
+        ],
+        "31A": [
+          {
+            "data": "1E 00 00 00 3F E0 05 A0",
+            "count": 44
+          },
+          {
+            "data": "FF 80 00 00 3F E0 05 A0",
+            "count": 1
+          }
+        ],
+        "39A": [
+          {
+            "data": "59 55 17 55 60 00 00 00",
+            "count": 45
+          }
+        ],
+        "3A8": [
+          {
+            "data": "FC FC FC 00 00 00 00 00",
+            "count": 45
+          }
+        ],
+        "3DA": [
+          {
+            "data": "0E 31 8E 38 FF E0",
+            "count": 42
+          },
+          {
+            "data": "0E 31 8E 38 00 00",
+            "count": 3
+          }
+        ],
+        "4BC": [
+          {
+            "data": "5C FD 8C 81 FF FF FF FF",
+            "count": 1
+          },
+          {
+            "data": "50 FD 8C 81 FF FF FF FF",
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "capture": "info_precond.csv",
+      "changes": [
+        {
+          "id": "3A8",
+          "line": 45,
+          "time_s": 0.191319,
+          "data": "FC FC FC 00 00 00 00 00"
+        },
+        {
+          "id": "3E0",
+          "line": 97,
+          "time_s": 0.340364,
+          "data": "39 00 00 00 00 00 00 00"
+        },
+        {
+          "id": "31A",
+          "line": 125,
+          "time_s": 0.45071,
+          "data": "FF 80 00 00 00 00 05 A0"
+        },
+        {
+          "id": "39A",
+          "line": 126,
+          "time_s": 0.451422,
+          "data": "59 55 17 55 60 00 00 00"
+        },
+        {
+          "id": "3DA",
+          "line": 127,
+          "time_s": 0.452267,
+          "data": "0E 31 8E 38 00 00"
+        },
+        {
+          "id": "7A4",
+          "line": 264,
+          "time_s": 0.972561,
+          "data": "00 00 00 00 00 00 00 00"
+        },
+        {
+          "id": "31A",
+          "line": 401,
+          "time_s": 1.450622,
+          "data": "FF 80 00 00 3F E0 05 A0"
+        },
+        {
+          "id": "31A",
+          "line": 680,
+          "time_s": 2.450613,
+          "data": "1D 80 00 00 3F E0 05 A0"
+        },
+        {
+          "id": "3DA",
+          "line": 960,
+          "time_s": 3.452389,
+          "data": "0E 31 8E 38 FF E0"
+        },
+        {
+          "id": "4A4",
+          "line": 2086,
+          "time_s": 7.527515,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2111,
+          "time_s": 7.627365,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 2140,
+          "time_s": 7.727324,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2167,
+          "time_s": 7.827337,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 2195,
+          "time_s": 7.92746,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2219,
+          "time_s": 8.027421,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 2529,
+          "time_s": 9.12736,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2555,
+          "time_s": 9.227406,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 2588,
+          "time_s": 9.327308,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2612,
+          "time_s": 9.427366,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 2642,
+          "time_s": 9.527336,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2667,
+          "time_s": 9.627344,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 2966,
+          "time_s": 10.727309,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 2993,
+          "time_s": 10.827349,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 3021,
+          "time_s": 10.927275,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 3046,
+          "time_s": 11.027327,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "4A4",
+          "line": 3077,
+          "time_s": 11.127311,
+          "data": "99 95 03 13 05 AC 19 B2"
+        },
+        {
+          "id": "4A4",
+          "line": 3103,
+          "time_s": 11.227281,
+          "data": "A9 09 06 F9 00 11 44 20"
+        },
+        {
+          "id": "7A4",
+          "line": 7081,
+          "time_s": 25.97314,
+          "data": "00 00 4B C9 01 00 00 00"
+        },
+        {
+          "id": "7A4",
+          "line": 7359,
+          "time_s": 26.972996,
+          "data": "00 00 4B C9 01 00 00 04"
+        }
+      ],
+      "histograms": {
+        "7A4": [
+          {
+            "data": "00 00 4B C9 01 00 00 04",
+            "count": 109
+          },
+          {
+            "data": "00 00 00 00 00 00 00 00",
+            "count": 25
+          },
+          {
+            "data": "00 00 4B C9 01 00 00 00",
+            "count": 1
+          }
+        ],
+        "3E0": [
+          {
+            "data": "39 00 00 00 00 00 00 00",
+            "count": 135
+          }
+        ],
+        "31A": [
+          {
+            "data": "1D 80 00 00 3F E0 05 A0",
+            "count": 133
+          },
+          {
+            "data": "FF 80 00 00 00 00 05 A0",
+            "count": 1
+          },
+          {
+            "data": "FF 80 00 00 3F E0 05 A0",
+            "count": 1
+          }
+        ],
+        "39A": [
+          {
+            "data": "59 55 17 55 60 00 00 00",
+            "count": 135
+          }
+        ],
+        "3A8": [
+          {
+            "data": "FC FC FC 00 00 00 00 00",
+            "count": 135
+          }
+        ],
+        "3DA": [
+          {
+            "data": "0E 31 8E 38 FF E0",
+            "count": 132
+          },
+          {
+            "data": "0E 31 8E 38 00 00",
+            "count": 3
+          }
+        ],
+        "4A4": [
+          {
+            "data": "99 95 03 13 05 AC 19 B2",
+            "count": 9
+          },
+          {
+            "data": "A9 09 06 F9 00 11 44 20",
+            "count": 9
+          }
+        ]
+      }
+    }
+  ],
+  "unknown_7a4_other_captures": [
+    {
+      "capture": "info_nabijeni_8soc.csv",
+      "sha256": "438d891e89e1d32a60545c5c09388526843e5007f75f4a98318a96b95a86839b",
+      "soc_raw": {
+        "8": 83
+      },
+      "payloads": [
+        {
+          "data": "00 00 C6 E1 02 00 00 04",
+          "count": 83
+        }
+      ]
+    },
+    {
+      "capture": "info_nabijeni_8soc_2.csv",
+      "sha256": "627ccedaed5423bacf0220bc5a2b9fd002aa9a88e6ef2354268dbf00885d7e58",
+      "soc_raw": {
+        "8": 37
+      },
+      "payloads": [
+        {
+          "data": "00 00 35 54 02 00 00 04",
+          "count": 38
+        }
+      ]
+    },
+    {
+      "capture": "info_nabijeni_8soc_3.csv",
+      "sha256": "7e62707aa77e2ccb3762a1c3bc7800f9d72fcbc77477adee167c490af2cb94b3",
+      "soc_raw": {
+        "8": 27
+      },
+      "payloads": [
+        {
+          "data": "00 00 58 97 01 00 00 04",
+          "count": 28
+        }
+      ]
+    },
+    {
+      "capture": "infocan.csv",
+      "sha256": "51971e3a0c72125082d2c8524a5244d1bd944bfba51a553a15fb6a907441de13",
+      "soc_raw": {
+        "70": 57
+      },
+      "payloads": [
+        {
+          "data": "00 00 8B 3D 01 00 00 03",
+          "count": 30
+        },
+        {
+          "data": "00 00 00 00 00 00 00 00",
+          "count": 26
+        },
+        {
+          "data": "00 00 8B 3D 01 00 00 00",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "capture": "info_apka.csv",
+      "sha256": "2a90da0c09e3f31bafda5bb4b4ba9977ebd09f317a29fbac5dd762a2a15a4849",
+      "soc_raw": {
+        "70": 31
+      },
+      "payloads": [
+        {
+          "data": "00 00 00 00 00 00 00 00",
+          "count": 27
+        },
+        {
+          "data": "00 00 9F FB 02 00 00 03",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "capture": "info_start_jizda.csv",
+      "sha256": "1467c523cf6b396ad5b9e92d4432d268e8eae3d298d486f58abc00c4233af52c",
+      "soc_raw": {
+        "70": 36
+      },
+      "payloads": [
+        {
+          "data": "02 30 30 35 33 00 00 03",
+          "count": 21
+        },
+        {
+          "data": "00 00 9F FB 02 00 00 03",
+          "count": 8
+        },
+        {
+          "data": "05 30 30 32 38 00 00 03",
+          "count": 7
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Cloud age/source is not independently known.",
+    "No simultaneous HSCAN or UDS recording.",
+    "Scan excludes signed/noncontiguous/multiplex-reassembled fields and other scales/offsets.",
+    "80% support can miss transient or alternating/multiplexed fields.",
+    "The 8% captures have no synchronized energy reference; 3 +/- 0.5 kWh there is only a hypothesis.",
+    "Numeric coincidence is not evidence of an energy field."
+  ]
+}

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cJSON.h"
+#include "esp_heap_caps.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_private/freertos_idf_additions_priv.h"
@@ -30,6 +31,35 @@ typedef struct {
 // Owned by the single HTTP server task; never allocated on its stack.
 static TaskStatus_t snapshot[TASK_CAPACITY];
 static task_row_t rows[TASK_CAPACITY];
+
+static const uint32_t heap_caps[] = {
+    MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT,
+    MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA | MALLOC_CAP_8BIT,
+    MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT,
+};
+static const char *const heap_names[] = {"Internal RAM", "Internal DMA RAM", "PSRAM"};
+#define HEAP_COUNT (sizeof(heap_caps) / sizeof(heap_caps[0]))
+
+static bool add_heap_info(cJSON *json, const multi_heap_info_t *heaps)
+{
+    cJSON *array = cJSON_AddArrayToObject(json, "heap");
+    if (!array) return false;
+    for (size_t i = 0; i < HEAP_COUNT; ++i) {
+        const multi_heap_info_t *info = &heaps[i];
+        cJSON *item = cJSON_CreateObject();
+        if (!item) return false;
+        bool ok = cJSON_AddStringToObject(item, "name", heap_names[i]) &&
+            cJSON_AddNumberToObject(item, "total_bytes", info->total_free_bytes + info->total_allocated_bytes) &&
+            cJSON_AddNumberToObject(item, "allocated_bytes", info->total_allocated_bytes) &&
+            cJSON_AddNumberToObject(item, "free_bytes", info->total_free_bytes) &&
+            cJSON_AddNumberToObject(item, "minimum_free_bytes", info->minimum_free_bytes) &&
+            cJSON_AddNumberToObject(item, "largest_free_block_bytes", info->largest_free_block) &&
+            cJSON_AddNumberToObject(item, "free_blocks", info->free_blocks);
+        if (ok) ok = cJSON_AddItemToArray(array, item);
+        if (!ok) { cJSON_Delete(item); return false; }
+    }
+    return true;
+}
 
 static const char *state_name(eTaskState state)
 {
@@ -81,6 +111,11 @@ esp_err_t gw_tasks_get(httpd_req_t *request)
     prvReleaseKernelLock();
     if (!count) return error(request, "503 Service Unavailable", "Task snapshot capacity exceeded (64 tasks)");
 
+    // No kernel lock here. Sample before allocating this response's JSON tree.
+    // These capability views overlap: internal DMA is a subset of internal RAM.
+    multi_heap_info_t heaps[HEAP_COUNT];
+    for (size_t i = 0; i < HEAP_COUNT; ++i) heap_caps_get_info(&heaps[i], heap_caps[i]);
+
     cJSON *json = cJSON_CreateObject();
     cJSON *tasks = cJSON_CreateArray();
     if (!json || !tasks) { cJSON_Delete(json); cJSON_Delete(tasks); return error(request, "500 Internal Server Error", "Out of memory"); }
@@ -92,7 +127,8 @@ esp_err_t gw_tasks_get(httpd_req_t *request)
     ok = ok && cJSON_AddStringToObject(json, "boot", gw_log_boot_id()) &&
         cJSON_AddNumberToObject(json, "sampled_us", (double)sampled_us) &&
         cJSON_AddNumberToObject(json, "cores", 2) &&
-        cJSON_AddNumberToObject(json, "capacity", TASK_CAPACITY);
+        cJSON_AddNumberToObject(json, "capacity", TASK_CAPACITY) &&
+        add_heap_info(json, heaps);
     for (UBaseType_t i = 0; ok && i < count; ++i) {
         const task_row_t *row = &rows[i];
         char address[2 + sizeof(uintptr_t) * 2 + 1];

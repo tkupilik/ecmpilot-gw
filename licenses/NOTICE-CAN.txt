@@ -1,0 +1,15 @@
+CAN signal definitions in main/can_info_decode.c and docs/can-source-reference.json
+are adapted from prototux/PSA-RE:
+https://github.com/prototux/PSA-RE
+Revision: 67f7581e7622410efdbb29c7eda3b86982b9b450
+Original source paths are retained in docs/can-source-reference.json.
+License: Apache License 2.0; see Apache-2.0-PSA-RE.txt.
+
+Modifications: selected INFO-DIV receive mappings; native GW varstore
+units, bounds/unavailable handling; wheel state/press totals; passive receiver
+integration and original-owner capture replay. Definitions remain candidates
+until independently validated on the vehicle. Source ECU alternatives are
+preserved; no measured transmitter attribution is implied.
+
+The replay payloads come from the project owner's info_start_jizda.csv capture.
+They are not copied from PSA-RE. Replay performs internal RX decoding only.

@@ -8,6 +8,15 @@
 static SemaphoreHandle_t lock;
 static gw_settings_t current = {.version = 1};
 static char current_hostname[GW_HOSTNAME_SIZE] = GW_DEFAULT_HOSTNAME;
+static bool current_ap_enabled;
+
+bool gw_ap_enabled_get(void)
+{
+    xSemaphoreTake(lock, portMAX_DELAY);
+    bool enabled = current_ap_enabled;
+    xSemaphoreGive(lock);
+    return enabled;
+}
 
 bool gw_ap_password_valid(const char *password)
 {
@@ -78,6 +87,7 @@ esp_err_t gw_settings_init(void)
     lock = xSemaphoreCreateMutex();
     if (!lock) return ESP_ERR_NO_MEM;
     current = (gw_settings_t){.version = 1};
+    current_ap_enabled = false;
     memset(current_hostname, 0, sizeof(current_hostname));
     memcpy(current_hostname, GW_DEFAULT_HOSTNAME, sizeof(GW_DEFAULT_HOSTNAME));
     nvs_handle_t h;
@@ -99,6 +109,13 @@ esp_err_t gw_settings_init(void)
             if (!gw_hostname_valid(hostname)) err = ESP_ERR_INVALID_STATE;
             else normalize_hostname(current_hostname, hostname);
         } else if (err == ESP_ERR_NVS_NOT_FOUND) err = ESP_OK;
+    }
+    if (err == ESP_OK) {
+        uint8_t enabled = 0;
+        err = nvs_get_u8(h, "ap_enabled", &enabled);
+        if (err == ESP_ERR_NVS_NOT_FOUND) err = ESP_OK;
+        else if (err == ESP_OK && enabled > 1) err = ESP_ERR_INVALID_STATE;
+        if (err == ESP_OK) current_ap_enabled = enabled != 0;
     }
     nvs_close(h);
     return err;
@@ -127,6 +144,11 @@ esp_err_t gw_settings_save_network(const gw_settings_t *settings, const char *ho
 }
 esp_err_t gw_settings_save_wifi(const gw_settings_t *settings, const char *hostname, const char *ap_password)
 {
+    return gw_settings_save_wifi_options(settings, hostname, ap_password, NULL);
+}
+esp_err_t gw_settings_save_wifi_options(const gw_settings_t *settings, const char *hostname,
+                                        const char *ap_password, const bool *ap_enabled)
+{
     if (!valid(settings) || (hostname && !gw_hostname_valid(hostname)) ||
         (ap_password && !gw_ap_password_valid(ap_password))) return ESP_ERR_INVALID_ARG;
     char normalized[GW_HOSTNAME_SIZE] = {0};
@@ -138,12 +160,14 @@ esp_err_t gw_settings_save_wifi(const gw_settings_t *settings, const char *hostn
         err = nvs_set_blob(h, "wifi_list", settings, sizeof(*settings));
         if (err == ESP_OK && hostname) err = nvs_set_str(h, "hostname", normalized);
         if (err == ESP_OK && ap_password) err = nvs_set_str(h, "ap_password", ap_password);
+        if (err == ESP_OK && ap_enabled) err = nvs_set_u8(h, "ap_enabled", *ap_enabled ? 1 : 0);
         if (err == ESP_OK) err = nvs_commit(h);
         nvs_close(h);
     }
     if (err == ESP_OK) {
         current = *settings;
         if (hostname) memcpy(current_hostname, normalized, sizeof(current_hostname));
+        if (ap_enabled) current_ap_enabled = *ap_enabled;
     }
     xSemaphoreGive(lock);
     return err;

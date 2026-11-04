@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-04",
+  "scope": "Gateway-owned SOC charge limit using deferred mode; Android/web configuration and HA observations",
+  "defaults": {"enabled": false, "soc_pct": 80, "range_pct": [1, 100]},
+  "threshold": "SOC >= configured target, real charging and fresh actual CAN data",
+  "native_tests": {"passed": 274, "log": "build-host-tests/charge-limit-tests.log"},
+  "web_tests": {"passed": 54, "log": "build-host-tests/charge-limit-web-tests.log"},
+  "android_unit_tests_passed": 47,
+  "android_device_demo_test": {
+    "passed": 1,
+    "class": "cz.ecmpilot.AutoRefreshUiTest",
+    "log": "../ecmpilot/artifacts/charge-limit-ui-test.log",
+    "checks": ["requires refresh", "enable and save", "Charging slider saves 85 percent", "refresh off disables limiter", "no vehicle command created", "original phone settings restored"]
+  },
+  "firmware": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1202480,
+    "sha256": "8685903743104a4a67a1557f6508571c857e92878dbdd7a93c62ba11423fe5ea",
+    "build_log": "build-charge-limit.log",
+    "sdk": "ESP-IDF 5.3.2",
+    "method": "Sequential incremental build, all project files compiled, SDK objects reused",
+    "ota_slot_free_percent": 41
+  },
+  "android_apk_sha256": "89e4ce65cb5bc8c4a7d7da93d692f199a18cbd0b0f20a1530cd7431aa87fbf4a",
+  "android_apk_installed": true,
+  "gateway_flashed": false,
+  "physical_can_transmissions_performed": false,
+  "physical_charge_stop_validated": false,
+  "limitation": "Deferred mode retains the vehicle's start time and may resume charging at that time. It is not an indefinite native BMS charge cap."
+}

@@ -1,0 +1,46 @@
+menu "eCMPilot CAN receiver"
+    config GW_CAN_RX_ENABLED
+        bool "Enable CAN process"
+        default y
+        help
+            Waveshare ESP32-S3-RS485-CAN, TX GPIO15 / RX GPIO16.
+            INFO uses normal mode with explicit app refresh/charge requests and
+            configurable wake frames; passive reads never wake; no version TX.
+            The HSCAN1 profile stays listen-only, without CAN TX.
+    choice GW_CAN_PROFILE
+        prompt "Receive signal definitions"
+        default GW_CAN_INFO
+        config GW_CAN_INFO
+            bool "ENT INFO CAN (LCD receive handlers)"
+        config GW_CAN_HS1
+            bool "HSCAN1 (HV battery SOC/voltage and HVAC candidates)"
+    endchoice
+    choice GW_CAN_RATE
+        prompt "CAN bitrate"
+        default GW_CAN_125K if GW_CAN_INFO
+        default GW_CAN_500K
+        config GW_CAN_125K
+            bool "125 kbit/s (ENT INFO)"
+        config GW_CAN_250K
+            bool "250 kbit/s"
+        config GW_CAN_500K
+            bool "500 kbit/s (HSCAN1)"
+        config GW_CAN_1M
+            bool "1 Mbit/s"
+    endchoice
+    config GW_CAN_BITRATE
+        int
+        default 125000 if GW_CAN_125K
+        default 250000 if GW_CAN_250K
+        default 1000000 if GW_CAN_1M
+        default 500000
+endmenu
+
+menu "eCMPilot Home Assistant"
+    config GW_HA_TOPIC_PREFIX
+        string "MQTT topic prefix"
+        default "ecmpilot"
+        help
+            Broker, credentials and enabling telemetry are configured on the web
+            Home Assistant tab and stored in NVS. MQTT only publishes observations.
+endmenu

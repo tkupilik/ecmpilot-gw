@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 // RTOS/HTTP boundary substitutes; the actual task_stats.c serializer is used.
 #include "task_stats.h"
+#include "esp_heap_caps.h"
 #include "freertos/task.h"
 #include <string.h>
 static char body[32768], status[64], names[3][configMAX_TASK_NAME_LEN];
@@ -35,3 +36,16 @@ esp_err_t httpd_resp_sendstr(httpd_req_t *r, const char *text) { (void)r; if (lo
 const char *gw_test_tasks(int scenario) { mode=scenario; errors=locked=0; strcpy(status,"200 OK"); body[0]=0; gw_tasks_get(0); return body; }
 const char *gw_test_tasks_status(void) { return status; }
 int gw_test_tasks_errors(void) { return errors+locked; }
+
+void heap_caps_get_info(multi_heap_info_t *info, uint32_t caps)
+{
+    if (locked) ++errors; // Heap collection must happen outside the kernel lock.
+    *info = (multi_heap_info_t){0};
+    if (caps & MALLOC_CAP_SPIRAM) return;
+    *info = (multi_heap_info_t){.total_free_bytes=100000, .total_allocated_bytes=200000,
+        .largest_free_block=64000, .minimum_free_bytes=90000, .free_blocks=7};
+    if (caps & MALLOC_CAP_DMA) {
+        info->total_free_bytes=50000; info->total_allocated_bytes=120000;
+        info->largest_free_block=32000; info->minimum_free_bytes=40000;
+    }
+}

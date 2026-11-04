@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-03",
+  "scope": "Vehicle illustration, neutral dark surfaces, continuous SOC, charging switch and native preconditioning programs",
+  "android": {
+    "build": "artifacts/car-theme-programs-build.log",
+    "unit_tests": 36,
+    "unit_tests_passed": true,
+    "apk": "app/build/outputs/apk/debug/app-debug.apk",
+    "sha256": "3C1E1CC72B731051A8D3DE0895416B3BCC3AF44D03D3677F64653F0A11FCF738",
+    "installed_phone": "RZCX421JDHD",
+    "device_ui_tests": 1,
+    "device_ui_passed": true,
+    "device_log": "artifacts/vehicle-appearance-device-awake.log",
+    "screenshots": "artifacts/appearance-verified",
+    "original_settings_restored": true
+  },
+  "gateway": {
+    "build": "build-precond-programs.log",
+    "host_tests": 221,
+    "host_tests_passed": true,
+    "test_log": "build-host-tests/precond-programs-final.log",
+    "binary": "build/ecmpilot_gw.bin",
+    "sha256": "3B115F0F790B6FEBD3B0751D266233DA786103BB168BF8AE81CDDB998DCBE062",
+    "flashed": false,
+    "can_profile": "INFO 125000",
+    "transmitted_on_vehicle": false
+  },
+  "capture_evidence": {
+    "slot1": "58 01 C2",
+    "time": "07:30",
+    "days": [
+      "Monday",
+      "Wednesday",
+      "Thursday"
+    ],
+    "enabled": false
+  },
+  "limits": [
+    "GW firmware update required for passive program reads and writes",
+    "Native schedule writes/readback exercised by host tests; vehicle acceptance and scheduled HVAC operation await on-car validation",
+    "Initial physical UI run timed out while phone was dozing; rerun after waking passed"
+  ]
+}

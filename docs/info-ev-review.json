@@ -1,0 +1,528 @@
+{
+  "date": "2026-10-31",
+  "source_commit": "67f7581e7622410efdbb29c7eda3b86982b9b450",
+  "latest_upstream_checked_same_commit": true,
+  "inheritance": [
+    "AEE2010.electric",
+    "AEE2010.ev",
+    "AEE2010.full"
+  ],
+  "electric_info_overrides": 0,
+  "captures": [
+    {
+      "file": "info_apka.csv",
+      "sha256": "2a90da0c09e3f31bafda5bb4b4ba9977ebd09f317a29fbac5dd762a2a15a4849"
+    },
+    {
+      "file": "info_standby.csv",
+      "sha256": "75900510806da48b03345f8e4a881a4a90876576bf47b319c60a7b0e2232cafa"
+    },
+    {
+      "file": "info_start_jizda.csv",
+      "sha256": "1467c523cf6b396ad5b9e92d4432d268e8eae3d298d486f58abc00c4233af52c"
+    },
+    {
+      "file": "infocan.csv",
+      "sha256": "51971e3a0c72125082d2c8524a5244d1bd944bfba51a553a15fb6a907441de13"
+    }
+  ],
+  "messages": {
+    "161": {
+      "dbc_name": "BSI_Unknown161",
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/161.yml",
+      "frames": 353,
+      "unique_payloads": 1,
+      "common_payloads": [
+        {
+          "data": "00 00 3C 00 00 00 FD",
+          "count": 353
+        }
+      ],
+      "bytes": [
+        {
+          "index": 0,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 1,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 2,
+          "min": 60,
+          "max": 60,
+          "unique": 1
+        },
+        {
+          "index": 3,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 4,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 5,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 6,
+          "min": 253,
+          "max": 253,
+          "unique": 1
+        }
+      ]
+    },
+    "221": {
+      "dbc_name": "BSI_TripGeneralInfos",
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/221.yml",
+      "frames": 175,
+      "unique_payloads": 1,
+      "common_payloads": [
+        {
+          "data": "00 FF FF FF FF 00 00",
+          "count": 175
+        }
+      ],
+      "bytes": [
+        {
+          "index": 0,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 1,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 2,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 3,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 4,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 5,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 6,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        }
+      ]
+    },
+    "276": {
+      "dbc_name": "BSI_VsmSlowData",
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/276.yml",
+      "frames": 183,
+      "unique_payloads": 9,
+      "common_payloads": [
+        {
+          "data": "9A 2A 1F 11 30 3F FE 44",
+          "count": 40
+        },
+        {
+          "data": "9A 6A 1C 0F 2C 3F FE 84",
+          "count": 40
+        },
+        {
+          "data": "9A 6A 1C 0F 36 3F FE 84",
+          "count": 37
+        },
+        {
+          "data": "9A 6A 1C 0F 2B 3F FE 84",
+          "count": 18
+        },
+        {
+          "data": "9A 6A 1C 0F 34 3F FE 84",
+          "count": 17
+        }
+      ],
+      "bytes": [
+        {
+          "index": 0,
+          "min": 154,
+          "max": 154,
+          "unique": 1
+        },
+        {
+          "index": 1,
+          "min": 42,
+          "max": 106,
+          "unique": 2
+        },
+        {
+          "index": 2,
+          "min": 28,
+          "max": 31,
+          "unique": 2
+        },
+        {
+          "index": 3,
+          "min": 15,
+          "max": 17,
+          "unique": 2
+        },
+        {
+          "index": 4,
+          "min": 43,
+          "max": 54,
+          "unique": 7
+        },
+        {
+          "index": 5,
+          "min": 63,
+          "max": 63,
+          "unique": 1
+        },
+        {
+          "index": 6,
+          "min": 254,
+          "max": 254,
+          "unique": 1
+        },
+        {
+          "index": 7,
+          "min": 4,
+          "max": 132,
+          "unique": 3
+        }
+      ]
+    },
+    "2AD": {
+      "dbc_name": "BSI_ClimateHmiCommand",
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/2AD.yml",
+      "frames": 376,
+      "unique_payloads": 4,
+      "common_payloads": [
+        {
+          "data": "0E 08 00 43 32 F8 00 03",
+          "count": 190
+        },
+        {
+          "data": "8E 08 00 43 32 F8 00 03",
+          "count": 90
+        },
+        {
+          "data": "0E 08 00 54 32 F8 00 03",
+          "count": 56
+        },
+        {
+          "data": "0E 08 00 53 32 F8 00 03",
+          "count": 40
+        }
+      ],
+      "bytes": [
+        {
+          "index": 0,
+          "min": 14,
+          "max": 142,
+          "unique": 2
+        },
+        {
+          "index": 1,
+          "min": 8,
+          "max": 8,
+          "unique": 1
+        },
+        {
+          "index": 2,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 3,
+          "min": 67,
+          "max": 84,
+          "unique": 3
+        },
+        {
+          "index": 4,
+          "min": 50,
+          "max": 50,
+          "unique": 1
+        },
+        {
+          "index": 5,
+          "min": 248,
+          "max": 248,
+          "unique": 1
+        },
+        {
+          "index": 6,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 7,
+          "min": 3,
+          "max": 3,
+          "unique": 1
+        }
+      ]
+    },
+    "350": {
+      "dbc_name": "ICSV_FrontClimateStatus",
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/350.yml",
+      "frames": 354,
+      "unique_payloads": 2,
+      "common_payloads": [
+        {
+          "data": "00 FF FF 09 0B 43 84 08",
+          "count": 249
+        },
+        {
+          "data": "00 FF FF 07 0B 43 84 00",
+          "count": 105
+        }
+      ],
+      "bytes": [
+        {
+          "index": 0,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 1,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 2,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 3,
+          "min": 7,
+          "max": 9,
+          "unique": 2
+        },
+        {
+          "index": 4,
+          "min": 11,
+          "max": 11,
+          "unique": 1
+        },
+        {
+          "index": 5,
+          "min": 67,
+          "max": 67,
+          "unique": 1
+        },
+        {
+          "index": 6,
+          "min": 132,
+          "max": 132,
+          "unique": 1
+        },
+        {
+          "index": 7,
+          "min": 0,
+          "max": 8,
+          "unique": 2
+        }
+      ]
+    },
+    "3F0": {
+      "dbc_name": "ICSV_Unknown3f0",
+      "source_path": "buses/AEE2010.full/LS.INFO-DIV/3F0.yml",
+      "frames": 3532,
+      "unique_payloads": 189,
+      "common_payloads": [
+        {
+          "data": "FF FF 24 00 2C 00 00 32",
+          "count": 183
+        },
+        {
+          "data": "FF FF D9 00 2C 00 00 32",
+          "count": 183
+        },
+        {
+          "data": "FF FF 8E 00 2C 00 00 32",
+          "count": 183
+        },
+        {
+          "data": "FF FF 9D 00 2C 00 00 32",
+          "count": 183
+        },
+        {
+          "data": "FF FF 42 00 2C 00 00 32",
+          "count": 183
+        }
+      ],
+      "bytes": [
+        {
+          "index": 0,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 1,
+          "min": 255,
+          "max": 255,
+          "unique": 1
+        },
+        {
+          "index": 2,
+          "min": 0,
+          "max": 247,
+          "unique": 143
+        },
+        {
+          "index": 3,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 4,
+          "min": 44,
+          "max": 110,
+          "unique": 4
+        },
+        {
+          "index": 5,
+          "min": 0,
+          "max": 16,
+          "unique": 17
+        },
+        {
+          "index": 6,
+          "min": 0,
+          "max": 0,
+          "unique": 1
+        },
+        {
+          "index": 7,
+          "min": 50,
+          "max": 50,
+          "unique": 1
+        }
+      ]
+    }
+  },
+  "3F0_evidence": {
+    "byte2_low_nibble_step_histogram": {
+      "5": 3528
+    },
+    "all_payload_nibbles_sum_mod16": {
+      "5": 3532
+    },
+    "interpretation": "counter/checksum candidate; physical torque mapping contradicted"
+  },
+  "alternative_definitions": [
+    {
+      "path": "buses/AEE2004.full/LS.CONF/161.yml",
+      "name": "BSI_GAUGES",
+      "length": 7,
+      "signals": 6
+    },
+    {
+      "path": "buses/AEE2004.full/LS.CONF/221.yml",
+      "name": "TRIP_GENERAL_INFOS",
+      "length": 7,
+      "signals": 9
+    },
+    {
+      "path": "buses/AEE2010.eco/LS.INFO-DIV/3F0.yml",
+      "name": "ENGINE_HYBRID_DYNAMIC_DATA_18",
+      "length": 8,
+      "signals": 13
+    },
+    {
+      "path": "buses/AEE2010.ev_eco/HS.HS3/161.yml",
+      "name": "BSI_GAUGES",
+      "length": 7,
+      "signals": 5
+    },
+    {
+      "path": "buses/AEE2010.full/HS.HS3/221.yml",
+      "name": "TRIP_GENERAL_INFOS",
+      "length": 7,
+      "signals": 8
+    },
+    {
+      "path": "buses/AEE2010.full/HS.HS3/276.yml",
+      "name": "VSM_SLOW_DATA",
+      "length": 8,
+      "signals": 16
+    },
+    {
+      "path": "buses/AEE2010.full/HS.HS3/3F0.yml",
+      "name": "ENGINE_HYBRID_DYNAMIC_DATA_18",
+      "length": 8,
+      "signals": 10
+    },
+    {
+      "path": "buses/AEE2010.full/LS.CONF/276.yml",
+      "name": "VSM_SLOW_DATA",
+      "length": 8,
+      "signals": 17
+    },
+    {
+      "path": "buses/AEE2010.full/LS.INFO-DIV/161.yml",
+      "name": "BSI_GAUGES",
+      "length": 7,
+      "signals": 8
+    },
+    {
+      "path": "buses/AEE2010.full/LS.INFO-DIV/221.yml",
+      "name": "TRIP_GENERAL_INFOS",
+      "length": 7,
+      "signals": 10
+    },
+    {
+      "path": "buses/AEE2010.full/LS.INFO-DIV/276.yml",
+      "name": "VSM_SLOW_DATA",
+      "length": 8,
+      "signals": 21
+    },
+    {
+      "path": "buses/AEE2010.full/LS.INFO-DIV/2AD.yml",
+      "name": "CLIMATE_HMI_COMMAND",
+      "length": 8,
+      "signals": 25
+    },
+    {
+      "path": "buses/AEE2010.full/LS.INFO-DIV/3F0.yml",
+      "name": "ENGINE_HYBRID_DYNAMIC_DATA_18",
+      "length": 8,
+      "signals": 13
+    }
+  ]
+}
