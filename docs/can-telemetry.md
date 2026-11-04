@@ -1,6 +1,10 @@
-# Live HS1 telemetry and phone fields
+# Optional HSCAN1 telemetry
 
-HSCAN1 is the default GW profile at **500,000 bit/s**, using Waveshare TX GPIO15 / RX GPIO16. Both tracked defaults and the local build select HS1. [INFO/125 kbit/s](can-rx.md) remains optional; its decoder must be selected together with its bitrate. Reception is listen-only; the GPIO wake test has been removed. No new vehicle transmissions or heating/charging control are introduced by these handlers.
+This page applies **only to the alternative HSCAN1/500 kbit/s listen-only
+profile**, using Waveshare TX GPIO15 / RX GPIO16. The current default is
+[INFO/125 kbit/s](can-rx.md), with a different decoder and control path.
+HSCAN1 does not execute INFO wake, refresh, charging or preconditioning requests.
+Select the profile together with its bitrate; the mappings below are not INFO data.
 
 Default integer units in varstore are **mV**, **mA**, **mC** (millicelsius), **W**, and **0.1 %**. Signal suffixes and unit descriptors use those stored units; the UDP serializer converts them into the existing phone units V, A, C, kW and percent. CAN/DBC wire scales are independent of this storage convention.
 
@@ -45,7 +49,7 @@ Temperature fields use mC (1000 = 1 C), current uses mA, SOC uses 0.1 %, and air
 
 The READY recording decodes to upstream air 8 C, heater outlet 42.5–44.5 C, evaporator probe 11.7–12.2 C, airflow 35.5 g/s, outside 8 C and odometer 58,992 km. These are references for validation, not new owner confirmations. Check the cluster temperature/odometer and change HVAC settings while recording before promoting candidates. Heating requests, actual heating, compressor operation and remote preconditioning are separate concepts.
 
-## Existing phone inventory
+## Phone inventory in the HSCAN1 profile
 
 | Phone field | Current CAN support |
 | --- | --- |
@@ -60,4 +64,6 @@ The READY recording decodes to upstream air 8 C, heater outlet 42.5–44.5 C, ev
 | Climate on/off | Not mapped from request bits or unverified preconditioning state |
 | Charge state, cable, mode, power, remaining time, deferred start | Not mapped; existing manual/force bench inputs remain available |
 
-The phone already receives these fields via UDP on port 42840. Unknown fields stay unavailable, and no physical control capability is advertised. Firmware processing/derived states remain a separate future consumer process over varstore.
+Mapped fields reach the phone through UDP 42840. Unknown fields stay unavailable.
+This profile advertises no physical vehicle-control capability. The active INFO
+profile has its own [RX mappings](can-rx.md) and [control process](vehicle-control.md).

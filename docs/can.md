@@ -23,8 +23,9 @@ flowchart LR
 **All application data crosses the native GW varstore.** RX handlers acquire,
 validate and publish observations; they never call a controller or execute an
 action. The existing application process separately derives climate values and
-requests configurable one-shot wake TX through varstore. TaskCan consumes those requests; UDP
-never calls the CAN driver. See [current parity](lcd-backport.md).
+sequences explicit actions and enabled automation through varstore. TaskCan
+consumes the TX mailbox; UDP never calls the CAN driver. See
+[CAN requests](can-requests.md) and [vehicle control](vehicle-control.md).
 
 Each signal has one producer. Force is an independent overlay, leaving live
 producer values intact. Varstore holds current state; button events therefore
@@ -72,7 +73,7 @@ fault-tolerant INFO interface; use the separately validated vehicle connection.
 
 ## Data and diagnostics
 
-See [RX mappings and replay](can-rx.md) and [GVRET](gvret.md).
+See [RX mappings](can-rx.md) and [GVRET](gvret.md).
 Filter Varstore for `can.`, `steering.` or `gvret.`. All producer-owned signals
 permit Force/Release, with direct Write/Touch/Invalidate disabled.
 
@@ -80,8 +81,8 @@ permit Force/Release, with direct Write/Touch/Invalidate disabled.
 5 recovering, 6 fault. `can.last_error` is the latest receiver error.
 Health includes `can.heartbeat`, `can.rx.count`, `.rejected_count`, `.rtr_count`,
 `.missed_count`, `.overrun_count`, `.error_counter`, `.pending`,
-`can.bus_error_count`, `can.decode_count`, `can.decode_rejected_count` and
-`can.demo_frame_count`. Raw RX counters wrap at 2^31; decoder/replay counters
+`can.bus_error_count`, `can.decode_count` and `can.decode_rejected_count`.
+Raw RX counters wrap at 2^31; decoder counters
 saturate at INT32_MAX. Health descriptors use a 2-second default freshness limit.
 
 `can.rx.last.id`, `.dlc`, `.extended`, `.data0` through `.data7` contain the last
@@ -99,11 +100,11 @@ vehicle state. Health publication does not refresh decoded observations.
 ## Verification
 
 `tests/run-udp.ps1 -PythonPath python` compiles both decoder profiles against the
-real GW store/UDP code. INFO capture and pipeline tests cover replay/live switches,
+real GW store/UDP code. INFO capture and pipeline tests cover physical ingress,
 units, validity, ownership and force preservation. GVRET tests exercise the actual
 C worker through real loopback TCP. The physical TWAI driver is not host-simulated.
 
 On a board, verify pins/rate, passive behaviour, decoded values against the car,
 raw bytes against a second capture tool, both upstream RX and GVRET loss counters,
 CPU affinity, heap/stack margins and sustained Wi-Fi operation. Use Tasks for heap
-details. See [test procedures](testing.md) and [LCD comparison](lcd-backport.md).
+details. See [test procedures](testing.md) and [vehicle control](vehicle-control.md).

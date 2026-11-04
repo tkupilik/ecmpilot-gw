@@ -34,6 +34,7 @@ class Codec:
         self.lib.gw_test_set_time(self.now)
         assert self.lib.gw_process_data_init() == 0
         assert self.lib.gw_auto_refresh_init() == 0
+        assert self.lib.gw_low_power_init() == 0
         self.ids = {self.lib.varstore_definition(i).contents.name.decode(): i for i in range(self.lib.varstore_count())}
         self.lib.gw_udp_protocol_init(b'ecmpilot-test', BOOT.encode(), b'0.3.0')
         self.next_id = 1
@@ -180,6 +181,25 @@ class UdpProtocolTests(unittest.TestCase):
         self.g.set('charge.connected', 1); self.g.set('charge.power_w', 7200, force=False); self.g.advance(10000)
         q = self.g.call(self.g.request('state.get', {}))['state']['charge']
         self.assertEqual(10000, q['age_ms']); self.assertEqual(7.2, q['power_kw'])
+
+    def test_mode_off_time_edit_requires_matching_time_in_bench_readback(self):
+        self.g.bench()
+        self.g.set('charge.start_minute', 180)
+        req = self.g.request('charge.mode.set', {'mode':'immediate', 'start_local':'03:17', 'timezone':'Europe/Prague'})
+        self.assertEqual('accepted', self.g.call(req)['command']['phase'])
+        self.assertEqual(197, self.g.read('request.charge.start_minute'))
+        self.g.advance(20); self.g.set('charge.mode', 0)
+        self.assertEqual('accepted', self.g.call(req)['command']['phase'])
+        self.g.set('charge.start_minute', 197)
+        self.assertEqual('succeeded', self.g.call(req)['command']['phase'])
+
+    def test_immediate_time_requires_valid_time_and_timezone_pair(self):
+        self.g.bench()
+        for extra in ({'start_local':'03:17'}, {'timezone':'Europe/Prague'},
+                      {'start_local':'24:00','timezone':'Europe/Prague'},
+                      {'start_local':'03:17','timezone':'UTC'}):
+            req = self.g.request('charge.mode.set', {'mode':'immediate', **extra})
+            self.assertEqual('invalid_argument', self.g.call(req)['command']['error'])
 
     def test_deferred_mode_and_no_optimistic_state_change(self):
         self.g.bench()

@@ -2,6 +2,9 @@
 #pragma once
 #include <stddef.h>
 
+size_t gw_ha_retired_count(void);
+const char *gw_ha_retired_key(size_t index);
+const char *gw_ha_retired_component(size_t index);
 size_t gw_ha_entity_count(void);
 const char *gw_ha_entity_key(size_t index);
 const char *gw_ha_entity_component(size_t index);

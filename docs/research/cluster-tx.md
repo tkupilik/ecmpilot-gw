@@ -1,5 +1,7 @@
 # Instrument cluster transmit candidates on INFO CAN
 
+> Capture evidence recorded at the time of this analysis. For current firmware behavior and request status, use [CAN requests](../can-requests.md) and the [documentation index](../README.md).
+
 2026-10-31. Generated inventory from the pinned PSA-RE LS.INFO-DIV export,
 revision `67f7581e7622410efdbb29c7eda3b86982b9b450`. `CMB` is the cluster alias;
 0004 is the equipment number, not a CAN ID. Selection uses **CMB in transmitters**,
@@ -61,4 +63,4 @@ establish that emulation of them is required or that this cluster is faulty.
 Physical attribution needs a suitable capture/topology check on the vehicle.
 
 For fields and provenance use `../dbc/opel_corsa_e_info.dbc` and its source JSON.
-For firmware reception see [CAN RX](can-rx.md).
+For firmware reception see [CAN RX](../can-rx.md).

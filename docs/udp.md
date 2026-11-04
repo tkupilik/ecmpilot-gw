@@ -1,4 +1,4 @@
-# Android UDP and varstore bench testing
+# Android UDP protocol
 
 See [correlation and loss recovery](udp-correlation.md) for the operation counter,
 message matching, deduplication, CAN trace and the phone's 5/6-second response
@@ -16,10 +16,12 @@ UDP v0 uses IPv4 port **42840**. Firmware **0.5.0** now defaults to INFO/125 kbi
 with SOC, range, odometer, outside temperature and awake/parked observations;
 see [INFO mappings](can-rx.md). INFO has no pack-voltage producer. The optional
 HSCAN1/500 kbit/s profile publishes HV SOC and pack voltage from `0x5C3` through
-existing phone fields; see [HS1 mappings](can-telemetry.md). No Android rebuild or
-test mode is needed for monitoring. The original **0.3.0** bench flow below remains available with Android **0.2.0** or later; the INFO backend now provides experimental explicit refresh/charging-mode commands; immediate preconditioning is implemented through31B/11B and BSI2E0 feedback. See [vehicle control](vehicle-control.md).
+phone fields; see [HS1 mappings](can-telemetry.md). Test mode is not needed for
+monitoring. The INFO backend provides explicit refresh, charging and
+preconditioning operations; see [CAN requests](can-requests.md). Current GW and
+phone builds use the [correlation contract](udp-correlation.md).
 
-## Latest CAN telemetry
+## CAN telemetry
 
 Optional `state.bsi` exposes `power_management` (raw CAN 036 code 0-4) and its
 own `age_ms`. It is omitted when no valid phase is known. This age is independent
@@ -34,7 +36,7 @@ INFO adds auxiliary12V SOC/voltage and climate_left_setpoint_c,
 climate_right_setpoint_c, evaporator_c to the existing v0 metrics. Ages and null
 unknowns are preserved. Selected temperatures never replace cabin_c. Payloads
 remain bounded to1024 bytes, with existing optional fields omitted if necessary.
-No Android rebuild or new binding is required when upgrading the same board.
+Gateway identity persists on the same board; boot identity changes on restart.
 
 ## Connect and test
 
@@ -49,7 +51,9 @@ vehicle readback. See [current policy and validation](vehicle-control.md).
 `test.enabled` remains false initially; enabling it selects a no-CAN bench backend.
 HSCAN1 remains listen-only. Version5DF TX is removed from both profiles.
 
-After installing the firmware and Android APK, seed reproducible test inputs:
+## Optional offline bench backend
+
+To exercise the UI without physical vehicle commands, seed reproducible test inputs:
 
 ```powershell
 python tools/udp_bench.py --host 192.168.1.195 seed
@@ -82,7 +86,16 @@ Reboot clears all values/forces. Disabling test mode fails pending commands as `
 
 ## Varstore mapping
 
-All values are int32; metadata is available through the web. In INFO mode CAN owns SOC, range, odometer, outside temperature, awake/parked and additional speed/gear/button diagnostics. Direct web Write/Touch/Invalidate is disabled for CAN-owned fields, with independent Force/Release available. Pack voltage and legacy HS1 candidate fields stay invalid on INFO. Other vehicle observations and `test.enabled` remain manual bench inputs. The UDP task owns `request.*` and `udp.*`. The removed GPIO wake experiment has no current request/API signal.
+Charging mode and stored start time can be written together with either mode:
+`charge.mode.set` accepts `start_local` plus `timezone: Europe/Prague` for
+`immediate` as well as `deferred`. Only immediate mode may omit both fields to
+preserve the stored time. A supplied time is published and confirmed independently
+of the mode and of actual charging activity. See [CAN requests](can-requests.md).
+
+All values are int32; metadata is available through the web. In INFO mode CAN owns SOC, range, odometer, outside temperature, awake/parked and additional speed/gear/button diagnostics. Direct web Write/Touch/Invalidate is disabled for CAN-owned fields, with independent Force/Release available. Pack voltage and legacy HS1 candidate fields stay invalid on INFO. INFO also owns charging, auxiliary-battery, preconditioning and vehicle-detail
+observations described in the RX/feature guides. Unmapped observations remain
+unavailable unless deliberately supplied as bench inputs. `test.enabled` selects
+the separate bench backend. The UDP task owns `request.*` and `udp.*`. The removed GPIO wake experiment has no current request/API signal.
 
 | Varstore signal | UDP meaning |
 | --- | --- |

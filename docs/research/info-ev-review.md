@@ -1,5 +1,7 @@
 # INFO CAN EV layout review — 2026-10-31
 
+> Capture evidence recorded at the time of this analysis. For current firmware behavior and request status, use [CAN requests](../can-requests.md) and the [documentation index](../README.md).
+
 The export already uses AEE2010.electric -> AEE2010.ev -> AEE2010.full. In
 PSA-RE, ev means evolution; electric is the electrified variant. The GitHub API
 reported master at the same pinned revision67f7581e7622410efdbb29c7eda3b86982b9b450
@@ -9,12 +11,12 @@ bus/profile copies finds13 matching definitions, with no alternative EV layout
 for these messages. Other-bus copies are not silently imported by numeric ID.
 
 [Architecture/inheritance source](https://github.com/prototux/PSA-RE/blob/67f7581e7622410efdbb29c7eda3b86982b9b450/architectures.yml).
-[Machine-readable evidence](info-ev-review.json) records capture hashes, byte
+[Machine-readable evidence](../info-ev-review.json) records capture hashes, byte
 ranges, source paths, alternate locations and counter/checksum statistics.
 
 ## Findings
 
-Follow-up: [charging review](info-charging-analysis.md) adds3E1 to unknown vehicle
+Follow-up: [charging review](../info-charging-analysis.md) adds3E1 to unknown vehicle
 layouts. In the owner's confirmed continuous AC-charge capture its source
 CHARGE_STATUS remains0 throughout. It is not a usable external-charge indicator
 on this Corsa-e; no unverified active-charging flag is substituted.

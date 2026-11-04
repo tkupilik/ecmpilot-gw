@@ -1,8 +1,6 @@
-"""Backported INFO RX handlers + actual GW varstore/UDP + capture replay."""
+"""INFO RX handlers and original captures through the real GW varstore/UDP path."""
 import csv
 import ctypes as c
-import hashlib
-import json
 from pathlib import Path
 import unittest
 from test_udp import Codec, ROOT
@@ -16,8 +14,7 @@ class CanRxTests(unittest.TestCase):
         self.g = Codec('udp-info-test.dll')
         self.lib = self.g.lib
         self.lib.gw_can_info_decode.argtypes = [c.c_uint32,c.c_void_p,c.c_size_t,c.c_bool,c.c_bool]
-        self.lib.gw_can_replay_step.argtypes = [c.c_uint32]
-        self.lib.gw_can_info_init(); self.lib.gw_can_replay_reset()
+        self.lib.gw_can_info_init()
 
     def ident(self, name): return self.g.ids[NAMES.get(name, name)]
     def value(self, name): return self.lib.varstore_read(self.ident(name),0,-99999)
@@ -116,40 +113,6 @@ class CanRxTests(unittest.TestCase):
         self.frame(0x036,[0,0,0,0,1,0,0,0])
         self.assertEqual(-1,self.lib.varstore_read(self.ident('SOC_PCT_X10'),5000,-1))
 
-    def test_generated_replay_is_exact_filtered_capture_with_original_order(self):
-        meta=json.loads((ROOT/'docs/can-replay.json').read_text())
-        self.assertEqual(meta['sha256'],hashlib.sha256(CAPTURE.read_bytes()).hexdigest())
-        self.assertEqual(1974,self.lib.gw_can_replay_count());self.assertEqual(36117,self.lib.gw_can_replay_duration())
-        import re
-        text=(ROOT/'main/can_replay_data.inc').read_text()
-        emitted=[]
-        for ms,ident,length,payload in re.findall(r'\{(\d+), 0x([0-9A-F]+), (\d+), \{([^}]+)\}\}',text):
-            emitted.append((int(ms),int(ident,16),int(length),bytes(int(v,16) for v in payload.split(','))))
-        rows=list(csv.DictReader(CAPTURE.read_text().splitlines()));origin=int(rows[0]['Time Stamp']);expected=[]
-        for r in rows:
-            ident=int(r['ID'],16)
-            if ident in IDS:
-                n=int(r['LEN']);expected.append(((int(r['Time Stamp'])-origin)//1000,ident,n,bytes(int(r[f'D{i}'],16) for i in range(1,n+1))))
-        self.assertEqual(expected,emitted)
-
-    def test_full_timed_replay_loop_and_source_reset(self):
-        total=0
-        for ms in range(0,36117,10):
-            self.lib.gw_test_set_time(ms);n=self.lib.gw_can_replay_step(ms)
-            self.assertLessEqual(n,32);total+=n
-        self.lib.gw_test_set_time(36116);total+=self.lib.gw_can_replay_step(36116)
-        self.assertEqual(1974,total);self.check('SOC_PCT_X10',700);self.check('RANGE_KM',1560)
-        self.lib.gw_test_set_time(36117);self.lib.gw_can_replay_step(36117)
-        self.check('SOC_PCT_X10',None);self.check('SPEED',0)
-        self.lib.gw_can_info_reset();self.check('GEAR',None)
-
-    def test_capture_readings_are_exported_to_phone(self):
-        for ms in range(0,1100,10):
-            self.lib.gw_test_set_time(ms);self.lib.gw_can_replay_step(ms)
-        phone=self.g.call(self.g.request('state.get',{}))['state']
-        self.assertEqual(70,phone['soc_pct']['value']);self.assertEqual(158,phone['range_km']['value'])
-        self.assertEqual(11.5,phone['outside_c']['value'])
-
 class InfoPipelineTests(unittest.TestCase):
     def setUp(self):
         from test_can import Frame, Health
@@ -157,7 +120,6 @@ class InfoPipelineTests(unittest.TestCase):
         self.g = Codec('udp-info-test.dll'); self.lib=self.g.lib
         self.lib.gw_can_rx_accept.argtypes=[c.POINTER(Frame)]
         self.lib.gw_can_rx_publish_health.argtypes=[c.POINTER(Health)]
-        self.lib.gw_can_rx_tick.argtypes=[c.c_uint32]
         self.lib.gw_process_data_manual.argtypes=[c.c_size_t]
         self.lib.gw_process_data_manual.restype=c.c_bool
         self.lib.gw_can_rx_data_init()
@@ -198,18 +160,39 @@ class InfoPipelineTests(unittest.TestCase):
         self.assertEqual((44,1,45),(valid_range,invalid_range,soc))
         state=self.state()
         self.assertEqual(57,state['soc_pct']['value']);self.assertEqual(120,state['range_km']['value'])
-    def test_replay_switch_clears_observations_and_preserves_force(self):
-        self.frame(0x3E0,bytes([60]+[0]*7));self.g.set('battery.soc_pct_x10',900)
-        self.g.set('can.replay_enabled',1);self.lib.gw_can_rx_tick(1000)
-        self.frame(0x3E0,bytes([20]+[0]*7)) # Real traffic remains raw-only while replay is active.
-        self.assertEqual(90,self.state()['soc_pct']['value'])
-        for ms in range(1010,2110,10):self.lib.gw_can_rx_tick(ms)
-        self.lib.varstore_force(self.g.ids['battery.soc_pct_x10'],False,0)
-        self.assertEqual(70,self.state()['soc_pct']['value'])
-        self.g.set('can.replay_enabled',0);self.lib.gw_can_rx_tick(2200)
-        self.assertIsNone(self.state()['soc_pct']['value'])
-        self.frame(0x3E0,bytes([55]+[0]*7));self.assertEqual(55,self.state()['soc_pct']['value'])
-        self.health();self.assertGreater(self.g.read('can.demo_frame_count'),0)
+    def test_live_rx_keeps_updating_under_force_and_release_returns_latest_sample(self):
+        self.frame(0x3E0, bytes([60]+[0]*7))
+        self.g.set('battery.soc_pct_x10', 900)
+        self.g.advance(100)
+        self.frame(0x3E0, bytes([55]+[0]*7))
+        self.assertEqual(90, self.state()['soc_pct']['value'])
+        self.g.advance(200)
+        self.lib.varstore_force(self.g.ids['battery.soc_pct_x10'], False, 0)
+        self.assertEqual(55, self.state()['soc_pct']['value'])
+        self.assertEqual(200, self.state()['soc_pct']['age_ms'])
+        self.health()
+        self.assertEqual(2, self.g.read('can.decode_count'))
+
+    def test_original_capture_reaches_phone_through_physical_ingress(self):
+        rows = list(csv.DictReader(CAPTURE.read_text().splitlines()))
+        origin = int(rows[0]['Time Stamp'])
+        previous = count = 0
+        for row in rows:
+            ident = int(row['ID'], 16)
+            if ident not in IDS: continue
+            ms = (int(row['Time Stamp']) - origin)//1000
+            self.g.advance(ms-previous); previous = ms
+            payload = bytes(int(row[f'D{i}'], 16) for i in range(1, int(row['LEN'])+1))
+            self.frame(ident, payload)
+            count += 1
+        self.health()
+        self.assertEqual(1974, count)
+        self.assertEqual(count, self.g.read('can.decode_count'))
+        state = self.state()
+        self.assertEqual(70, state['soc_pct']['value'])
+        self.assertEqual(156, state['range_km']['value'])
+        self.assertIsNone(state['voltage_v']['value'])
+
     def test_bad_dlc_rtr_and_unrelated_frames_do_not_refresh(self):
         self.frame(0x3E0,bytes([70]+[0]*7));self.g.advance(200)
         self.frame(0x3E0,bytes([30]+[0]*6));self.frame(0x3E0,bytes(8),rtr=True)
@@ -221,6 +204,5 @@ class InfoPipelineTests(unittest.TestCase):
     def test_can_owned_phone_fields_only_allow_force_in_web(self):
         for name in ('vehicle.awake','vehicle.parked','vehicle.range_km_x10','temperature.outside_mc','vehicle.odometer_km'):
             self.assertFalse(self.lib.gw_process_data_manual(self.g.ids[name]),name)
-        self.assertTrue(self.lib.gw_process_data_manual(self.g.ids['can.replay_enabled']))
 
 if __name__=='__main__': unittest.main()

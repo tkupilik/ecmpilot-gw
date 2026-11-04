@@ -1,8 +1,10 @@
-# Manual power policies and CAN-only deep-sleep test
+# Power policies and CAN-wake deep sleep
 
-Firmware version0.5.0, updated2026-11-01. The GW now uses ESP-IDF PM/DFS and
+Firmware version 0.5.0, updated 2026-11-04. The GW now uses ESP-IDF PM/DFS and
 tickless idle, adapted from lcd_pwr_tst. **Normal/DFS/light policies keep CAN running.**
-No vehicle state, incoming UDP request or CAN handler changes power policy.
+[Automatic sleep](low-power.md) requests CAN-wake deep sleep after the configured
+BSI-report inactivity period (default 48 hours). Passive reads and CAN RX handlers
+do not themselves change power policy.
 
 Vehicle-side BSI sleep and telemetry loss are recorded separately in
 [car_lowpower.md](../doc/car_lowpower.md). AC charging does not guarantee that
@@ -10,7 +12,7 @@ HSCAN1 or INFO remains available.
 
 ## Web controls
 
-Home -> Power measurement provides three volatile profiles:
+Low power -> Power measurement provides three volatile profiles:
 
 | Profile | CPU policy | Automatic light sleep |
 | --- | --- | --- |
@@ -23,7 +25,8 @@ HTTP handler. Wi-Fi/UDP/web remain running. Wi-Fi keeps WIFI_PS_MIN_MODEM.
 The actual minimum CPU frequency can be higher than the selected minimum due
 to active driver locks. In particular TWAI uses the APB clock and retains its
 ESP_PM_APB_FREQ_MAX lock for the **whole installed driver lifetime**. That lock
-prevents actual light sleep and keeps APB timing stable for500kbit/s CAN.
+prevents actual light sleep and keeps APB timing stable for the selected CAN rate
+(default INFO 125 kbit/s; optional HSCAN1 500 kbit/s).
 
 Selecting Light sleep therefore does **not** currently mean the chip sleeps.
 The CPU ceiling becomes80MHz, but successful sleep counters should remain zero
@@ -59,9 +62,10 @@ board's regulator/isolation overhead, and no new current figures are claimed.
 
 ## Manual CAN-only deep sleep
 
-Home -> Power measurement -> **Deep sleep · CAN wake** requests mode3 through
-`POST /api/power` with `{"mode":"can_deep_sleep"}`. There is no inactivity timer,
-48-hour rule, automatic CAN trigger or periodic wake-up. Normal startup is unchanged.
+Low power -> Power measurement -> **Deep sleep · CAN wake** requests mode3 through
+`POST /api/power` with `{"mode":"can_deep_sleep"}`. Automatic entry uses the
+separate [inactivity settings/PT](low-power.md), but the same shutdown path.
+There is no periodic timer wake; CPU policy returns to Normal on boot.
 
 The HTTP handler publishes a raw varstore request. CPU1 application observes it
 and waits1.5seconds for the response before coordinating these stages:
@@ -95,7 +99,7 @@ powered. This test does not switch the transceiver supply or Silent/Standby pins
 GPIO16 is an ESP32-S3 RTC GPIO and can wake from deep sleep. TX hold is released
 at the next boot after configuring its digital output HIGH, before TWAI starts.
 
-Wake performs a new boot, initializes CAN and rejoins Wi-Fi; volatile Force/demo
+Wake performs a new boot, initializes CAN and rejoins Wi-Fi; volatile Force/test
 state is lost. The log shows `DEEP_SLEEP` and `Wake cause: 2 (CAN RX)`. The retained
 previous tail includes the final entry diagnostic. The frame that triggers wake,
 and subsequent traffic during boot, may be lost. Pulse-width/wake reliability
@@ -107,8 +111,8 @@ only configured wake source; physical reset/power cycling can still restart it.
 A quiet bus is needed for a stable current measurement. A stuck-low RXD may abort
 entry or cause an immediate boot. The owner measured approximately6.3mA at12V after selecting deep sleep, compared
 with22mA at fixed160MHz and20mA with variable frequency, on the board with the
-isolated DC/DC removed. See the [measurement table](../doc/car_lowpower.md#gateway-hardware-and-measured-consumption).
-CAN wake-up remains untested until the vehicle trial.
+isolated DC/DC removed. See the [measurement table](../doc/car_lowpower.md#gateway-input-current-measurements).
+The owner confirmed deep sleep / CAN wake on the installed vehicle on 2026-11-04.
 
 ### Diagnostics and test procedure
 
@@ -137,5 +141,5 @@ Force isolation, generation rollover, owner completion ordering, hand-off errors
 refused entry and restoration. The deep-entry hardware boundary is substituted. Browser tests
 exercise the actual embedded controls, pending/error states and CAN sleep warning.
 The ESP target build verifies the real PM/sleep API integration. The owner has now measured board current in Normal, variable-frequency and deep-
-sleep modes; CAN wake-up and successful sleep/wake cycling still require the
-vehicle test.
+sleep modes and confirmed CAN wake in the vehicle. Automatic inactivity tests
+are described separately in [low-power policy](low-power.md).

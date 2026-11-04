@@ -27,9 +27,9 @@ The ambiguous `563` layout and default-only `208/58E` fields remain available wi
 
 Unresolved alternative bit positions/scales are not declared wrong. The canonical layout is used in the DBC; alternatives remain in signal comments and the [complete source snapshot](opel_corsa_e_hscan1.source.json), including message-level alternatives. Cosmetic enum quotes are normalized for DBC syntax; original labels remain in the snapshot. Text encoding is UTF-8.
 
-Read [the capture analysis](../docs/obd-hscan1-2026-10-28.md) before using candidate fields. Raw invalid/default sentinels are described in signal comments. **DBC numeric decoding can still scale an invalid sentinel**; a consumer must check validity explicitly. There are no verified vehicle commands or diagnostic transaction definitions in this file. A DBC describes layouts and must not be treated as permission/evidence to transmit them.
+Read [the capture analysis](../docs/research/obd-hscan1-2026-10-28.md) before using candidate fields. Raw invalid/default sentinels are described in signal comments. **DBC numeric decoding can still scale an invalid sentinel**; a consumer must check validity explicitly. There are no verified vehicle commands or diagnostic transaction definitions in this file. A DBC describes layouts and must not be treated as permission/evidence to transmit them.
 
-The [wake-up captures](../docs/can-wakeup-2026-10-28.md) show zero-filled startup battery payloads before real readings become available. Sentinel checks alone do not establish validity; consumers need startup/availability gating. The export includes startup IDs `102/112/12A`. Two zero/unavailable complete cell sweeps are excluded from the **173 nonzero** sweep summaries.
+The [HS1 startup-gating notes](../docs/can-telemetry.md) describe zero-filled battery payloads before real readings become available. Sentinel checks alone do not establish validity; consumers need startup/availability gating. The export includes startup IDs `102/112/12A`. Two zero/unavailable complete cell sweeps are excluded from the **173 nonzero** sweep summaries.
 
 ## Provenance and license
 

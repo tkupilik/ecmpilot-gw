@@ -141,7 +141,7 @@ class AutoRefreshTests(unittest.TestCase):
 
     def test_disabled_or_unavailable_never_submits_and_disable_clears_countdown(self):
         self.enable(standby_min=1)
-        self.g.set('can.replay_enabled', 1)
+        self.g.set('request.can.suspend', 1)
         self.tick(bsi=None)
         remaining = self.status()['remaining_ms']
         self.tick(ms=600_000, bsi=None)

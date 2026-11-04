@@ -20,7 +20,7 @@ the gateway varstore.
 Configuration survives reboot in a separate `gateway/auto_refresh` NVS blob.
 The countdown, received vehicle data and request counter are RAM state and reset
 on reboot/deep-sleep wake. Enabling starts a full interval, without an immediate
-vehicle wake. The feature requires the INFO CAN control profile; HS1, replay,
+vehicle wake. The feature requires the INFO CAN control profile; HS1,
 test mode and suspended CAN cannot perform an automatic refresh.
 
 ## Countdown and sequence completion
@@ -98,5 +98,8 @@ Native tests use the real PT hierarchy, varstore, NVS validation and TX mailbox.
 `tests/test_auto_refresh.py` covers intervals, charge transitions, unknown/low
 SOC, completion, failed wake, preemption, receipt retention, persistence/CAS and
 failure, boot checks and 1 KiB responses. Web tests exercise draft/poll/save
-behavior. Vehicle and physical phone operation still need an on-device check;
-these tests send no live refreshes.
+behavior. Owner GW logs show both phone and timer sequences transmitting wake
+and 394, with refreshed data arriving at GW/phone. Standalone refresh does not
+update cloud data in the owner's test; changing the stored charging time does.
+The timer still performs only refresh, with no schedule edit. See
+[CAN requests](can-requests.md). Host checks send no live refreshes.

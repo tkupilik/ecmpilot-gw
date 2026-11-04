@@ -16,7 +16,7 @@ typedef struct {
 
 static const char *const climate_options[] = {"off", "on"};
 static const char *const charge_options[] = {"disconnected", "waiting", "charging", "complete", "fault"};
-static const char *const mode_options[] = {"immediate", "deferred"};
+static const char *const mode_options[] = {"immediate", "delayed"};
 static const char *const bsi_options[] = {"standby", "normal", "going_to_sleep", "waking", "communication_off"};
 static const char *const lock_options[] = {"invalid", "locked", "superlocked", "unlocked", "driver_unlocked", "cab_unlocked", "load_area_unlocked"};
 static const char *const limit_options[] = {"disabled", "monitoring", "waiting_data", "busy", "requesting", "limit_reached", "retry", "unavailable", "low_aux_battery"};
@@ -32,23 +32,15 @@ static const field_t fields[] = {
 
     {GW_VAR_SOC_PCT_X10,"soc_pct","Battery state of charge","%","battery",10,0,1000,NUMBER,NULL},
     {GW_VAR_RANGE_KM_X10,"range_km","Estimated range","km","distance",10,0,20000,NUMBER,NULL},
-    {GW_VAR_CABIN_MC,"cabin_c","Cabin temperature","°C","temperature",1000,-60000,100000,NUMBER,NULL},
     {GW_VAR_OUTSIDE_MC,"outside_c","Outside temperature","°C","temperature",1000,-60000,100000,NUMBER,NULL},
-    {GW_VAR_BATTERY_MIN_MC,"battery_min_c","Battery minimum temperature","°C","temperature",1000,-60000,150000,NUMBER,NULL},
-    {GW_VAR_BATTERY_MAX_MC,"battery_max_c","Battery maximum temperature","°C","temperature",1000,-60000,150000,NUMBER,NULL},
     {GW_VAR_ODOMETER_KM,"odometer_km","Odometer","km","distance",1,0,10000000,NUMBER,NULL},
-    {GW_VAR_VOLTAGE_MV,"voltage_v","Battery voltage","V","voltage",1000,0,1000000,NUMBER,NULL},
-    {GW_VAR_CURRENT_MA,"current_a","Battery current","A","current",1000,-2000000,2000000,NUMBER,NULL},
     {GW_VAR_VEHICLE_AWAKE,"awake","Vehicle awake",NULL,NULL,1,0,1,BOOLEAN,NULL},
     {GW_VAR_VEHICLE_PARKED,"parked","Vehicle parked",NULL,NULL,1,0,1,BOOLEAN,NULL},
     {GW_VAR_CLIMATE_STATE,"climate_state","Reported preconditioning state",NULL,"enum",1,0,1,ENUMERATION,climate_options},
     {GW_VAR_CHARGE_STATE,"charge_state","Charging state",NULL,"enum",1,0,4,ENUMERATION,charge_options},
     {GW_VAR_CHARGE_MODE,"charge_mode","Charging mode",NULL,"enum",1,0,1,ENUMERATION,mode_options},
     {GW_VAR_CHARGE_CONNECTED,"charge_connected","Charging cable",NULL,"plug",1,0,1,BOOLEAN,NULL},
-    {GW_VAR_CHARGE_POWER_W,"charge_power_kw","Battery charging power","kW","power",1000,0,1000000,NUMBER,NULL},
-    {GW_VAR_CHARGE_REMAINING_MIN,"charge_remaining_min","Charging time remaining","min","duration",1,0,100000,NUMBER,NULL},
-    {GW_VAR_CHARGE_START_MINUTE,"charge_start_local","Deferred charging start",NULL,NULL,1,0,1439,LOCAL_TIME,NULL},
-    {GW_VAR_CAN_REPLAY_ENABLED,"demo","Demo data",NULL,NULL,1,0,1,BOOLEAN,NULL},
+    {GW_VAR_CHARGE_START_MINUTE,"charge_start_local","Delayed charging start",NULL,NULL,1,0,1439,LOCAL_TIME,NULL},
     {GW_VAR_BSI_POWER_MANAGEMENT,"bsi_state","BSI state",NULL,"enum",1,0,4,ENUMERATION,bsi_options},
     {GW_VAR_SOC_PCT_X10,"vehicle_data_age_s","Battery data age","s","duration",1,0,1000,AGE_SECONDS,NULL},
     {GW_VAR_BSI_CHARGE_SCHEDULE_AVAILABLE,"charge_schedule_available","Charging schedule available",NULL,NULL,1,0,1,BOOLEAN,NULL},
@@ -78,6 +70,21 @@ static const field_t fields[] = {
     {GW_VAR_BSI_PRECOND_PROGRAMS34_HI24,"preconditioning_program3","Preconditioning program 3",NULL,NULL,1,0,0xFFFFFF,PROGRAM,NULL},
     {GW_VAR_BSI_PRECOND_PROGRAMS34_LO24,"preconditioning_program4","Preconditioning program 4",NULL,NULL,1,0,0xFFFFFF,PROGRAM,NULL},
 };
+
+// Retained discovery topics from older firmware must be deleted on reconnect.
+static const struct { const char *component, *key; } retired[] = {
+    {"binary_sensor", "demo"},
+    {"sensor", "cabin_c"},
+    {"sensor", "battery_min_c"},
+    {"sensor", "battery_max_c"},
+    {"sensor", "voltage_v"},
+    {"sensor", "current_a"},
+    {"sensor", "charge_power_kw"},
+    {"sensor", "charge_remaining_min"},
+};
+size_t gw_ha_retired_count(void) { return sizeof(retired) / sizeof(retired[0]); }
+const char *gw_ha_retired_key(size_t i) { return i < gw_ha_retired_count() ? retired[i].key : NULL; }
+const char *gw_ha_retired_component(size_t i) { return i < gw_ha_retired_count() ? retired[i].component : NULL; }
 
 size_t gw_ha_entity_count(void) { return (sizeof(fields) / sizeof(fields[0])); }
 const char *gw_ha_entity_key(size_t i) { return i < (sizeof(fields) / sizeof(fields[0])) ? fields[i].key : NULL; }
@@ -165,14 +172,14 @@ char *gw_ha_discovery_json(size_t i, const char *node, const char *state_topic,
         f->key, f->key, f->key);
     ok = ok && cJSON_AddStringToObject(root,"json_attributes_topic",state_topic) &&
         cJSON_AddStringToObject(root,"json_attributes_template",attributes);
+    if (f->var == GW_VAR_BSI_AUX_BATTERY_VOLTAGE_MV)
+        ok = ok && cJSON_AddNumberToObject(root,"suggested_display_precision",1);
     if (f->unit) ok = ok && cJSON_AddStringToObject(root,"unit_of_measurement",f->unit);
     if (f->device_class) ok = ok && cJSON_AddStringToObject(root,"device_class",f->device_class);
     if (f->kind == NUMBER || f->kind == AGE_SECONDS)
         ok = ok && cJSON_AddStringToObject(root,"state_class",f->var == GW_VAR_ODOMETER_KM ? "total_increasing" : "measurement");
     if (f->kind == BOOLEAN)
         ok = ok && cJSON_AddStringToObject(root,"payload_on","ON") && cJSON_AddStringToObject(root,"payload_off","OFF");
-    if (f->var == GW_VAR_CAN_REPLAY_ENABLED)
-        ok = ok && cJSON_AddStringToObject(root,"entity_category","diagnostic");
     cJSON *availability = ok ? cJSON_AddArrayToObject(root,"availability") : NULL;
     cJSON *device = availability ? cJSON_AddObjectToObject(root,"device") : NULL;
     cJSON *ids = device ? cJSON_AddArrayToObject(device,"identifiers") : NULL;

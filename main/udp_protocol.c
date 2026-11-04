@@ -3,6 +3,7 @@
 #include "process_data.h"
 #include "vehicle_control.h"
 #include "auto_refresh.h"
+#include "low_power.h"
 #include "cJSON.h"
 #include "esp_log.h"
 #include <limits.h>
@@ -194,7 +195,7 @@ void gw_udp_protocol_tick(uint64_t now)
         size_t id = c->domain ? GW_VAR_CHARGE_MODE : GW_VAR_CLIMATE_STATE;
         varstore_snapshot_t s = sample(id);
         bool confirmed = known(s, 0, 1) && s.value == c->target && s.age_ms <= 5000 && s.age_ms <= now - c->created;
-        if (confirmed && c->domain && c->target == 1) {
+        if (confirmed && c->domain && c->minute >= 0) {
             varstore_snapshot_t start = sample(GW_VAR_CHARGE_START_MINUTE);
             confirmed = known(start, 0, 1439) && start.value == c->minute && start.age_ms <= 5000 && start.age_ms <= now - c->created;
         }
@@ -271,6 +272,7 @@ static cJSON *info(void)
     cJSON_AddItemToArray(fields, cJSON_CreateString("vehicle_details"));
     cJSON_AddItemToArray(fields, cJSON_CreateString("climate_programs"));
     cJSON_AddItemToArray(fields, cJSON_CreateString("auto_refresh"));
+    cJSON_AddItemToArray(fields, cJSON_CreateString("low_power"));
     cJSON_AddItemToArray(fields, cJSON_CreateString("charge_limit"));
     cJSON *operations = cJSON_AddObjectToObject(j, "operations");
     if (!test && gw_vehicle_control_available()) {
@@ -477,8 +479,7 @@ static void write_request(const cJSON *r, cJSON *reply, const char *id, const ch
     uint32_t correlation_id = correlation ? (uint32_t)correlation->valuedouble : 0;
     const char *client_session = session ? session->valuestring : "";
     static const char *const climate_keys[] = {"enabled"};
-    static const char *const immediate_keys[] = {"mode"};
-    static const char *const deferred_keys[] = {"mode","start_local","timezone"};
+    static const char *const charge_keys[] = {"mode","start_local","timezone"};
     static const char *const program_keys[] = {"base","slots"};
     bool edit_programs = text_is(get(r, "op"), "climate.programs.set");
     uint32_t base[4] = {0}, targets[4] = {0};
@@ -504,10 +505,12 @@ static void write_request(const cJSON *r, cJSON *reply, const char *id, const ch
         if (!keys(args, climate_keys, 1) || !cJSON_IsBool(get(args, "enabled"))) error = "unsupported_argument";
         else target = cJSON_IsTrue(get(args, "enabled"));
     } else if (text_is(get(args, "mode"), "immediate")) {
-        if (!keys(args, immediate_keys, 1)) error = "unsupported_argument";
+        if (!keys(args, charge_keys, 3)) error = "unsupported_argument";
+        else if ((get(args, "start_local") || get(args, "timezone")) &&
+            (!parse_time(get(args, "start_local"), &minute) || !text_is(get(args, "timezone"), "Europe/Prague"))) error = "invalid_argument";
     } else if (text_is(get(args, "mode"), "deferred")) {
         target = 1;
-        if (!keys(args, deferred_keys, 3)) error = "unsupported_argument";
+        if (!keys(args, charge_keys, 3)) error = "unsupported_argument";
         else if (!parse_time(get(args, "start_local"), &minute) || !text_is(get(args, "timezone"), "Europe/Prague")) error = "invalid_argument";
     } else error = "invalid_argument";
     if (!error && (!number(deadline, 0, MAX_SAFE_INTEGER) || !number(rev, 0, INT32_MAX))) error = "invalid_argument";
@@ -575,7 +578,7 @@ static void write_request(const cJSON *r, cJSON *reply, const char *id, const ch
         varstore_write(GW_VAR_REQUEST_CLIMATE_GENERATION, (int32_t)generations[domain]);
     } else if (domain == 1) {
         varstore_write(GW_VAR_REQUEST_CHARGE_MODE, target);
-        if (target) varstore_write(GW_VAR_REQUEST_CHARGE_START_MINUTE, minute);
+        if (minute >= 0) varstore_write(GW_VAR_REQUEST_CHARGE_START_MINUTE, minute);
         else varstore_invalidate(GW_VAR_REQUEST_CHARGE_START_MINUTE);
         varstore_write(GW_VAR_REQUEST_CHARGE_GENERATION, (int32_t)generations[domain]);
     }
@@ -628,6 +631,14 @@ size_t gw_udp_protocol_handle(const char *data, size_t length, uint64_t now, cha
     else if (text_is(op, "state.get") && !args->child) cJSON_AddItemToObject(reply, "state", state());
     else if (text_is(op, "vehicle.details.get") && !args->child) cJSON_AddItemToObject(reply, "details", details());
     else if (text_is(op, "climate.programs.get") && !args->child) cJSON_AddItemToObject(reply, "programs", programs());
+    else if (text_is(op, "low_power.get") && !args->child)
+        cJSON_AddItemToObject(reply, "low_power", gw_low_power_json());
+    else if (text_is(op, "low_power.set")) {
+        const char *reason = NULL;
+        if (!text_is(get(r, "boot"), boot_id)) reject(reply, id, false, "wrong_boot", NULL);
+        else if (gw_low_power_save(args, &reason) != ESP_OK) reject(reply, id, false, reason, NULL);
+        else cJSON_AddItemToObject(reply, "low_power", gw_low_power_json());
+    }
     else if (text_is(op, "auto_refresh.get") && !args->child)
         cJSON_AddItemToObject(reply, "auto_refresh", gw_auto_refresh_json());
     else if (text_is(op, "auto_refresh.set")) {

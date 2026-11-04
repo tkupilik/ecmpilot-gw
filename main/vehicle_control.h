@@ -33,6 +33,8 @@ enum { GW_CONTROL_TICK_MS = 20, GW_CONTROL_WAKE_INTERVAL_MS = 100,
 void gw_vehicle_control_init(void);
 void gw_vehicle_control_tick(void);
 bool gw_vehicle_control_available(void);
+// CPU1 only: includes a committed request not yet admitted by the controller.
+bool gw_vehicle_control_busy(void);
 // Mailbox consumed only by TaskCan; result is published after driver submission.
 bool gw_vehicle_control_prepare(uint32_t *consumed, uint32_t *id, uint8_t *length, uint8_t data[8]);
 void gw_vehicle_control_submitted(uint32_t generation, esp_err_t error);

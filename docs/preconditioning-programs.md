@@ -70,5 +70,6 @@ locally updated targets count as vehicle success.
 
 The mobile master switch enables all configured slots or disables all slots,
 preserving times/days. Individual slot switches select subsets. Switches edit
-a draft; **Apply schedules** sends it. All four slots stay visible. Current
-vehicle observations remain separate and refresh only from CAN.
+a draft; **Apply schedules** sends it. The disabled program section is collapsed
+in the phone. Current vehicle observations remain separate and refresh only
+from CAN. See [CAN requests](can-requests.md) for the shared wire-level reference.

@@ -21,7 +21,7 @@ storage units. The corrected path is:
 ```
 
 Android requires no change or reinstall for this correction. The local driving
-replay now yields 156-158 km from raw 78-79, rather than 78-79 km. Those replay
+capture now decodes to 156-158 km from raw 78-79, rather than 78-79 km. Those capture
 values follow the corrected linear scale; they have no separate screenshot
 reference. This simultaneous capture/app comparison anchors one operating point,
 not every possible vehicle variant, rounding rule or upper limit. The existing
@@ -33,7 +33,7 @@ name, path, length, bits and original scale/range/invalid code. The upstream
 definition (factor 1 and alternate factor 0.1) stays unchanged in source JSON.
 The serialized DBC records the vehicle-specific correction and its evidence.
 
-`tests/test_can_info.py` replays the actual 90 SOC/range frames through CAN RX,
+`tests/test_can_info.py` feeds the actual 90 SOC/range frames through host CAN RX,
 native varstore and UDP, checking 44 valid 120 km observations, one unavailable
 startup observation and 45 SOC samples at 57%. The DBC test checks raw 60 versus
 120 km, serialized output, unchanged upstream provenance and rejection of the

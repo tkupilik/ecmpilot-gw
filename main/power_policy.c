@@ -1,13 +1,17 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #include "power_policy.h"
+#include "low_power.h"
 #include "can_config.h"
 #include "process_data.h"
 #include "esp_timer.h"
 #include <limits.h>
+#include <stdatomic.h>
 
 static int32_t waiting, target;
 static int64_t apply_at, deadline;
 static int deep_stage;
+static atomic_flag request_lock = ATOMIC_FLAG_INIT;
+static bool automatic_request;
 
 static int32_t producer(size_t id)
 {
@@ -35,6 +39,8 @@ esp_err_t gw_power_policy_init(void)
     waiting = target = 0;
     apply_at = deadline = 0;
     deep_stage = GW_DEEP_IDLE;
+    automatic_request = false;
+    atomic_flag_clear(&request_lock);
     varstore_write(GW_VAR_PWR_DEEP_STAGE, GW_DEEP_IDLE);
     varstore_write(GW_VAR_REQUEST_CAN_SUSPEND, 0);
     varstore_write(GW_VAR_REQUEST_NETWORK_SUSPEND, 0);
@@ -46,7 +52,7 @@ esp_err_t gw_power_policy_init(void)
     return error;
 }
 
-esp_err_t gw_power_request(int mode)
+static esp_err_t request(int mode, bool automatic)
 {
     if (mode < GW_POWER_NORMAL || mode > GW_POWER_CAN_DEEP_SLEEP) return ESP_ERR_INVALID_ARG;
     if (mode == GW_POWER_CAN_DEEP_SLEEP && (!GW_CAN_ENABLED ||
@@ -54,11 +60,25 @@ esp_err_t gw_power_request(int mode)
         return ESP_ERR_INVALID_STATE;
     int32_t generation = producer(GW_VAR_REQUEST_PWR_GENERATION);
     if (generation != producer(GW_VAR_PWR_COMPLETED)) return ESP_ERR_INVALID_STATE;
+    automatic_request = automatic;
     varstore_write(GW_VAR_REQUEST_PWR_MODE, mode);
     // Publish last. Force overlays never cause hardware transitions.
     varstore_write(GW_VAR_REQUEST_PWR_GENERATION, generation == INT32_MAX ? 1 : generation + 1);
     return ESP_OK;
 }
+
+static esp_err_t submit(int mode, bool automatic)
+{
+    // Manual HTTP and the CPU1 PT share one serialized request publication.
+    if (atomic_flag_test_and_set_explicit(&request_lock, memory_order_acquire))
+        return ESP_ERR_INVALID_STATE;
+    esp_err_t error = request(mode, automatic);
+    atomic_flag_clear_explicit(&request_lock, memory_order_release);
+    return error;
+}
+
+esp_err_t gw_power_request(int mode) { return submit(mode, false); }
+esp_err_t gw_power_auto_request(void) { return submit(GW_POWER_CAN_DEEP_SLEEP, true); }
 
 static void stage(int value)
 {
@@ -124,6 +144,17 @@ void gw_power_policy_tick(void)
         target = producer(GW_VAR_REQUEST_PWR_MODE);
         // HTTP response leaves before changing CPU/sleep policy.
         apply_at = esp_timer_get_time() + 1500000;
+        return;
+    }
+    // Closing the real CAN decoder invalidates its observations. Recheck age
+    // until that owner acknowledges stop, then retain the admitted inactivity
+    // decision while still checking settings, vehicle work and OTA.
+    bool rx_stopped = deep_stage == GW_DEEP_STOP_NETWORK || deep_stage == GW_DEEP_ENTER ||
+        (deep_stage == GW_DEEP_STOP_CAN && producer(GW_VAR_CAN_SUSPEND_COMPLETED) == 1);
+    if (automatic_request && deep_stage != GW_DEEP_RESTORE &&
+        !(rx_stopped ? gw_low_power_permitted() : gw_low_power_eligible())) {
+        if (deep_stage == GW_DEEP_IDLE) finish(ESP_ERR_INVALID_STATE);
+        else restore(ESP_ERR_INVALID_STATE);
         return;
     }
     if (deep_stage != GW_DEEP_IDLE) { deep_tick(); return; }

@@ -18,28 +18,28 @@ browser's edits; retrying the same desired settings is idempotent.
 
 ## Vehicle observations
 
-There are **55 discovery entities**. The original 24 unique IDs remain: SOC,
-range, odometer, available electrical/thermal readings, reported preconditioning,
-charging state/mode/cable/power/time, stored charging start, 12 V SOC/voltage,
-front selected temperatures, evaporator temperature and demo flag.
+There are **47 discovery entities** covering SOC/range, available electrical and
+thermal observations, charging, preconditioning, 12 V battery, BSI state and data
+age, doors/locks, trips/consumption, four native programs and charge-limit status.
+Unsupported INFO measurements are not exported. Program times use the vehicle's
+local clock; trip/consumption fields retain their candidate-validation status.
 
-Added: BSI state, battery-data age, charging-schedule availability,
-preconditioning availability/accepted immediate request, five open closures,
-locking state, trip 1/2 average consumption/distance/speed, instantaneous
-consumption, six consumption-history samples and four native preconditioning
-programs, plus charge-limit enable/target/status. Example program: `07:30 off Mon Wed Thu`; empty slots read
-`Not configured`. Times use the vehicle-local clock. These are vehicle reports,
-not independent confirmation of physical HVAC output. Trip/consumption fields
-retain the same candidate-validation status as the phone and DBC.
+Remaining entities retain their unique IDs. On reconnect, GW clears retained
+HA discovery entries for the old demo sensor and these unavailable measurements:
+HV battery voltage/current, minimum/maximum battery temperature, measured cabin
+temperature, charging power and remaining charging time. Neither their values nor
+their age attributes are published. This also applies to the optional HS1 profile.
+12 V battery voltage remains available and requests one decimal place in HA.
+Charging uses `immediate` / `delayed`, matching the app’s Delayed charging label;
+the separate UDP protocol retains its internal `deferred` value.
 
 Values use effective global varstore observations and the same scaling as UDP
-(km, V, A, °C, kW, %, kWh/100km). Last known values stay published when CAN sleeps.
+(km, V, °C, %, kWh/100km). Last known values stay published when CAN sleeps.
 Each sensor has **`age_s`** and **`stale`** attributes (older than 300 seconds).
 **Battery data age** uses the original SOC observation. Force is effective-valid
 with age zero; releasing it restores the producer value and its original age.
 Unknown/invalid/out-of-range values become JSON null; only that entity becomes
-unavailable. Unsupported INFO fields such as HV voltage/current or measured cabin
-temperature stay unknown. No battery energy/capacity is invented. The stored
+unavailable. No battery energy/capacity is invented. The stored
 charging start stays visible in immediate mode too, matching the phone.
 
 ## Topics and availability

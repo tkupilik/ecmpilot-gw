@@ -123,9 +123,11 @@ class TelemetryParityTests(unittest.TestCase):
         self.assertEqual(214.5, state['range_km'])
         self.assertEqual(20, state['climate_left_setpoint_c'])
         self.assertEqual(12.6, state['aux_battery_voltage_v'])
-        self.assertIsNone(state['cabin_c'])
+        self.assertNotIn('cabin_c', state)
         self.assertEqual(before, self.value('udp.wake_request_count'))
-        self.assertGreater(self.lib.gw_ha_entity_count(), 24)
+        self.assertEqual(47, self.lib.gw_ha_entity_count())
+        self.assertNotIn('demo', state)
+        self.assertNotIn('demo', state['age_s'])
         for i in range(self.lib.gw_ha_entity_count()):
             key = self.lib.gw_ha_entity_key(i).decode()
             discovery = self.parse_owned(self.lib.gw_ha_discovery_json(i, b'gw_test', b'gw/state', b'gw/status', b'0.5.0', b'1234', 15))
@@ -142,6 +144,42 @@ class TelemetryParityTests(unittest.TestCase):
         self.assertEqual(20, state['climate_left_setpoint_c'])
         self.assertEqual(12.6, state['aux_battery_voltage_v'])
         self.assertGreaterEqual(state['age_s']['climate_left_setpoint_c'], 6)
+
+    def test_ha_removes_unsupported_measurements_and_retained_discovery(self):
+        unsupported = {'cabin_c', 'battery_min_c', 'battery_max_c', 'voltage_v',
+                       'current_a', 'charge_power_kw', 'charge_remaining_min'}
+        # A manual Force must not resurrect an unsupported MQTT sensor.
+        self.g.set('battery.current_ma', 12000)
+        state = self.parse_owned(self.lib.gw_ha_state_json())
+        active = {self.lib.gw_ha_entity_key(i).decode() for i in range(self.lib.gw_ha_entity_count())}
+        for key in unsupported | {'demo'}:
+            self.assertNotIn(key, active)
+            self.assertNotIn(key, state)
+            self.assertNotIn(key, state['age_s'])
+        self.lib.gw_ha_retired_count.restype = c.c_size_t
+        for name in ('gw_ha_retired_key', 'gw_ha_retired_component'):
+            fn = getattr(self.lib, name)
+            fn.argtypes = [c.c_size_t]
+            fn.restype = c.c_char_p
+        count = self.lib.gw_ha_retired_count()
+        retired = {self.lib.gw_ha_retired_key(i).decode(): self.lib.gw_ha_retired_component(i).decode()
+                   for i in range(count)}
+        self.assertEqual({**dict.fromkeys(unsupported, 'sensor'), 'demo': 'binary_sensor'}, retired)
+        self.assertIsNone(self.lib.gw_ha_retired_key(count))
+        self.assertIsNone(self.lib.gw_ha_retired_component(count))
+        i = next(i for i in range(self.lib.gw_ha_entity_count())
+                 if self.lib.gw_ha_entity_key(i) == b'aux_battery_voltage_v')
+        config = self.parse_owned(self.lib.gw_ha_discovery_json(i, b'gw_test', b'gw/state', b'gw/status', b'0.5.0', b'1234', 15))
+        self.assertEqual(1, config['suggested_display_precision'])
+        self.assertEqual('V', config['unit_of_measurement'])
+        self.assertEqual('gw_test_aux_battery_voltage_v', config['unique_id'])
+        self.g.set('charge.mode', 1)
+        self.assertEqual('delayed', self.parse_owned(self.lib.gw_ha_state_json())['charge_mode'])
+        for i in range(self.lib.gw_ha_entity_count()):
+            config = self.parse_owned(self.lib.gw_ha_discovery_json(i, b'gw_test', b'gw/state', b'gw/status', b'0.5.0', b'1234', 15))
+            self.assertNotIn('Deferred', config['name'])
+            if self.lib.gw_ha_entity_key(i) == b'charge_mode':
+                self.assertEqual(['immediate', 'delayed'], config['options'])
 
     def test_ha_new_fields_keep_source_age_unknowns_force_and_phone_units(self):
         values = {

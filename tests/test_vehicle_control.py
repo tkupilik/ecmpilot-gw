@@ -201,6 +201,19 @@ class VehicleControlTests(unittest.TestCase):
         self.assertEqual(b'\xC0\xB4',self.sent(0x35B)[0][2])
         self.assertGreaterEqual(self.sent(0x35B)[0][0]-self.sent(0x394)[0][0],460)
         self.assertEqual(1,len(self.sent(0x35B)))
+    def test_time_edit_with_delay_off_and_no_charging_requires_new_time_readback(self):
+        self.frame(0x160,'B8 B4')
+        self.frame(0x396,'00 80 A3 00 C8 09')
+        self.assertNotEqual('charging',self.state()['charge']['state'])
+        req=self.start(self.action('charge.mode.set',{'mode':'immediate',
+            'start_local':'03:17','timezone':'Europe/Prague'}),normal=True)
+        self.pump(800,reply=lambda f:self.frame(0x160,'B8 B4') if f[1] in (0x394,0x35B) else None)
+        self.assertEqual(b'\xB8\xC5',self.sent(0x35B)[0][2])
+        self.assertEqual('accepted',self.receipt(req)['phase'])
+        self.frame(0x160,'B8 C5');self.step()
+        self.assertEqual('succeeded',self.receipt(req)['phase'])
+        self.assertEqual('immediate',self.state()['charge']['mode'])
+        self.assertEqual('03:17',self.state()['charge']['start_local'])
     def test_lost_mode_frame_retries_same_target_without_restarting_operation(self):
         req=self.schedule_run(drop=1)
         self.assertEqual(2,len(self.sent(0x35B)));self.assertEqual(1,len(self.sent(0x394)))
@@ -246,8 +259,8 @@ class VehicleControlTests(unittest.TestCase):
         self.assertEqual(before,self.g.read('control.wake_attempts'))
         self.assertEqual('busy',self.g.call(self.action())['command']['error'])
         self.assertEqual(1,self.g.read('request.vehicle.generation'))
-    def test_replay_test_mode_suspend_and_global_timeout_revoke_pending(self):
-        for key in ['can.replay_enabled','test.enabled','request.can.suspend']:
+    def test_test_mode_and_suspend_revoke_pending(self):
+        for key in ['test.enabled','request.can.suspend']:
             self.setUp();req=self.start();self.g.set(key,1,False);self.step(20,bsi=None)
             self.assertEqual('failed',self.receipt(req)['phase']);self.assertIsNone(self.drain())
     def test_wake_payload_force_and_invalid_configuration(self):

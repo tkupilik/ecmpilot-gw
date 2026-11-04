@@ -77,7 +77,7 @@ static void publisher(void *arg)
 {
   (void)arg;
   configASSERT(xPortGetCoreID() == GW_NETWORK_CORE);
-  size_t discovery = 0;
+  size_t discovery = 0, retired = 0;
   bool announced = false, cleared_state = false;
   uint64_t next_state = 0;
   gw_ha_settings_t settings;
@@ -107,13 +107,20 @@ static void publisher(void *arg)
     }
     if (atomic_load(&connected)) {
       if (atomic_exchange(&restart_discovery, false)) {
-        discovery = 0; announced = cleared_state = false; next_state = 0;
+        discovery = retired = 0; announced = cleared_state = false; next_state = 0;
       }
       if (!cleared_state)
         cleared_state = esp_mqtt_client_enqueue(client, state_topic, "", 0, 1, 1, true) >= 0;
+      if (cleared_state && retired < gw_ha_retired_count()) {
+        // One tombstone per tick; retry the same topic if the outbox is full.
+        char topic[192];
+        snprintf(topic, sizeof(topic), "homeassistant/%s/%s/%s/config",
+                 gw_ha_retired_component(retired), node, gw_ha_retired_key(retired));
+        if (esp_mqtt_client_enqueue(client, topic, "", 0, 1, 1, true) >= 0) ++retired;
+      }
       // One discovery entity per tick bounds transient RAM/outbox use on this
       // no-PSRAM board. A full outbox retries this entity, preserving progress.
-      if (cleared_state && discovery < gw_ha_entity_count()) {
+      if (cleared_state && retired == gw_ha_retired_count() && discovery < gw_ha_entity_count()) {
         char topic[192];
         snprintf(topic, sizeof(topic), "homeassistant/%s/%s/%s/config",
                  gw_ha_entity_component(discovery), node, gw_ha_entity_key(discovery));
@@ -124,7 +131,7 @@ static void publisher(void *arg)
           cJSON_free(payload);
           if (result >= 0) ++discovery;
         }
-      } else if (cleared_state && !announced) {
+      } else if (cleared_state && retired == gw_ha_retired_count() && !announced) {
         announced = esp_mqtt_client_enqueue(client, status_topic, "online", 0, 1, 1, true) >= 0;
       }
       if (now >= next_state) {

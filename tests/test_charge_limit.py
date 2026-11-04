@@ -102,8 +102,8 @@ class ChargeLimitTests(unittest.TestCase):
             self.h.pump(400,bsi=None)
             self.assertEqual([],self.h.frames)
 
-    def test_existing_physical_modes_replay_suspend_and_low_aux_veto(self):
-        for name,value in (('test.enabled',1),('can.replay_enabled',1),('request.can.suspend',1),('bsi.aux_battery_soc_pct_x10',490)):
+    def test_existing_test_mode_suspend_and_low_aux_veto(self):
+        for name,value in (('test.enabled',1),('request.can.suspend',1),('bsi.aux_battery_soc_pct_x10',490)):
             self.setUp();self.enable();self.data();self.g.set(name,value,force=False)
             self.h.pump(300)
             self.assertEqual([],self.h.frames)

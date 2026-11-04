@@ -76,7 +76,7 @@ void gw_can_info_reset(void)
   for (unsigned id = GW_VAR_BSI_POWER_MANAGEMENT; id <= GW_VAR_BSI_CLIMATE_CABIN_AIR_QUALITY_LEVEL; ++id)
     varstore_invalidate(id);
   buttons_seen = false;
-  // Event totals survive demo/live transitions; state baselines do not.
+  // Event totals survive decoder resets; state baselines do not.
   for (size_t i = 0; i < NBI(button_presses); ++i)
     varstore_write(GW_VAR_SW_PRESS_COUNT + i, button_presses[i]);
 }

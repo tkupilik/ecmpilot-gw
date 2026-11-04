@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 // Adapted from the project's LCD power bench; no LCD or CAN lifecycle calls.
 #include "power_policy.h"
+#include "low_power.h"
 #include "process_data.h"
 #include "can_config.h"
 #include "can_pins.h"
@@ -90,6 +91,7 @@ extern "C" esp_err_t gw_power_start(void)
 
 extern "C" void gw_power_tick(void)
 {
+    gw_low_power_tick();
     gw_power_policy_tick();
     int64_t now = esp_timer_get_time();
     if (now < next_publish) return;

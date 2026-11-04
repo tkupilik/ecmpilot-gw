@@ -23,7 +23,6 @@ typedef struct {
 // Called only by the CPU1 CAN process. No consumer callbacks or control logic.
 void gw_can_rx_data_init(void);
 void gw_can_rx_accept(const gw_can_frame_t *frame);
-void gw_can_rx_tick(uint32_t now_ms);
 void gw_can_rx_publish_health(const gw_can_health_t *health);
 #ifdef __cplusplus
 }

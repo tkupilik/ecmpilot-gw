@@ -26,6 +26,6 @@ class WakeConfigTests(unittest.TestCase):
     def test_cluster_version_and_other_identifiers_are_rejected(self):
         for n in [0x5DF,0x036,-1,0x800]:
             self.g.set('can.wake_tx_id',n);self.assertIsNone(self.encode())
-    def test_replay_and_test_mode_inhibit_encoding(self):
-        for key in ['can.replay_enabled','test.enabled']:
+    def test_test_mode_inhibits_encoding(self):
+        for key in ['test.enabled']:
             self.g.set(key,1,False);self.assertIsNone(self.encode());self.g.set(key,0,False)

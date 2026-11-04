@@ -340,7 +340,6 @@ void CanNet::Close()
 void CanNet::OnTick()
 {
     int64_t now = esp_timer_get_time();
-    gw_can_rx_tick(static_cast<uint32_t>(now / 1000));
     if (m_proc->m_driver) {
         twai_message_t message{};
         if (gw_vehicle_control_prepare(&m_controlTx, &message.identifier, &message.data_length_code, message.data)) {
@@ -390,7 +389,7 @@ void CanNet::OnCanMsg()
         esp_err_t error = twai_receive_v2(m_proc->m_driver, &message, 0);
         if (error == ESP_ERR_TIMEOUT) break;
         if (error != ESP_OK) { m_proc->m_health.error = error; break; }
-        // Raw physical copies are independent of decoder and local replay mode.
+        // Capture physical frames independently of the application decoder.
         gw_gvret_capture(message.identifier, message.data, message.data_length_code,
                          message.extd, message.rtr, static_cast<uint64_t>(esp_timer_get_time()));
         gw_can_frame_t frame{};

@@ -11,7 +11,7 @@ enum { GW_DEEP_IDLE = 0, GW_DEEP_STOP_CAN = 1, GW_DEEP_STOP_NETWORK = 2,
 esp_err_t gw_power_start(void);
 // Called by the existing CPU1 application process, never by CAN RX.
 void gw_power_tick(void);
-// Single producer: HTTP task. Requests and results cross the raw varstore.
+// Serialized manual HTTP / automatic CPU1 requests cross the raw varstore.
 esp_err_t gw_power_request(int mode);
 
 // CPU1 hardware boundary. CAN/network owners must acknowledge suspension first.

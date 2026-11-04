@@ -27,9 +27,8 @@ call TWAI transmit, change bitrate or change the operating mode. The actual prof
 close the connection cleanly, rather than interpreting their payload as new
 commands. There is no network auto-discovery service.
 
-`can.replay_enabled` controls decoded observations only and defaults to 0/live.
-GVRET exports **physical RX and local TX submissions**; local replay frames are never mixed
-into this stream. Release telemetry forces and disable replay for live monitoring.
+GVRET exports **physical RX and local TX submissions**. Telemetry Force overlays
+do not alter this raw capture stream.
 
 ## Data path and memory
 
@@ -39,8 +38,8 @@ TWAI RX -> TaskCan on CPU1 -> raw FIFO -> gvret on CPU0 -> TCP -> SavvyCAN
 Local TX accepted by TWAI -> same FIFO (wake, refresh and controls)
 ```
 
-The raw tap is immediately after `twai_receive()`, before the decoder's ID,
-extended-frame and demo filters. All structurally valid classic standard and
+The raw tap is immediately after `twai_receive()`, before the decoder's ID and
+extended-frame filters. All structurally valid classic standard and
 extended data frames are exported, including IDs with no decoder. RTR is ignored.
 CAN FD is not implemented by this classic TWAI receiver.
 

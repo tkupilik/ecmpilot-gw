@@ -42,6 +42,7 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <button id="tab-varstore" type="button" role="tab" aria-controls="panel-varstore" aria-selected="false" tabindex="-1">Varstore</button>
 <button id="tab-wifi" type="button" role="tab" aria-controls="panel-wifi" aria-selected="false" tabindex="-1">Wi-Fi setup</button>
 <button id="tab-ha" type="button" role="tab" aria-controls="panel-ha" aria-selected="false" tabindex="-1">Home Assistant</button>
+<button id="tab-low-power" type="button" role="tab" aria-controls="panel-low-power" aria-selected="false" tabindex="-1">Low power</button>
 <button id="tab-ota" type="button" role="tab" aria-controls="panel-ota" aria-selected="false" tabindex="-1">OTA</button>
 <button id="tab-log" type="button" role="tab" aria-controls="panel-log" aria-selected="false" tabindex="-1">Log</button>
 <button id="tab-tasks" type="button" role="tab" aria-controls="panel-tasks" aria-selected="false" tabindex="-1">Tasks</button>
@@ -66,14 +67,25 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <div class="actions"><button id="auto-refresh-save" type="button" disabled>Save automatic refresh</button><button id="auto-refresh-reload" type="button">Reload settings</button></div>
 <p id="auto-refresh-message" role="status" aria-live="polite"></p>
 </section>
+
+
+</div>
+<div id="panel-low-power" role="tabpanel" aria-labelledby="tab-low-power" tabindex="0" hidden>
+<section><h2>Automatic deep sleep</h2>
+<p><label><input id="low-power-enabled" type="checkbox" checked> Sleep when the vehicle is inactive</label></p>
+<label>Sleep after (hours)<br><input id="low-power-hours" type="number" min="1" max="720" step="1" value="48"></label>
+<p class="muted">After this long without a valid BSI message, the gateway turns off Wi-Fi and sleeps. CAN activity wakes it. Connecting the phone does not keep it awake. Vehicle refreshes restart the inactivity period; if low 12V battery stops refreshes, the inactivity countdown can expire.</p>
+<p id="low-power-status" role="status"></p>
+<div class="actions"><button id="low-power-save" type="button" disabled>Save</button><button id="low-power-reload" type="button">Reload settings</button></div>
+<p id="low-power-message" role="status" aria-live="polite"></p>
+</section>
 <section><h2>Power measurement</h2>
 <p>Manual CPU/sleep policy. Normal: 160 MHz. DFS: 40–160 MHz. Light sleep: 40–80 MHz with automatic sleep permitted.</p>
 <pre id="power-status">Loading…</pre>
 <div class="actions"><button id="power-normal" type="button">Normal</button><button id="power-dfs" type="button">DFS only</button><button id="power-light" type="button">Light sleep</button><button id="power-deep" type="button">Deep sleep · CAN wake</button><button id="power-refresh" type="button">Refresh</button></div>
 <p id="power-message" role="status" aria-live="polite"></p>
-<p class="muted">Normal/DFS/light policies keep CAN running; the installed TWAI driver prevents actual light sleep. Deep sleep stops Wi-Fi and TWAI, then wakes only on CAN RX activity. Phone/HA cannot reach the sleeping GW. First frames may be lost; active CAN may cause an immediate wake. No automatic sleep timeout. Reboot returns to Normal.</p>
+<p class="muted">Normal/DFS/light policies keep CAN running; the installed TWAI driver prevents actual light sleep. Deep sleep stops Wi-Fi and TWAI, then wakes only on CAN RX activity. Phone/HA cannot reach the sleeping GW. First frames may be lost; active CAN may cause an immediate wake. Automatic entry uses the inactivity setting above. Reboot returns to Normal.</p>
 </section>
-
 </div>
 <div id="panel-wifi" role="tabpanel" aria-labelledby="tab-wifi" tabindex="0" hidden>
 <section><h2>Wi-Fi setup</h2>
@@ -116,7 +128,7 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 </div>
 <div id="panel-varstore" role="tabpanel" aria-labelledby="tab-varstore" tabindex="0" hidden>
 <h2>Process signals</h2>
-<p class="muted">INFO CAN supplies SOC, range, outside temperature, odometer and vehicle state. Unknown fields remain invalid until a producer or Force provides them. Set <code>can.replay_enabled</code> to 1 for local capture replay; it never transmits CAN. Set <code>test.enabled</code> to 1 for UDP test controls; incoming targets appear under <code>request.*</code>.</p>
+<p class="muted">INFO CAN supplies SOC, range, outside temperature, odometer and vehicle state. Unknown fields remain invalid until a producer or Force provides them. Set <code>test.enabled</code> to 1 for UDP test controls; incoming targets appear under <code>request.*</code>.</p>
 <p class="notice">Force overrides the value returned to consumers. Real producer data keeps updating underneath. Forces stay active until Release or reboot. Direct Write and Touch are available only for manual signals.</p>
 <div class="toolbar"><input id="vars-filter" type="search" placeholder="Filter name or description" aria-label="Filter signals"><label><input id="vars-auto" type="checkbox" checked> Refresh every second</label><button id="vars-refresh">Refresh</button><button id="vars-dump">Download JSON</button><span id="vars-summary" class="muted"></span></div>
 <nav class="toolbar" aria-label="Signal pages"><button id="vars-prev" type="button" disabled>Previous</button><span id="vars-page" class="muted" role="status" aria-live="polite">Page 0 / 0</span><button id="vars-next" type="button" disabled>Next</button></nav>
@@ -148,7 +160,7 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 <script>
 'use strict';
 const byId=id=>document.getElementById(id);
-const tabNames=['home','varstore','wifi','ha','ota','log','tasks'];
+const tabNames=['home','varstore','wifi','ha','low-power','ota','log','tasks'];
 const tabListeners=[];
 function onTabChange(listener){tabListeners.push(listener);}
 function selectTab(name,remember=true){
@@ -437,7 +449,7 @@ if(visible())refresh();
 const el=id=>document.getElementById('power-'+id);
 let reading=false,requesting=false,pending=false,deepRequested=false,deepAvailable=false;
 const controls=()=>{for(const id of ['normal','dfs','light','deep'])el(id).disabled=requesting||pending||(id==='deep'&&!deepAvailable);};
-const visible=()=>!document.getElementById('panel-home').hidden;
+const visible=()=>!document.getElementById('panel-low-power').hidden;
 async function refresh(){
   if(reading)return;reading=true;el('refresh').disabled=true;
   try{
@@ -463,7 +475,7 @@ async function request(mode){
 el('normal').onclick=()=>request('normal');el('dfs').onclick=()=>request('dfs');el('light').onclick=()=>request('light_sleep');
 el('deep').onclick=()=>request('can_deep_sleep');
 el('refresh').onclick=refresh;
-onTabChange(tab=>{if(tab==='home')refresh();});
+onTabChange(tab=>{if(tab==='low-power')refresh();});
 setInterval(()=>{if(visible())refresh();},2000);
 if(visible())refresh();
 })();
@@ -548,5 +560,36 @@ el('reload').onclick=()=>{dirty=false;el('message').textContent='';return read()
 onTabChange(tab=>{if(tab==='ha')read();});
 setInterval(()=>{if(!document.getElementById('panel-ha').hidden)read();},3000);
 if(!document.getElementById('panel-ha').hidden)read();
+})();
+</script>
+
+<script>
+/* Low-power settings */
+(()=>{
+const el=name=>document.getElementById('low-power-'+name);
+if(!el('enabled'))return;
+let revision=null,dirty=false,saving=false,reading=false;
+const controls=()=>{el('save').disabled=saving||reading||revision===null;el('reload').disabled=saving;for(const name of ['enabled','hours'])el(name).disabled=saving||revision===null;};
+function duration(seconds){return Math.floor(seconds/86400)+'d '+Math.floor(seconds%86400/3600)+'h '+Math.floor(seconds%3600/60)+'m '+seconds%60+'s';}
+function apply(s){
+ if(!dirty){revision=s.rev;el('enabled').checked=s.enabled;el('hours').value=String(s.idle_hours);}
+ const states={disabled:'Automatic sleep is off',waiting_data:'Waiting for the first valid BSI message',counting:'Sleeping in',busy:'Waiting for the current operation',entering:'Preparing deep sleep',retry:'Sleep preparation failed; will retry',unavailable:'Automatic CAN sleep is unavailable',invalid_config:'Invalid settings'};
+ el('status').textContent=(states[s.state]||s.state)+(s.remaining_s===null?'':s.state==='counting'?' '+duration(s.remaining_s):' · time remaining '+duration(s.remaining_s));
+ controls();
+}
+async function read(){if(reading||saving)return;reading=true;controls();try{const response=await fetch('/api/low-power');if(!response.ok)throw new Error(await response.text());apply(await response.json());}catch(error){el('message').textContent=error.message;}finally{reading=false;controls();}}
+el('enabled').onchange=()=>{dirty=true;};el('hours').oninput=()=>{dirty=true;};
+el('reload').onclick=()=>{dirty=false;read();};
+el('save').onclick=async()=>{
+ if(saving||revision===null)return;
+ const text=el('hours').value.trim(),hours=Number(text);
+ if(!/^\d+$/.test(text)||hours<1||hours>720){el('message').textContent='Choose 1–720 whole hours.';return;}
+ saving=true;controls();
+ try{const response=await fetch('/api/low-power',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({rev:revision,enabled:el('enabled').checked,idle_hours:hours})});if(!response.ok)throw new Error(await response.text());dirty=false;apply(await response.json());el('message').textContent='Settings saved.';}
+ catch(error){el('message').textContent=error.message==='settings_conflict'?'Settings changed elsewhere. Reload before saving.':error.message;}
+ finally{saving=false;controls();}
+};
+onTabChange(tab=>{if(tab==='low-power')read();});
+setInterval(()=>{if(!document.getElementById('panel-low-power').hidden)read();},2000);
 })();
 </script>

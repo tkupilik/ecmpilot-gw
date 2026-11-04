@@ -129,9 +129,12 @@ static bool mode_reply(void)
 bool gw_vehicle_control_available(void)
 {
     return GW_CAN_ENABLED && GW_CAN_IS_INFO && CONFIG_GW_CAN_BITRATE == 125000 &&
-        !varstore_read(GW_VAR_CAN_REPLAY_ENABLED, 0, 0) &&
         !varstore_read(GW_VAR_TEST_ENABLED, 0, 0) &&
         !varstore_read(GW_VAR_REQUEST_CAN_SUSPEND, 0, 0);
+}
+bool gw_vehicle_control_busy(void)
+{
+    return c.active || (uint32_t)raw(GW_VAR_REQUEST_VEHICLE_GENERATION, 0, 0) != c.request;
 }
 static void phase(int value)
 {
@@ -337,7 +340,8 @@ static PT_THREAD(SetChargeMode(void))
         if (!c.mode_payload_valid) {
             c.mode_payload = (uint16_t)raw(GW_VAR_BSI_CHARGE_SCHEDULE_RAW, 1000, 0);
             c.mode_payload = (c.mode_payload & 0xB800) |
-                (c.kind == GW_CONTROL_DEFERRED ? 0x4000 | (unsigned)c.minute : c.mode_payload & 0x7FF);
+                (c.kind == GW_CONTROL_DEFERRED ? 0x4000 : 0) |
+                (c.minute >= 0 ? (unsigned)c.minute : c.mode_payload & 0x7FF);
             c.mode_payload_valid = true;
         }
         // A lost response must retry the same target. Do not activate another
@@ -745,7 +749,8 @@ void gw_vehicle_control_tick(void)
         PT_INIT(&c.request_pt);
         if (c.active && (kind < GW_CONTROL_REFRESH || kind > GW_CONTROL_PRECOND_PROGRAMS ||
             (kind == GW_CONTROL_PRECOND_PROGRAMS && !c.programs_valid) ||
-            (kind == GW_CONTROL_DEFERRED && (minute < 0 || minute > 1439)))) {
+            (kind == GW_CONTROL_DEFERRED && (minute < 0 || minute > 1439)) ||
+            (kind == GW_CONTROL_IMMEDIATE && (minute < -1 || minute > 1439)))) {
             finish(GW_CONTROL_RESULT_CONFIG); return;
         }
     }

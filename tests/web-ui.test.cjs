@@ -22,7 +22,7 @@ class Element {
 }
 
 async function page(hash='') {
-  const tabNames=['home','varstore','wifi','ha','ota','log','tasks'];
+  const tabNames=['home','varstore','wifi','ha','low-power','ota','log','tasks'];
   const ids = Object.fromEntries([...['enabled','host','port','period','username','password','clear-password','save','reload','message','status'].map(name=>'ha-'+name),'can-wake-send','can-wake-status',...['auto','refresh','dump','summary','message','rows'].map(name=>'tasks-'+name),...['auto','follow','refresh','clear','download','message','output'].map(name=>'log-'+name),'status','hostname','ap-ssid','ap-enabled','ap-password','ap-password-show','refresh','profiles','add','save','firmware','upload','progress','message',...['filter','auto','refresh','dump','summary','message','signals','prev','page','next'].map(name=>'vars-'+name),...['status','message','normal','dfs','light','deep','refresh'].map(name=>'power-'+name),...tabNames.flatMap(name=>['tab-'+name,'panel-'+name])].map(id => [id, new Element()]));
   const requests = [], uploads = [];
   let restart=false,apEnabled=false;

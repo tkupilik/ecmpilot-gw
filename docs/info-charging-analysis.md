@@ -175,7 +175,7 @@ This bounded negative result does not prove energy is absent from INFO CAN.
 Intermediate/multiplexed updates, noncontiguous fields, signed/offset encodings,
 different scales or stale endpoints can escape this search. Telematics reading
 another bus or diagnostics remains plausible; see the earlier
-[energy investigation](info-energy-preconditioning.md).
+[energy investigation](research/info-energy-preconditioning.md).
 
 ## Next discriminating capture
 

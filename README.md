@@ -2,7 +2,7 @@
 
 **ESP32 firmware connecting an Opel Corsa-e's INFO CAN bus to the eCMPilot Android app and Home Assistant.**
 
-The development hardware is the **Waveshare ESP32-S3-RS485-CAN**: one CAN channel, RS485 and onboard power conversion. The installed prototype listens to **ENT INFO CAN at 125 kbit/s** near the BSI, using the black **IC91B** interconnection. Permanent power is taken from the adjacent yellow **IC95A** connector in the owner's installation.
+The development hardware is the **[Waveshare ESP32-S3-RS485-CAN](https://www.waveshare.com/wiki/ESP32-S3-RS485-CAN)**: one CAN channel, RS485 and onboard power conversion. The installed prototype listens to **ENT INFO CAN at 125 kbit/s** near the BSI, using the black **IC91B** interconnection. Permanent power is taken from the adjacent yellow **IC95A** connector in the owner's installation.
 
 **Current firmware: 0.5.0 · ESP-IDF 5.3.2 · ESP32-S3.** The companion Android repository is **`ecmpilot`**. This is an independent research/development project; support for other vehicles is not established.
 
@@ -13,16 +13,18 @@ The development hardware is the **Waveshare ESP32-S3-RS485-CAN**: one CAN channe
 - **Automatic refresh:** persistent standby/charging periods and a minimum 12 V SOC. Off by default; initial settings are **60 min / 5 min / 50%**.
 - **Charge limit:** optional SOC target; requests delayed charging after an updated SOC reaches the limit. Requires automatic refresh, defaults off with an 80% target, and may resume at the vehicle's stored charging start time.
 - **Android UDP:** direct local communication on **42840**, with correlated requests, duplicate suppression and command-result tracking.
-- **Home Assistant:** optional MQTT Discovery and 55 telemetry entities; **GW → HA only**, with broker settings in the web UI. Disabled by default.
+- **Home Assistant:** optional MQTT Discovery and 54 telemetry entities; **GW → HA only**, with broker settings in the web UI. Disabled by default.
 - **SavvyCAN:** GVRET over **TCP 23**, one client, vehicle RX plus local TX submissions, using a static 64-frame diagnostic queue. SavvyCAN-to-vehicle TX is disabled.
 - **Web tools:** Home, Varstore, Wi-Fi setup, OTA, Log, Tasks and Home Assistant configuration; runtime CPU/stack/heap diagnostics, reset reasons and a retained previous-boot log tail.
-- **Power tests:** manual fixed-frequency/DFS/light-sleep policies and a CAN-activity deep-sleep preparation mode.
+- **Low power:** automatic CAN-wake deep sleep after configurable vehicle inactivity (default 48 hours), plus manual CPU/power controls.
 
 The implementation is working on the owner's car. Mappings have different confidence levels: source definitions, capture comparisons and owner checks are recorded separately. Trip/body fields and newly written preconditioning programs still need further physical validation.
 
 ## Hardware and vehicle connection
 
 The current firmware pin mapping is **CAN TX GPIO15 / CAN RX GPIO16**. PSRAM is disabled; the build uses a conservative **4 MiB flash layout**. This is the RS485 + single-CAN board, not the Waveshare two-channel CAN kit or the LCD board.
+
+**Optional low-power hardware modification:** the owner's prototype has a modified interface power supply with the isolated DC/DC converter removed to reduce its standing consumption. This modification is **not required to run the firmware**; the unmodified board retains the converter's power overhead. The modified prototype measured approximately **20 mA while running with dynamic CPU frequency** and **6 mA in deep sleep**, both at the **12 V board input**. See [the measured operating modes](#vehicle-sleep-and-power) and [component power budget](powe_consumption.md) for details; these figures do not describe the stock board.
 
 | Connection | Installation reference |
 | --- | --- |
@@ -113,16 +115,20 @@ The owner's modified board, with its isolated DC/DC module removed, measured app
 | Dynamic frequency | 20 mA |
 | Manual deep sleep, CAN RX wake armed | 6.3 mA |
 
-These are whole-board measurements of that modified installation. The stock board has a higher power budget. The running TWAI driver blocks actual automatic light sleep. Deep sleep drops Wi-Fi/phone/HA access and restarts the ESP on wake; CAN wake reliability remains to be tested on the vehicle. No automatic inactivity timeout is enabled.
+These are whole-board measurements of that modified installation. The stock board has a higher power budget. The running TWAI driver blocks actual automatic light sleep. Deep sleep drops Wi-Fi/phone/HA access and restarts the ESP on wake; the owner confirmed CAN wake on the installed vehicle. Automatic entry is enabled by default after 48 hours without a valid BSI report; configure it and view the countdown under **Low power** on the web or **Gateway → Low power** in the phone. See [automatic sleep](docs/low-power.md).
 
 See [vehicle sleep observations](doc/car_lowpower.md) and [power modes/test procedure](docs/power-management.md).
 
 ## Documentation
 
+Start with the **[documentation index](docs/README.md)**. The consolidated
+**[CAN request reference](docs/can-requests.md)** lists current wake, refresh,
+charging and preconditioning frames, readbacks, timeouts and unresolved cloud behavior.
+
 | Guide | Contents |
 | --- | --- |
 | [Vehicle wiring](docs/hardware/vehicle-wiring.md) | Waveshare, IC91B INFO pair and adjacent IC95A power reference |
-| [CAN architecture](docs/can.md) / [RX mappings](docs/can-rx.md) | Task ownership, queues, fields and replay |
+| [CAN architecture](docs/can.md) / [RX mappings](docs/can-rx.md) | Task ownership, queues, fields and live RX |
 | [INFO DBC](dbc/README-info.md) / [HSCAN1 DBC](dbc/README.md) | Signal databases, source licensing and validation scope |
 | [Vehicle control](docs/vehicle-control.md) | Wake, refresh, charge sequencing and timeouts |
 | [Preconditioning](docs/preconditioning.md) / [weekly programs](docs/preconditioning-programs.md) | Immediate and scheduled requests/readback |
@@ -133,7 +139,7 @@ See [vehicle sleep observations](doc/car_lowpower.md) and [power modes/test proc
 | [Reset diagnostics](docs/reset-diagnostics.md) / [socket budget](docs/network-sockets.md) | Runtime diagnostics |
 | [Testing](docs/testing.md) | Native/web tests and hardware checks |
 
-Historical capture/research documents record the state at the time they were written; use this README and current build configuration for the active bus profile. Original service-manual scans are not required to build the firmware and are not included in this repository.
+Capture evidence is separated under [research](docs/research/README.md); superseded experiment diaries have been removed from the current guides. Original service-manual scans are not required to build the firmware and are not included in this repository.
 
 ## License and intended use
 

@@ -2,7 +2,8 @@
 
 Enable automatic refresh and **Charge limit** in Android **Home → Gateway**, then
 Apply. Charging now shows the target slider; releasing it saves in the gateway.
-Default **80%**, range **1–100%**, initially disabled. Turning off automatic refresh
+Default **80%**, initially disabled. The phone slider offers **30–100%**; the
+underlying GW protocol accepts whole percentages **1–100%**. Turning off automatic refresh
 also disables the limiter. The Home web editor exposes the same settings.
 The phone does not need to stay connected.
 
@@ -20,6 +21,8 @@ confirms delayed mode, not physical stopping. Charging state remains the actual
 
 ## Controller
 
+Wire frames and readback rules are defined in [CAN requests](can-requests.md).
+
 Parallel `ChargeLimit()` runs in the existing CPU1 process next to `AutoRefresh()`.
 It observes varstore only; no policy runs in CAN handlers. It has its own PT/retry
 countdown and requests the serialized `RunRequest()` hierarchy. Children share
@@ -30,7 +33,7 @@ Eligibility requires refresh + limiter enabled, supported live INFO backend,
 actual SOC/charging/source-HMI data no older than **5 seconds**, valid SOC and a
 native SOC RX generation. Known low 12 V SOC pauses admission; unknown auxiliary
 SOC permits it. Force cannot fabricate physical SOC/charging observations.
-Replay, test mode, HSCAN1 and suspended CAN cannot transmit.
+Test mode, HSCAN1 and suspended CAN cannot transmit.
 
 The sequence wakes/settles BSI, refreshes the native schedule, waits the existing
 preamble and rechecks charging/SOC before `35B`. Lower refreshed SOC, stopped
@@ -60,7 +63,7 @@ off/80%; later saves use v2. Old firmware cannot read the new v2 configuration.
 Varstore group `charge_limit.*`: enabled, soc_pct_x10, state, request_count,
 last_result. States: disabled, monitoring, waiting_data, busy, requesting,
 limit_reached, retry, unavailable, low_aux_battery. Result uses the controller enum.
-HA receives read-only enable/target/status, for **55 entities** total.
+HA receives read-only enable/target/status, for **54 entities** total.
 
 Tests cover migration/persistence, exact threshold, stale/unknown/forced data,
 wake/preamble ordering, schedule preservation, cancellation, low 12 V SOC,

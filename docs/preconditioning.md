@@ -1,7 +1,9 @@
-# Immediate preconditioning: capture and implementation
+# Immediate preconditioning
 
-The [weekly-program editor](preconditioning-programs.md) now exposes the same
-stored slots without changing the immediate Start/Stop semantics below.
+Current wire-level behavior is defined in [CAN requests](can-requests.md). The
+[weekly-program editor](preconditioning-programs.md) uses the same stored slots.
+The owner now uses preconditioning and observes cloud updates while it is active;
+the capture below is the original evidence for the Start/Stop feedback layout.
 
 2026-11-03. `logs/info_precond.csv` contains 36,565 frames, 100 IDs and
 149.039358 seconds. The owner woke BSI with eCMPilot before using MyOpel. The
@@ -53,8 +55,8 @@ observations. TaskCan alone transmits, through the existing raw varstore mailbox
 The sequence waits for settled BSI Normal, acquires fresh coherent program data,
 sends 31B followed by 11B, and observes new 2E0 reports. It does not call the charging
 refresh preamble. The normal 20 ms controller cadence makes the companion send
-roughly one tick later; exact vehicle acceptance of that timing still needs a
-GW test. The captured sub-tick gaps are not treated as a proven deadline.
+roughly one tick later. The captured sub-tick gaps are not treated as a proven
+deadline or an exhaustive characterization of vehicle timing tolerance.
 
 At most 10 wakes and 3 request pairs are allowed. A missing ASAP acknowledgement
 can trigger a bounded retry; an acknowledged ASAP request is not restarted while
@@ -66,9 +68,9 @@ ASAP acknowledgement alone are not reported as successful completion.
 The app shows the BSI-reported state throughout, with cached-data freshness.
 The button is disabled while its command is pending, until an answer/failure or
 the 30-second timeout. The earlier proposed fixed 10-second lockout is not used.
-Existing experimental-control opt-in and capability advertisement apply. Failed
-and unconfirmed commands remain visible; successful confirmations auto-dismiss
-after 3 seconds. Connection/polling never creates a preconditioning request.
+Existing control opt-in and capability advertisement apply. Vehicle actions use
+the common pending indicator; successful completion clears it, while failures
+show an error dialog. Connection/polling never creates a preconditioning request.
 
 ## Temperature search
 
@@ -90,7 +92,7 @@ setpoints, evaporator data or the fact that preconditioning was requested.
 
 ## Reproduce and validate
 
-The separate [remaining-energy comparison](info-energy-preconditioning.md)
+The separate [remaining-energy comparison](research/info-energy-preconditioning.md)
 investigates the owner's cloud update from about 3 to 19.88 kWh after Start.
 It identifies no supported new INFO energy decoder.
 
@@ -99,5 +101,5 @@ JSON. Native host tests exercise the real codec/varstore/PTs: delayed feedback,
 program preservation, stale/missing inputs, Force isolation, bounded retries,
 30-second timeout, passive reads and source profile separation. No hardware CAN
 interface is opened by these checks. Build success and status acknowledgement
-do not establish the physical HVAC result; the new GW transmitter awaits a
-vehicle test.
+do not independently measure physical HVAC output or cabin temperature. Owner
+observations and raw BSI feedback are distinct from such measurements.

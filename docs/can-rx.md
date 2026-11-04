@@ -1,16 +1,17 @@
-# INFO CAN receive mappings and local replay
+# INFO CAN receive mappings
 
 The gateway uses the LCD project's receive mappings adapted to the **GW global
 varstore API**, with no VS/ufrm compatibility layer. Default source is physical
 ENT INFO CAN at **125 kbit/s**, TX15/RX16. The optional legacy HS1 profile is
 documented separately in [CAN telemetry](can-telemetry.md).
 
-## Latest LCD parity
+## Application mappings
 
-See [LCD/GW parity](lcd-backport.md) for configurable wake TX (without version5DF), application processing
-and diagnostics. INFO now uses NORMAL mode; legacy HS1 stays listen-only.
+INFO uses normal mode; optional HS1 stays listen-only. See
+[CAN requests](can-requests.md) for active operations, separately from these
+receive handlers. The application process derives values from the global varstore.
 
-New mappings added to the nine original handlers:
+Additional source-grouped mappings:
 
 | CAN ID / DLC | GW varstore group | Meaning |
 | --- | --- | --- |
@@ -57,9 +58,8 @@ handlers**. These fields remain unknown unless explicitly supplied as manual
 bench inputs/forces. HS1 voltage/HVAC decoding does not leak onto INFO.
 Reported preconditioning state comes from `2E0`; charging mode/schedule comes
 from `160`. These do not manufacture measured charging power or cable state.
-Explicit experimental refresh/charge-mode control is now implemented separately
-in [the vehicle policy](vehicle-control.md). RX handlers only publish varstore.
-Immediate preconditioning control is documented in [the captured sequence](preconditioning.md).
+Active operations are defined in [CAN requests](can-requests.md) and sequenced
+by [vehicle control](vehicle-control.md). RX handlers only publish varstore.
 
 Additional `236`/`276` aperture/lock and `2A1`/`261`/`31A`/`39A` trip mappings
 are documented in [passive vehicle details](vehicle-details.md), including their
@@ -67,38 +67,18 @@ separate phone datagram and current vehicle-validation limits.
 
 `steering.buttons` bits0–8 are OK, back, menu, mode, left, voice, phone, cluster OK,
 cluster back. Sampled rising edges increment the corresponding press totals up to
-INT32_MAX. First frame, source transition and a gap over one second establish a
-baseline without inventing a press. Totals survive replay/live changes; reboot
+INT32_MAX. First frame, decoder reset and a gap over one second establish a
+baseline without inventing a press. Totals survive decoder resets; reboot
 resets them. This sampled state cannot recover presses missed before reception.
 Button functions, warning polarity and network-phase meaning still need vehicle
 confirmation; database labels alone are not proof of physical behaviour.
 
-## Replay
+## Offline decoder checks
 
-`can.replay_enabled` starts at **0 (live)**. Write or Force it to 1 on the web to
-replay the owner's `logs/info_start_jizda.csv` locally. Release a force to return
-to its real producer setting; write 0 if that setting was changed to 1.
-
-The flash-resident array contains 1974 selected frames from 9520 source frames,
-looping every 36117 ms with original ordering/timing rounded down to milliseconds.
-Catch-up work is bounded to 32 frames per timer turn. Switching sources and loop
-restart invalidate observations and reset state baselines, preserving Force.
-All replay decoding is performed by the same CPU1 owner as physical RX.
-
-Physical RX/health/raw diagnostics and GVRET continue during replay, but decoded
-observations come exclusively from the selected source. **Replay never transmits
-on CAN and never enters the SavvyCAN stream.** Disable replay and release old
-telemetry forces before vehicle verification.
-
-Regenerate from the capture with:
-
-```powershell
-python tools/make_can_replay.py logs/info_start_jizda.csv
-```
-
-[Replay metadata](can-replay.json) records the source SHA-256, counts and duration.
-Tests compare every selected frame/order and check sentinel handling and the
-actual RX → GW varstore → phone UDP path.
+Firmware observations come only from physical CAN RX. Original CSV captures are
+fed through production RX/varstore/UDP code by host tests; no capture array or
+playback control is included in the firmware. Release telemetry forces before
+comparing live values with the car.
 
 ## Provenance and confidence
 

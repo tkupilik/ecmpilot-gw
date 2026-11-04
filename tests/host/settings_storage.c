@@ -4,7 +4,7 @@
 #include "gateway.h"
 #include "nvs.h"
 #include <string.h>
-typedef struct { unsigned char blob[4096]; size_t size; unsigned char auto_refresh[64]; size_t auto_size; unsigned char ha[512]; size_t ha_size; char hostname[64]; char ap_password[64]; int exists; int has_ap_enabled; uint8_t ap_enabled; } storage_t;
+typedef struct { unsigned char blob[4096]; size_t size; unsigned char low_power[32]; size_t low_power_size; unsigned char auto_refresh[64]; size_t auto_size; unsigned char ha[512]; size_t ha_size; char hostname[64]; char ap_password[64]; int exists; int has_ap_enabled; uint8_t ap_enabled; } storage_t;
 static storage_t saved, pending;
 static int fail_commit;
 void *xSemaphoreCreateMutex(void) { return &saved; }
@@ -30,6 +30,11 @@ void nvs_close(nvs_handle_t h) { (void)h; pending = saved; }
 esp_err_t nvs_get_blob(nvs_handle_t h, const char *key, void *value, size_t *size)
 {
     (void)h;
+    if (!strcmp(key, "low_power")) {
+        if (!saved.low_power_size) return ESP_ERR_NVS_NOT_FOUND;
+        if (*size < saved.low_power_size) return ESP_ERR_NVS_INVALID_LENGTH;
+        memcpy(value, saved.low_power, saved.low_power_size); *size = saved.low_power_size; return ESP_OK;
+    }
     if (!strcmp(key, "ha_mqtt")) {
         if (!saved.ha_size) return ESP_ERR_NVS_NOT_FOUND;
         if (*size < saved.ha_size) return ESP_ERR_NVS_INVALID_LENGTH;
@@ -47,6 +52,10 @@ esp_err_t nvs_get_blob(nvs_handle_t h, const char *key, void *value, size_t *siz
 esp_err_t nvs_set_blob(nvs_handle_t h, const char *key, const void *value, size_t size)
 {
     (void)h;
+    if (!strcmp(key, "low_power")) {
+        if (size > sizeof(pending.low_power)) return ESP_FAIL;
+        memcpy(pending.low_power, value, size); pending.low_power_size = size; return ESP_OK;
+    }
     if (!strcmp(key, "ha_mqtt")) {
         if (size > sizeof(pending.ha)) return ESP_FAIL;
         memcpy(pending.ha, value, size); pending.ha_size = size; return ESP_OK;

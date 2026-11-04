@@ -1,98 +1,56 @@
 # Corsa-e INFO-DIV CAN database
 
-**2026-11-03 charging HMI:** the reviewed reserved span in INFO396 now exposes
-`ChargingHmiState` (byte1 bits4..2), corroborated by two start/delay captures,
-driving contrast and the matching HS3 source field. The INFO frame remains6
-bytes; other HS3 fields are not imported. Raw0/1/3 are observed; fault/finished
-are source-only.3E1 is now raw-only Unknown because its charge flag stays0
-during confirmed charging. See [charging/energy review](../docs/info-charging-analysis.md).
+Current state: **2026-11-04**. Load [opel_corsa_e_info.dbc](opel_corsa_e_info.dbc)
+for **INFO-DIV, 125 kbit/s**. This is distinct from the OBD/HSCAN1 database.
+For transmitted commands use **[CAN requests](../docs/can-requests.md)**; this
+page describes database scope, confidence and regeneration.
 
-**2026-11-03 preconditioning:** a scoped vehicle overlay replaces the reserved
-first-byte span in `2E0` with ASAP and feedback fields, matching the observed
-Start/Stop transaction and the older `002` header. Only feedback 0/1 is observed;
-upstream source JSON is unchanged. See [the capture and implementation](../docs/preconditioning.md).
+## Vehicle interpretation and confidence
 
-**2026-11-03 range correction:** this Corsa-e uses **2 km/count** for `31A`
-`ZevRangeDisplay`. Raw 60 (`1E 00`) matches the owner's simultaneous MyOpel
-reference of 120 km at 57% SOC. The generator's vehicle review overlay corrects
-the scale; upstream factor 1 stays in source JSON. Raw 511 is still unavailable.
-See [capture/reference calibration](../docs/range-calibration.md) for the evidence
-and scope. This does not validate every range variant or the rest of `31A`.
+| Area | Current interpretation | Evidence / boundary |
+| --- | --- | --- |
+| Speed, gear, parking brake, 0F6 odometer/outside temperature, 3E7 service data | Selected fields owner-confirmed; 13 fields formally marked `OWNER_CONFIRMED` | [Owner-validation metadata](opel_corsa_e_info.owner-validation.json); not every enum or message field |
+| `3E0` SOC | Byte 0 percent; GW stores ×10 | Multiple reference captures match, including 57%; source DBC name remains `BatterySocCandidate`, not a blanket promotion of the message |
+| `31A` range | **2 km/count**, raw 511 unavailable | Owner screenshot 57% / 120 km, raw 60; [calibration](../docs/range-calibration.md) |
+| `396` charging HMI | Byte 1 bits 4..2; observed states 0/1/3 | [Charging review](../docs/info-charging-analysis.md); fault/finished labels remain source-only |
+| `2E0` preconditioning | ASAP bit 2, feedback bits 6..3; observed feedback 0 off / 1 active | [Start/Stop capture](../docs/preconditioning.md); scoped vehicle overlay, upstream JSON unchanged |
+| `412` wake cause | Full observed value `0x20` labelled OBC / AC cable insertion | [Plug-in capture](../docs/info-obc-wake-2026-11-01.md); not an invented cause-bit layout |
+| Cluster/unit 004 | `IC_` prefix for 1D7,217,257,2D7,2E7,317,31C,51F,5DF | Nine owner-approved source assignments; not all added IDs |
+| `161`, `3F0`, `3E1` | Contradictory vehicle layouts exported raw/Unknown | [EV review](../docs/research/info-ev-review.md) and charging review |
+| `350` | FrontClimateStatus; setpoints/evaporator, not measured cabin temperature | Existing bit layout retained |
+| `7A4`, `4A4` | Unknown/raw evidence; no validated UDS/DTC interpretation | An incidental 22 byte or diagnostic-looking layout is insufficient |
+| Remaining energy / battery capacity / HV voltage and temperatures on INFO | No validated producer | [Energy search](../docs/research/info-energy-preconditioning.md); cloud values alone do not identify an INFO field |
 
-**2026-11-01 OBC wake / cluster review:** label observed BSI412 cause byte0x20
-as **OBC cause (AC cable insertion)** and rename the message `BSI_WakeupCause`.
-The cause remains the original8-bit field, with an event-correlated value label;
-no new cause-bit layout is invented. Attribute nine owner-approved messages to
-unit004 with transmitter `IC` and prefix `IC_`:1D7,217,257,2D7,2E7,317,31C,51F,5DF.
-Source aliases/layouts are preserved. All17 IDs added versus standby are also
-added versus the fully operational driving capture, but seven existed in older
-wake captures; only ten are genuinely newly observed.4A4 remains unassigned.
-See [the wake timeline/comparison](../docs/info-obc-wake-2026-11-01.md) and the
-[regenerable vehicle review](opel_corsa_e_info.vehicle-review.json).
+Formal owner confirmation requires matching name/path, DLC, bit layout and
+scale/offset. Reserved fields and source-only candidates retain their confidence.
+Live GW handlers can use an observed field without marking every related source
+signal verified. Raw CAN reception also does not establish source measurement
+age or cloud upload.
 
-**2026-10-31 EV review:**161 and3F0 are now raw-only Unknown messages;350 is
-renamed FrontClimateStatus without changing its bit layout. See
-[EV review](../docs/info-ev-review.md) and the persistent
-[vehicle review overlay](opel_corsa_e_info.vehicle-review.json). The electric
-inheritance is already active; these five IDs have no separate EV override.
+The [vehicle review overlay](opel_corsa_e_info.vehicle-review.json) records
+corrections; complete original definitions remain in source JSON. A difference
+between capture ID sets does not independently prove a physical sender.
+MDS and other ECU labels are source attributions, with alternatives retained.
 
-Load **[opel_corsa_e_info.dbc](opel_corsa_e_info.dbc)** for the **INFO-DIV infotainment/telematics CAN, 125 kbit/s**. This is a separate bus database from the OBD/HS1 export. The current export covers **149,767 real frames / 116 observed IDs** across six INFO captures; see [capture validation and battery analysis](../docs/info-can-2026-10-28.md). Seven source DLCs are adapted and unknown ID `7A4` is included raw. This validates byte conversion and coverage, not every physical meaning or sender.
+## Export scope
 
-The owner independently confirmed the **charge-schedule time change from 03:02 to 03:01 in `0x35B` and `0x160`**; see [PSA telematics research](../PSA_telematic.md). SOC has a source-supported single-point candidate in `3E0`, byte 0, **70%** in all 124 samples, named `BatterySocCandidate`, consistent with the owner's recollection of 69 or 70%. The owner also recalls approximately **24.4 kWh**; a [numeric search](opel_corsa_e_info.energy-search.json) using this reference yields many coincidences but no supported energy signal. Remaining energy in kWh has not been identified on INFO. These confidence levels remain separate.
+The export contains **377 IDs**: 376 resolved pinned-source IDs plus unknown
+`7A4`. It includes 252 fixed-length source messages, one additional raw unknown
+and 124 transport IDs; **7,910 signals** include raw/padding and mutually
+exclusive branches, not 7,910 vehicle measurements. One source extended ID
+`0x10000000` is unobserved; all others are standard identifiers.
 
-The export contains **377 IDs**: all 376 IDs resolved from the pinned source, plus raw-only `7A4`. It includes unobserved source definitions as well as captured traffic:
+The current generation's six-capture validation covers **149,767 frames / 116
+observed IDs**. Counts describe those explicit generator inputs, not every log
+subsequently added to the repository. Seven fixed DLC adaptations are 069
+(2→5), 0A8 (6→4), 165 (5→6), 317 (8→5), 329 (7→8), 364 (6→7), 3DA (4→6).
+Additional bytes are raw. Conversion/coverage checks do not validate all source
+physical meanings, senders or availability codes.
 
-- **252 fixed-length source CAN messages**: 2,868 exported source/reviewed fields (including three charging/preconditioning status fields and25 opaque text/byte fields), plus74 raw fields covering gaps/reviewed unknown layouts.
-- **One additional unknown message**, `Unknown_InfoMessage01` / `7A4`, with eight raw bytes and no invented sender or physical interpretation.
-- **124 ISO-TP identifiers**: physical-frame transport fields, 40 signals per ID including conditional raw data and padding.
-- **7,910 total DBC signals**. This includes raw/padding fields and mutually exclusive transport branches; it is not a count of vehicle measurements.
-- **376 standard identifiers and one source-defined extended identifier**, `0x10000000`, which remains unobserved.
-- ECU-prefixed names, all alternative source senders in transmitter metadata, original names/comments and source links. No HS1-specific aliases, confidence or corrections are applied just because the numeric ID matches.
-- DBC global `Baudrate = 125000` and `BusType = CAN` metadata. Configure the adapter to the actual bus rate; a viewer need not apply these attributes automatically.
-
-The source covers several software and equipment versions. An absent or constant message is not grounds to discard its definition. Every fitting canonical fixed-CAN field is retained except the three reviewed unknown layouts, whose full upstream fields remain in source JSON. Captured fixed DLCs replace source DLCs for `069` (2 -> 5), `0A8` (6 -> 4), `165` (5 -> 6), `317` (8 -> 5), `329` (7 -> 8), `364` (6 -> 7), `3DA` (4 -> 6), with additional bytes raw. No canonical source field needed removal in these captures. Any future out-of-payload source field is explicitly audited and retained in source JSON. New IDs in explicitly supplied captures are added raw. The separately reviewed IC source attribution is vehicle-specific; a difference between capture ID sets alone does not assign every added frame to a new ECU.
-
-## Owner-verified fields — 2026-10-31
-
-The owner confirms speed (`0B6`), selected gear and parking brake (`128`),
-BSI_SlowData2 (`0F6`, currently consumed odometer/filtered outside temperature),
-and ICSV_MaintenanceStatusEv (`3E7`, service reminder data) match the vehicle.
-The DBC now marks **13 named fields** `OWNER_CONFIRMED`. Reserved fields and other
-signals retain candidate status; the entire database is not marked verified.
-These reports cover observed values, not exhaustive enums/invalidity boundaries.
-
-[Owner-validation metadata](opel_corsa_e_info.owner-validation.json) is a separate
-input to the generator. Confirmation requires matching source name/path, DLC,
-bit layout and scale/offset. Original source JSON remains unchanged. Message
-comments list confirmed fields; the inventory and validation report expose the
-same scope. The generator performs no live vehicle I/O.
-
-`3E0` traction SOC remains a candidate; it has not been confirmed by these reports.
-`3E7` service reminder data does not replace it. Physical sender alternatives
-remain as documented upstream.
-
-## Telematics starting points
-
-These are **source MDS sender claims**, not proof that MDS equals the physical BTA in this Corsa. The diagnostic BTA models and broadcast database use different aliases. In particular, the absence of these IDs on OBD/HS1 does not establish their absence on INFO-DIV.
-
-| ID, hex | DBC name / fields to investigate |
-| --- | --- |
-| `394` | `MDS_RemoteActionRequest2`; `RemoteSendChargeDataRequest`, remote lock/unlock |
-| `3E0` | `ICSV_BatterySocAndHistory`; `BatterySocCandidate`, direct byte-0 percent candidate |
-| `43C` | `MDS_Wakeup`; wake-up announcement, eight unnamed cause flags |
-| `3A9` | `MDS_TelematicsCallButtonStatus`; `NetworkMaintainRequestMdc`, SOS/assistance/mute |
-| `31B`, `11B` | Remote climate schedule, parts 1 and 2 |
-| `35B` | Remote charge schedule |
-| `369` | Telematics HMI/connectivity status |
-| `3D6` | Remote diagnosis request |
-| `53C` | `MDS_Supervision`; diagnostic session and communication counters |
-| `5FC` | `MDS_Version`; source title incorrectly says lane geometry, source fields describe version |
-| `254`, `314` | Remote commands transported over ISO-TP; application layouts remain in source JSON |
-| `67C`, `77C` | Diagnostic response from MDS / request to MDS, ISO-TP wire format |
-
-`43C` describes a wake announcement. There is no measured evidence here that this particular frame is the physical wake trigger. The source does not name the eight cause flags more precisely.
-
-The display titles of `11B`, `394`, `3E0`, `43C`, `5FC` and generic diagnostic blobs are adjusted for clarity, without changing source bit layouts. `3E0 BATTERY_STATUS` is displayed as `BatterySocCandidate`. All original titles/fields remain in source JSON, and original message titles remain in comments/inventory. Sender alternatives such as BTEL/OVIP are preserved, without claiming every alternative is fitted.
+Absent/constant fields are retained; contradictory vehicle layouts are replaced
+by reviewed unknown/raw exports with originals preserved separately. Bus rate
+metadata is 125000, but configure the adapter explicitly. Same numeric IDs on
+different buses do not justify merging definitions.
 
 ## ISO-TP and variable lengths
 
@@ -148,4 +106,4 @@ The generator reloads the written DBC with strict bounds/overlap checking, then 
 | `opel_corsa_e_info.capture-ranges.csv` | Per-capture signal/raw ranges, invalid/default values, enum and source-range discrepancies |
 | `opel_corsa_e_info.energy-search.json` | Numeric-only hypotheses near the owner's approximate 24.4 kWh reference; not DBC signal discoveries |
 
-Continue capturing the original bus order and actual DLCs for sleep, MyOpel status refresh, remote preconditioning and charging. Compare these definitions with observed data before refining sender identities, lengths or meanings. The first charge-time transaction is documented in [PSA telematics research](../PSA_telematic.md). This export changes no firmware and performs no vehicle I/O.
+Continue capturing the original bus order and actual DLCs for sleep, MyOpel status refresh, remote preconditioning and charging. Compare these definitions with observed data before refining sender identities, lengths or meanings. Current request layouts and outcomes are summarized in [CAN requests](../docs/can-requests.md). This export changes no firmware and performs no vehicle I/O.

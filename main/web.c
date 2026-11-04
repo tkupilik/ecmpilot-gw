@@ -8,6 +8,7 @@
 #include "vars_http.h"
 #include "power.h"
 #include "auto_refresh.h"
+#include "low_power.h"
 #include "ha_settings.h"
 #include "ha_bridge.h"
 #include <limits.h>
@@ -143,6 +144,32 @@ static int32_t power_value(size_t id)
 static esp_err_t auto_refresh_get(httpd_req_t *r)
 {
     return json_response(r, gw_auto_refresh_json());
+}
+
+static esp_err_t low_power_get(httpd_req_t *r)
+{
+    return json_response(r, gw_low_power_json());
+}
+
+static esp_err_t low_power_post(httpd_req_t *r)
+{
+    if (!same_origin(r)) return fail(r, "403 Forbidden", "Origin rejected");
+    if (r->content_len <= 0 || r->content_len > 192)
+        return fail(r, "400 Bad Request", "Invalid low-power settings size");
+    char body[193]; size_t received = 0;
+    while (received < (size_t)r->content_len) {
+        int n = httpd_req_recv(r, body + received, r->content_len - received);
+        if (n <= 0) return fail(r, "408 Request Timeout", "Settings request interrupted");
+        received += n;
+    }
+    body[received] = 0;
+    cJSON *json = cJSON_ParseWithLengthOpts(body, received + 1, NULL, true);
+    const char *reason = NULL;
+    esp_err_t error = gw_low_power_save(json, &reason);
+    cJSON_Delete(json);
+    if (error != ESP_OK) return fail(r, error == ESP_ERR_INVALID_ARG ? "400 Bad Request" :
+        reason && !strcmp(reason, "settings_conflict") ? "409 Conflict" : "500 Internal Server Error", reason);
+    return low_power_get(r);
 }
 
 static esp_err_t ha_get(httpd_req_t *r)
@@ -479,7 +506,7 @@ static esp_err_t wifi_post(httpd_req_t *r)
     return err;
 }
 
-static esp_err_t ota_post(httpd_req_t *r)
+static esp_err_t ota_upload(httpd_req_t *r)
 {
     if (!same_origin(r)) return fail(r, "403 Forbidden", "Origin rejected");
     char content_type[64];
@@ -531,6 +558,14 @@ static esp_err_t ota_post(httpd_req_t *r)
     return err;
 }
 
+static esp_err_t ota_post(httpd_req_t *r)
+{
+    varstore_write(GW_VAR_OTA_ACTIVE, 1);
+    esp_err_t error = ota_upload(r);
+    varstore_write(GW_VAR_OTA_ACTIVE, 0);
+    return error;
+}
+
 esp_err_t gw_web_start(void)
 {
     configASSERT(xPortGetCoreID() == GW_NETWORK_CORE);
@@ -542,7 +577,7 @@ esp_err_t gw_web_start(void)
     // GVRET listener+client, UDP, MQTT, DNS and transient/rejected connections.
     config.max_open_sockets = WEB_MAX_CLIENTS;
     config.lru_purge_enable = true;
-    config.max_uri_handlers = 17;
+    config.max_uri_handlers = 19;
     esp_err_t err = httpd_start(&server, &config);
     if (err != ESP_OK) return err;
     const httpd_uri_t routes[] = {
@@ -553,6 +588,8 @@ esp_err_t gw_web_start(void)
         {.uri="/api/power", .method=HTTP_POST, .handler=power_post},
         {.uri="/api/auto-refresh", .method=HTTP_GET, .handler=auto_refresh_get},
         {.uri="/api/auto-refresh", .method=HTTP_POST, .handler=auto_refresh_post},
+        {.uri="/api/low-power", .method=HTTP_GET, .handler=low_power_get},
+        {.uri="/api/low-power", .method=HTTP_POST, .handler=low_power_post},
         {.uri="/api/ha", .method=HTTP_GET, .handler=ha_get},
         {.uri="/api/ha", .method=HTTP_POST, .handler=ha_post},
         {.uri="/api/wifi", .method=HTTP_GET, .handler=wifi_get},

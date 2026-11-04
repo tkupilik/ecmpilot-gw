@@ -7,6 +7,7 @@
 #include "vehicle_data.h"
 #include "vehicle_control.h"
 #include "power.h"
+#include "low_power.h"
 #include "log_buffer.h"
 #include <atomic>
 #include "esp_log.h"
@@ -87,6 +88,7 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(gw_process_data_init());
     ESP_ERROR_CHECK(gw_auto_refresh_init());
     ESP_ERROR_CHECK(gw_ha_settings_init());
+    ESP_ERROR_CHECK(gw_low_power_init());
     ESP_ERROR_CHECK(gw_power_start());
     ESP_ERROR_CHECK(gw_gvret_init());
     ESP_ERROR_CHECK(gw_can_rx_start());

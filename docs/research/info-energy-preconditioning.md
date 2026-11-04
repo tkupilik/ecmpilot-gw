@@ -1,5 +1,7 @@
 # Remaining battery energy after preconditioning
 
+> Capture evidence recorded at the time of this analysis. For current firmware behavior and request status, use [CAN requests](../can-requests.md) and the [documentation index](../README.md).
+
 Analysis date: 2026-11-03. Passive files only; no adapter/socket access, CAN
 transmission, firmware changes or new DBC signal assignments.
 
@@ -16,7 +18,7 @@ cloud observation, not its vehicle source or an exact CAN/cloud timestamp.
 | `info_precond.csv` | 36,565 | 100 | 149.039358 s | 57% |
 
 Hashes and complete payload differences are in the
-[machine-readable report](info-energy-preconditioning.json). The preconditioning
+[machine-readable report](../info-energy-preconditioning.json). The preconditioning
 Start request is at 22.388686 s, BSI ASAP acknowledgement at 22.804201 s, and
 active feedback at 28.804328 s. Time is relative to the first frame of that file.
 
@@ -96,8 +98,8 @@ HSCAN1 `543`:
 remaining_energy_Wh = ((data[0] << 3) | (data[1] >> 5)) * 32;
 ```
 
-Source: [local CMP decoder](../../battery_emulator_github/Battery-Emulator/Software/src/battery/CMP-SMART-CAR-BATTERY.cpp).
-The Android dashboard's [UDS profile](../../android_dash/app/src/main/java/cz/ecorsa/dash/obd/EcmpProfile.kt)
+Source: local CMP decoder (`CMP-SMART-CAR-BATTERY.cpp`, separate local comparison checkout).
+The Android dashboard's UDS profile (`android_dash/EcmpProfile.kt`, separate local comparison checkout)
 reads DID `D865` as `raw / 64` kWh. Numerically, raw 1272 gives 19.875 kWh,
 which rounds to 19.88; this is compatible with the cloud's precision but does
 not demonstrate that the cloud uses D865. Do not infer a CAN field from rounding.

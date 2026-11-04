@@ -59,7 +59,7 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_REQUEST_CLIMATE_ENABLED] = {"request.climate.enabled", "Last accepted climate target; producer UDP CPU0", "bool", 30000},
     [GW_VAR_REQUEST_CLIMATE_GENERATION] = {"request.climate.generation", "Climate acceptance generation; published after target", "count", 0},
     [GW_VAR_REQUEST_CHARGE_MODE] = {"request.charge.mode", "Last accepted charge mode: 0 immediate, 1 deferred", "enum", 30000},
-    [GW_VAR_REQUEST_CHARGE_START_MINUTE] = {"request.charge.start_minute", "Last deferred target; invalid for immediate mode", "min", 30000},
+    [GW_VAR_REQUEST_CHARGE_START_MINUTE] = {"request.charge.start_minute", "Requested stored start time; invalid when the request preserves it", "min", 30000},
     [GW_VAR_REQUEST_CHARGE_GENERATION] = {"request.charge.generation", "Charge acceptance generation; published after target", "count", 0},
     [GW_VAR_UDP_RX_COUNT] = {"udp.rx_count", "Received UDP datagrams; producer UDP CPU0", "count", 0},
     [GW_VAR_UDP_TX_COUNT] = {"udp.tx_count", "Sent UDP replies; producer UDP CPU0", "count", 0},
@@ -101,8 +101,6 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_CAN_ODOMETER_KM_CANDIDATE] = {"can.vehicle.odometer_km_candidate", "CANDIDATE 0x552 odometer; compare with cluster before phone mapping", "km", 60000},
     [GW_VAR_CAN_DECODE_COUNT] = {"can.decode_count", "Handled physical frames in the selected CAN profile", "count", 2000},
     [GW_VAR_CAN_DECODE_REJECTED_COUNT] = {"can.decode_rejected_count", "Decoder format/DLC rejections", "count", 2000},
-    [GW_VAR_CAN_REPLAY_ENABLED] = {"can.replay_enabled", "Local INFO capture replay: 0 live (default), 1 replay; no CAN TX", "bool", 0},
-    [GW_VAR_CAN_DEMO_FRAME_COUNT] = {"can.demo_frame_count", "Internally decoded INFO replay frames", "count", 2000},
     [GW_VAR_SPEED_KMH] = {"vehicle.speed_kmh", "INFO 0x0B6 speed rounded to nearest km/h; owner-confirmed", "km/h", 5000},
     [GW_VAR_GEAR] = {"vehicle.gear", "INFO gear: 0 P, 1 R, 2 N, 3 D, 4 B", "enum", 5000},
     [GW_VAR_DRIVE_READY] = {"vehicle.drive_ready", "INFO propulsion READY flag; independent of selected gear", "bool", 5000},
@@ -200,7 +198,7 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_CLIMATE_RIGHT_SETPOINT_MC] = {"climate.right_setpoint_mc","Climate right setpoint mc; source vehicle process","mC",3000},
     [GW_VAR_UDP_WAKE_REQUEST_COUNT] = {"udp.wake_request_count","Explicit wake events; legacy UDP name, producer vehicle CPU1","count",0},
     [GW_VAR_CAN_VERSION_TX_REQUESTED] = {"can.version_tx_requested","Reserved: CAN version TX removed; no transmitter","raw",0},
-    [GW_VAR_CAN_WAKE_STATE] = {"can.wake_state","Wake policy: 0 idle, 1 BSI normal, 2 wake request, 4 replay/TX disabled","raw",0},
+    [GW_VAR_CAN_WAKE_STATE] = {"can.wake_state","Wake policy: 0 idle, 1 BSI normal, 2 wake request, 4 TX disabled","raw",0},
     [GW_VAR_CAN_VERSION_RX_COUNT] = {"can.version_rx_count","Can version rx count; source CAN CPU1","count",0},
     [GW_VAR_CAN_VERSION_TX_SUBMITTED] = {"can.version_tx_submitted","Reserved: CAN version TX removed","count",0},
     [GW_VAR_CAN_VERSION_TX_FAILED] = {"can.version_tx_failed","Reserved: CAN version TX removed","count",0},
@@ -238,7 +236,7 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_BSI_TRIP_CHARGE_MODE] = {"bsi.trip_charge_mode", "BSI 0x31A secondary charge mode; 0 immediate 1 deferred", "enum", 5000},
     [GW_VAR_BSI_TRIP_CHARGE_MINUTE] = {"bsi.trip_charge_minute", "BSI 0x31A secondary schedule time", "min", 5000},
     [GW_VAR_REQUEST_VEHICLE_KIND] = {"request.vehicle.kind", "Explicit phone action: 0 refresh 1 immediate 2 deferred 3 precondition start 4 stop 5 weekly programs", "enum", 30000},
-    [GW_VAR_REQUEST_VEHICLE_MINUTE] = {"request.vehicle.minute", "Deferred target; -1 preserves stored immediate time", "min", 30000},
+    [GW_VAR_REQUEST_VEHICLE_MINUTE] = {"request.vehicle.minute", "Requested charging start time; -1 preserves it in immediate mode", "min", 30000},
     [GW_VAR_REQUEST_VEHICLE_GENERATION] = {"request.vehicle.generation", "UDP action commit; passive polling never changes it", "count", 0},
     [GW_VAR_CONTROL_PHASE] = {"control.phase", "0 idle 1 wake 2 refresh TX 3 data 4 mode TX 5 confirmation 6 succeeded 7 failed 8 unconfirmed 9 programs 10 precond TX 11 aux TX 12 precond reply", "enum", 0},
     [GW_VAR_CONTROL_GENERATION] = {"control.generation", "Vehicle policy action generation", "count", 0},
@@ -279,6 +277,14 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_REQUEST_PRECOND_TARGET2] = {"request.precond.target2", "Requested vehicle program2; committed by vehicle generation", "u24", 30000},
     [GW_VAR_REQUEST_PRECOND_TARGET3] = {"request.precond.target3", "Requested vehicle program3; committed by vehicle generation", "u24", 30000},
     [GW_VAR_REQUEST_PRECOND_TARGET4] = {"request.precond.target4", "Requested vehicle program4; committed by vehicle generation", "u24", 30000},
+    [GW_VAR_LOW_POWER_ENABLED] = {"low_power.enabled", "Automatic CAN-wake deep sleep enabled", "bool", 0},
+    [GW_VAR_LOW_POWER_IDLE_HOURS] = {"low_power.idle_hours", "Sleep after this many hours without a valid BSI 0x036 sample", "h", 0},
+    [GW_VAR_LOW_POWER_REVISION] = {"low_power.revision", "Committed low-power settings revision", "count", 0},
+    [GW_VAR_LOW_POWER_REMAINING_S] = {"low_power.remaining_s", "Time until automatic sleep; invalid until a valid BSI sample", "s", 0},
+    [GW_VAR_LOW_POWER_STATE] = {"low_power.state", "0 off, 1 waiting data, 2 counting, 3 busy, 4 entering, 5 retry, 6 unavailable, 7 invalid config", "enum", 0},
+    [GW_VAR_LOW_POWER_REQUEST_COUNT] = {"low_power.request_count", "Automatic deep-sleep requests this boot", "count", 0},
+    [GW_VAR_LOW_POWER_LAST_ERROR] = {"low_power.last_error", "Latest automatic sleep request/result", "code", 0},
+    [GW_VAR_OTA_ACTIVE] = {"system.ota_active", "HTTP OTA upload in progress", "bool", 0},
 };
 static DRAM_ATTR varstore_slot_t slots[GW_VAR_COUNT];
 
@@ -305,6 +311,5 @@ bool gw_process_data_manual(size_t id)
     if (id == GW_VAR_VEHICLE_AWAKE || id == GW_VAR_VEHICLE_PARKED ||
         id == GW_VAR_RANGE_KM_X10 || id == GW_VAR_OUTSIDE_MC || id == GW_VAR_ODOMETER_KM) return false;
 #endif
-    if (id == GW_VAR_CAN_REPLAY_ENABLED) return true;
     return id == GW_VAR_DEMO_VALUE || (id >= GW_VAR_TEST_ENABLED && id <= GW_VAR_CHARGE_START_MINUTE);
 }

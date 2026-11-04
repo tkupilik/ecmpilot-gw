@@ -1,5 +1,7 @@
 # INFO CAN4A4 diagnostic event review — 2026-11-03
 
+> Capture evidence recorded at the time of this analysis. For current firmware behavior and request status, use [CAN requests](../can-requests.md) and the [documentation index](../README.md).
+
 The pinned PSA-RE definition names4A4 `TELEMATICS_FAULT_EVENT`, describes an
 event logged in the **BSI fault log**, and lists BSI as receiver. It does not
 establish that a particular ECU physically transmitted these captured frames,
@@ -8,7 +10,7 @@ or that their contents were uploaded to Stellantis cloud.
 Source: [INFO4A4](https://github.com/prototux/PSA-RE/blob/67f7581e7622410efdbb29c7eda3b86982b9b450/buses/AEE2010.full/LS.INFO-DIV/4A4.yml),
 read from the local archive at commit67f7581e7622410efdbb29c7eda3b86982b9b450.
 The complete English source, including its alternative, remains in
-[the source JSON](../dbc/opel_corsa_e_info.source.json).
+[the source JSON](../../dbc/opel_corsa_e_info.source.json).
 
 ## Two documented layouts
 

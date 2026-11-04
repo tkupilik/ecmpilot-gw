@@ -9,12 +9,12 @@ async function page(){
   const ids=Object.fromEntries(['status','message','normal','dfs','light','deep','refresh'].map(id=>[id,{disabled:false,textContent:''}]));
   const panel={hidden:false};let interval,select,reject=false;
   const requests=[];let state={mode:0,cpu_min_mhz:160,cpu_max_mhz:160,auto_light_sleep:0,light_sleep_count:0,light_sleep_ms:0,can_enabled:1,can_state:2,requested:0,completed:0,last_error:0,deep_sleep_available:true,deep_stage:0,wake_cause:0};
-  const context=vm.createContext({document:{getElementById:id=>id==='panel-home'?panel:ids[id.replace('power-','')]},onTabChange:fn=>select=fn,setInterval:fn=>interval=fn,fetch:async(url,options)=>{
+  const context=vm.createContext({document:{getElementById:id=>id==='panel-low-power'?panel:ids[id.replace('power-','')]},onTabChange:fn=>select=fn,setInterval:fn=>interval=fn,fetch:async(url,options)=>{
     requests.push({url,options});return {ok:!reject,text:async()=>'Unavailable',json:async()=>options?{accepted:true}:state};
   }});
   vm.runInContext(script,context);await tick();
   return {ids,requests,state:next=>state={...state,...next},reject:()=>reject=true,
-    select:async name=>{panel.hidden=name!=='home';select(name);await tick();},
+    select:async name=>{panel.hidden=name!=='low-power';select(name);await tick();},
     poll:async()=>{interval();await tick();}};
 }
 test('initial policy and actual sleep counters remain distinct',async()=>{
@@ -36,9 +36,9 @@ test('normal and DFS controls send their own mode names',async()=>{
     const p=await page();await p.ids[button].onclick();assert.equal(JSON.parse(p.requests.at(-1).options.body).mode,mode);
   }
 });
-test('power polling stops when Home is hidden',async()=>{
+test('power polling stops when Low power is hidden',async()=>{
   const p=await page();const before=p.requests.length;await p.select('log');await p.poll();
-  assert.equal(p.requests.length,before);await p.select('home');assert.equal(p.requests.length,before+1);
+  assert.equal(p.requests.length,before);await p.select('low-power');assert.equal(p.requests.length,before+1);
 });
 test('request errors preserve controls and report the server response',async()=>{
   const p=await page();p.reject();await p.ids.light.onclick();
