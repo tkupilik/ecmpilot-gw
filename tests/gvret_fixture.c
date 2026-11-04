@@ -12,6 +12,7 @@
 #define DRAM_ATTR
 #define GW_NETWORK_CORE 0
 #define ESP_LOGI(...) ((void)0)
+#define ESP_LOGW(...) ((void)0)
 #define configASSERT(x) do { if (!(x)) __builtin_trap(); } while (0)
 #define ESP_FAIL (-1)
 #define ESP_ERR_INVALID_STATE 0x103

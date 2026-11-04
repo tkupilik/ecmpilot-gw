@@ -44,6 +44,7 @@ static uint32_t active_session, enqueued, dropped, queue_peak;
 // Only the gvret task writes these, and is the only VS publisher of all stats.
 static uint32_t sent, discarded, rejected_clients, ignored_commands, protocol_errors, tx_bytes;
 static int last_error;
+static uint64_t accept_error_logged_at;
 
 /*****************************************************************************/
 
@@ -128,7 +129,16 @@ static void AcceptClients(uint64_t now)
     if (incoming < 0)
     {
       if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR)
-        last_error = errno;
+      {
+        int error = errno;
+        bool report = error != last_error || now - accept_error_logged_at >= 5000000U;
+        last_error = error;
+        if (report)
+        {
+          ESP_LOGW("gvret", "accept failed: errno=%d (%s); check shared socket capacity", error, strerror(error));
+          accept_error_logged_at = now;
+        }
+      }
       return;
     }
     if (client >= 0)
@@ -154,8 +164,9 @@ static void AcceptClients(uint64_t now)
       session_sequence = 1;
     session = session_sequence;
     client = incoming;
+    last_error = 0;
     io->connected_at = io->progress_at = now;
-    ESP_LOGI("gvret", "Client connected; receive-only CAN0");
+    ESP_LOGI("gvret", "Client connected; CAN0 RX + local TX observations, no remote CAN TX");
   }
 }
 
@@ -357,7 +368,7 @@ esp_err_t gw_gvret_start(void)
     last_error = ENOMEM;
     goto close_listener;
   }
-  ESP_LOGI("gvret", "SavvyCAN TCP %d, CPU0, single client, RX only", GW_GVRET_PORT);
+  ESP_LOGI("gvret", "SavvyCAN TCP %d, CPU0, single client, CAN RX + local TX; no remote CAN TX", GW_GVRET_PORT);
   return ESP_OK;
 fail:
   last_error = errno;

@@ -1,0 +1,7 @@
+# Preserve binary assets byte-for-byte; never apply text diffs or EOL conversion.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.jar binary
+*.bin binary

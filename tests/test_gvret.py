@@ -39,6 +39,7 @@ class GvretTests(unittest.TestCase):
     def setUp(self):
         self.files={};self.next_fd=100;self.port=None;self.now=1000000
         self.block_send=False;self.send_limit=65536;self.hook_errors=[];self.clients=[]
+        self.accept_error=0
         self.hook=HOOK(self.io);LIB.gvret_test_hook(self.hook);LIB.gvret_test_reset()
         self.assertEqual(0,LIB.gw_gvret_init());self.assertEqual(0,LIB.gw_gvret_start())
 
@@ -59,7 +60,9 @@ class GvretTests(unittest.TestCase):
                 if int.from_bytes(raw[2:4],'big')!=23: raise AssertionError('Unexpected GVRET port')
                 sock.bind(('127.0.0.1',0));self.port=sock.getsockname()[1];return 0
             if op==3: sock.listen(length);return 0
-            if op==4: return self.register(sock.accept()[0])
+            if op==4:
+                if self.accept_error:return -self.accept_error
+                return self.register(sock.accept()[0])
             if op==5:
                 if self.block_send:return -11
                 return sock.send(c.string_at(pointer,min(length,self.send_limit)))
@@ -200,6 +203,13 @@ class GvretTests(unittest.TestCase):
         sock=self.connect();sock.sendall(b'\xf1\xff');self.poll()
         self.assertEqual(1,self.stat('PROTOCOL_ERRORS'));self.assertEqual(1,self.stat('STATE'))
         self.connect();self.assertEqual(3,self.stat('STATE'))
+
+    def test_exhausted_socket_table_is_reported_and_accept_recovers_without_restart(self):
+        self.accept_error=23;self.poll()
+        self.assertEqual(1,self.stat('STATE'));self.assertEqual(23,self.stat('LAST_ERROR'))
+        self.accept_error=0;sock=self.connect();self.poll()
+        self.assertEqual(3,self.stat('STATE'));self.assertEqual(0,self.stat('LAST_ERROR'))
+        self.capture();self.poll();self.assertEqual(1,len(decode(self.read(sock))))
 
     def test_timestamp_low32_wrap_and_time_sync_use_same_clock(self):
         sock=self.connect();self.now=(1<<32)+1234

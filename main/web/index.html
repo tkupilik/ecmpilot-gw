@@ -48,7 +48,7 @@ th{background:#233543}code{white-space:nowrap}.muted{color:#aebfce;font-size:.88
 </nav>
 <main>
 <div id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0">
-<section><h2>Gateway status</h2><pre id="status">Loading…</pre><button id="refresh">Refresh</button></section>
+<section><h2>Gateway status</h2><pre id="status">Loading…</pre><div class="actions"><button id="refresh">Refresh</button><button id="restart-gateway" type="button">Restart gateway</button></div><p id="restart-message" role="status" aria-live="polite"></p></section>
 <section><h2>Automatic vehicle refresh</h2>
 <p><label><input id="auto-refresh-enabled" type="checkbox"> Enable automatic refresh</label></p>
 <div class="actions">
@@ -222,6 +222,23 @@ byId('upload').onclick=()=>{
 };
 async function loadProfiles(){const data=await api('/api/wifi');byId('hostname').value=data.hostname||'ecmpilot-gw';byId('ap-ssid').textContent=data.ap_ssid||'';byId('ap-enabled').checked=data.ap_enabled===true;byId('ap-password').value=data.ap_password||'';byId('ap-password').dataset.savedPassword=data.ap_password||'';byId('profiles').replaceChildren();data.networks.forEach(addProfile);}
 Promise.all([refresh(),loadProfiles()]).catch(e=>message(e.message));
+</script>
+<script>
+/* Gateway restart */
+(()=>{
+const button=document.getElementById('restart-gateway'),message=document.getElementById('restart-message');
+if(!button)return;
+button.onclick=async()=>{
+  if(button.disabled)return;
+  button.disabled=true;message.textContent='Requesting gateway restart…';
+  try{
+    const r=await fetch('/api/restart',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+    if(!r.ok)throw Error(await r.text());
+    const result=await r.json();if(result.restarting!==true)throw Error('Restart was not confirmed');
+    message.textContent='Restart scheduled. Reopen this page when the gateway reconnects.';
+  }catch(e){message.textContent='Restart not confirmed: '+e.message+'. Check gateway status before retrying; reload this page to enable the button.';}
+};
+})();
 </script>
 <script>
 (()=>{

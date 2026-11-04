@@ -2,6 +2,18 @@
 
 ## Unreleased — 2026-11-04 (firmware version unchanged)
 
+- Remove the temporary INFO UDS web probes, their varstore signals and TX/RX
+  integration after all three tested routes returned no diagnostic replies.
+
+- Fix shared socket exhaustion (GVRET accept errno 23/ENFILE): raise lwIP socket
+  capacity from 10 to 16, bound HTTP clients to 4 with LRU eviction, and reserve
+  space for GVRET/UDP/MQTT/DNS. Log accept errors with text and clear them after
+  successful acceptance. Show socket capacity/HTTP client limit in Home status.
+- Add Home's explicit Restart gateway button and same-origin POST /api/restart.
+  Reply before the existing delayed soft restart; never automatically retry.
+- Include driver-accepted local CAN TX in the existing
+  nonblocking GVRET FIFO alongside physical RX. Records show submission, not ACK;
+  legacy GVRET has no direction flag. SavvyCAN-to-CAN transmission stays disabled.
 - Add an opt-in Charge limit dependent on automatic refresh, target default 80%.
   A parallel CPU1 PT uses fresh CAN observations and the serialized deferred-mode
   sequence, preserves the native start time, respects explicit requests, and

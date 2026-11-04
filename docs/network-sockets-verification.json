@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-04",
+  "scope": "Shared socket budget correction and explicit Home restart",
+  "diagnosis": {
+    "observed_gvret_state": 1,
+    "observed_errno": 23,
+    "meaning": "ENFILE; lwIP alloc_socket failed in accept",
+    "old_global_limit": 10,
+    "old_http_client_limit": 7,
+    "http_internal_socket_budget": 3
+  },
+  "configuration": {
+    "lwip_max_sockets": 16,
+    "http_max_clients": 4,
+    "http_lru_purge": true,
+    "compile_time_minimum_budget": 13
+  },
+  "tests": {
+    "gvret_host_passed": 18,
+    "gvret_log": "build-host-gvret/socket-recovery-tests.log",
+    "web_passed": 56,
+    "web_log": "build-host-tests/uds-removal-web-tests.log",
+    "native_suite_passed": 275,
+    "native_log": "build-host-tests/uds-removal-tests.log"
+  },
+  "firmware": {
+    "path": "build/ecmpilot_gw.bin",
+    "bytes": 1204848,
+    "sha256": "cf9294a4416a61156b8c4d97de38a6cc7637e673a3d09d39c9ad290330a91b48",
+    "sdk": "ESP-IDF 5.3.2",
+    "sdk_translation_units_rebuilt": 773,
+    "sdk_compile_log": "build-sockets-restart-full.log",
+    "final_project_compile_archive_link_log": "build-without-uds-probes.log",
+    "ota_free_percent": 41,
+    "sdk_objects_reused_from_prior_full_rebuild": true
+  },
+  "restart": {
+    "method": "POST",
+    "path": "/api/restart",
+    "body": {},
+    "delay_ms": 1500,
+    "automatic_retry": false
+  },
+  "gateway_flashed": false,
+  "live_restart_issued": false,
+  "live_can_transmission_issued": false,
+  "updated_firmware_live_verification": false,
+  "temporary_uds_probes_removed": true
+}

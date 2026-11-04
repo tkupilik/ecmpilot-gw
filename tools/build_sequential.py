@@ -1,8 +1,10 @@
 """Incremental IDF verification when Windows Ninja/async pipes are unavailable.
-Run inside the ESP-IDF environment. Reuses the configured SDK objects; compiles
-all project-owned translation units, then executes current generated archive,
+Run inside the ESP-IDF environment. By default reuses configured SDK objects;
+--rebuild-sdk also compiles SDK units after sdkconfig changes. Compiles
+project translation units, then executes current generated archive,
 linker and image commands sequentially. It does not flash or access CAN.
 """
+import argparse
 import json
 import re
 import subprocess
@@ -10,6 +12,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / 'build'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--rebuild-sdk', action='store_true',
+                    help='Compile all SDK translation units too, required after sdkconfig changes.')
+args = parser.parse_args()
 
 def run(command, label, cwd=BUILD):
     print(label, flush=True)
@@ -30,9 +36,10 @@ entries = json.loads((BUILD / 'compile_commands.json').read_text(encoding='utf-8
 compiled = []
 for entry in entries:
     file = Path(entry['file'])
-    if file.is_relative_to(ROOT):
-        run(entry['command'], 'Compile ' + str(file.relative_to(ROOT)), entry['directory'])
-        compiled.append(str(file.relative_to(ROOT)))
+    if file.is_relative_to(ROOT) or args.rebuild_sdk:
+        name = str(file.relative_to(ROOT)) if file.is_relative_to(ROOT) else str(file)
+        run(entry['command'], 'Compile ' + name, entry['directory'])
+        compiled.append(name)
 # Ninja normally materializes response files while launching a rule. Its
 # command-dump mode does not, so supply the archive response files explicitly.
 for target in archives:
@@ -60,5 +67,5 @@ for command in commands('ecmpilot_gw.elf'):
     run(command, 'Link')
 for command in commands('.bin_timestamp', 'esp-idf/esptool_py/CMakeFiles/app_check_size'):
     run(command, 'Generate/check OTA image')
-(BUILD / 'sequential-build.json').write_text(json.dumps({'compiled_project_files': compiled, 'sdk_objects_reused': True}, indent=2), encoding='utf-8')
+(BUILD / 'sequential-build.json').write_text(json.dumps({'compiled_project_files': compiled, 'sdk_objects_reused': not args.rebuild_sdk}, indent=2), encoding='utf-8')
 print('Sequential incremental build completed', flush=True)

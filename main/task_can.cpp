@@ -357,6 +357,11 @@ void CanNet::OnTick()
                 trace_word(GW_VAR_CONTROL_SESSION2), trace_word(GW_VAR_CONTROL_SESSION3), trace_word(GW_VAR_CONTROL_CORRELATION));
             message.flags = TWAI_MSG_FLAG_SS;
             esp_err_t error = twai_transmit_v2(m_proc->m_driver, &message, 0);
+            // Local TX observation, not an ACK/completion indication. Both RX
+            // and TX taps run in TaskCan; the FIFO producer remains single-task.
+            if (error == ESP_OK)
+                gw_gvret_capture(message.identifier, message.data, message.data_length_code,
+                                 message.extd, message.rtr, static_cast<uint64_t>(esp_timer_get_time()));
             bool wake = message.identifier == CAN_WAKE_ID || message.identifier == CAN_WAKE_ALT_ID;
             if (wake) {
                 if (m_wakeAttempts < INT32_MAX) ++m_wakeAttempts;

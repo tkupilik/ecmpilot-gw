@@ -17,6 +17,7 @@
 #include <string.h>
 #include "cJSON.h"
 #include "esp_app_desc.h"
+#include "esp_log.h"
 #include "esp_http_server.h"
 #include "esp_ota_ops.h"
 #include "esp_image_format.h"
@@ -27,6 +28,11 @@
 
 extern const char index_html_start[] asm("_binary_index_html_start");
 static httpd_handle_t server;
+enum { WEB_MAX_CLIENTS = 4 };
+// HTTP internal sockets + clients, GVRET listener/client, UDP, MQTT,
+// one DNS socket and one transient/rejected connection.
+_Static_assert(CONFIG_LWIP_MAX_SOCKETS >= 3 + WEB_MAX_CLIENTS + 2 + 1 + 1 + 1 + 1,
+               "Insufficient shared socket budget for web/GVRET/UDP/MQTT/DNS");
 
 static esp_err_t fail(httpd_req_t *r, const char *status, const char *text)
 {
@@ -69,6 +75,24 @@ static esp_err_t index_get(httpd_req_t *r)
     return httpd_resp_sendstr(r, index_html_start);
 }
 
+static esp_err_t restart_post(httpd_req_t *r)
+{
+    if (!same_origin(r)) return fail(r, "403 Forbidden", "Origin rejected");
+    if (r->content_len != 2) return fail(r, "400 Bad Request", "Expected {}");
+    char body[2]; size_t received = 0;
+    while (received < sizeof(body)) {
+        int n = httpd_req_recv(r, body + received, sizeof(body) - received);
+        if (n <= 0) return fail(r, "408 Request Timeout", "Restart request interrupted");
+        received += n;
+    }
+    if (memcmp(body, "{}", 2)) return fail(r, "400 Bad Request", "Expected {}");
+    ESP_LOGI("web", "Gateway restart requested from web");
+    gw_restart_soon(); // CPU1 restarts in 1.5 seconds; finish the HTTP reply first.
+    httpd_resp_set_type(r, "application/json");
+    httpd_resp_set_hdr(r, "Cache-Control", "no-store");
+    return httpd_resp_sendstr(r, "{\"restarting\":true}");
+}
+
 static esp_err_t status_get(httpd_req_t *r)
 {
     gw_network_status_t s;
@@ -84,6 +108,8 @@ static esp_err_t status_get(httpd_req_t *r)
     cJSON_AddNumberToObject(j, "rtc_boot_number", gw_retained_log_boot_number());
     cJSON_AddNumberToObject(j, "previous_log_entries", gw_retained_log_count());
     cJSON_AddNumberToObject(j, "free_heap", esp_get_free_heap_size());
+    cJSON_AddNumberToObject(j, "socket_capacity", CONFIG_LWIP_MAX_SOCKETS);
+    cJSON_AddNumberToObject(j, "http_max_clients", WEB_MAX_CLIENTS);
     cJSON_AddNumberToObject(j, "heartbeat", gw_heartbeat_count());
     cJSON_AddNumberToObject(j, "udp_port", GW_UDP_PORT);
     cJSON_AddBoolToObject(j, "udp_test_mode", varstore_read(GW_VAR_TEST_ENABLED, 0, 0) == 1);
@@ -512,13 +538,17 @@ esp_err_t gw_web_start(void)
     config.core_id = GW_NETWORK_CORE;
     config.stack_size = 10240;
     config.recv_wait_timeout = 10;
+    // HTTP uses another three internal/control sockets. Leave space for
+    // GVRET listener+client, UDP, MQTT, DNS and transient/rejected connections.
+    config.max_open_sockets = WEB_MAX_CLIENTS;
     config.lru_purge_enable = true;
-    config.max_uri_handlers = 16;
+    config.max_uri_handlers = 17;
     esp_err_t err = httpd_start(&server, &config);
     if (err != ESP_OK) return err;
     const httpd_uri_t routes[] = {
         {.uri="/", .method=HTTP_GET, .handler=index_get},
         {.uri="/api/status", .method=HTTP_GET, .handler=status_get},
+        {.uri="/api/restart", .method=HTTP_POST, .handler=restart_post},
         {.uri="/api/power", .method=HTTP_GET, .handler=power_get},
         {.uri="/api/power", .method=HTTP_POST, .handler=power_post},
         {.uri="/api/auto-refresh", .method=HTTP_GET, .handler=auto_refresh_get},

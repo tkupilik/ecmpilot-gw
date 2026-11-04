@@ -1,10 +1,17 @@
 # SavvyCAN diagnostic receiver
 
-The gateway exports physical CAN RX traffic using the GVRET binary protocol over
+The gateway exports physical CAN RX and driver-accepted local TX observations using the GVRET binary protocol over
 **TCP port 23**. There is one `gvret` task on **CPU0**, priority 3, with a 6144-byte
 internal stack and one active client. It does not create a session task per
 connection. The listener accepts and immediately closes additional connections
 while the client slot is occupied.
+
+If the port connects then immediately closes, inspect `gvret.last_error`.
+`23` / `ENFILE` means the shared lwIP socket table was exhausted during accept;
+the listener can remain in state 1. See the [socket budget](network-sockets.md).
+The worker logs unexpected accept errors at most once per five seconds for the
+same error and clears the error after a successful accept. Freeing sockets allows
+the next connection to succeed without restarting the worker.
 
 ## Connecting
 
@@ -21,7 +28,7 @@ close the connection cleanly, rather than interpreting their payload as new
 commands. There is no network auto-discovery service.
 
 `can.replay_enabled` controls decoded observations only and defaults to 0/live.
-GVRET always exports **physical traffic**; local replay frames are never mixed
+GVRET exports **physical RX and local TX submissions**; local replay frames are never mixed
 into this stream. Release telemetry forces and disable replay for live monitoring.
 
 ## Data path and memory
@@ -29,6 +36,7 @@ into this stream. Release telemetry forces and disable replay for live monitorin
 ```text
 TWAI RX -> TaskCan on CPU1 -> raw FIFO -> gvret on CPU0 -> TCP -> SavvyCAN
                          -> existing RX decoder -> GW varstore -> phone / web
+Local TX accepted by TWAI -> same FIFO (wake, refresh and controls)
 ```
 
 The raw tap is immediately after `twai_receive()`, before the decoder's ID,
@@ -36,10 +44,21 @@ extended-frame and demo filters. All structurally valid classic standard and
 extended data frames are exported, including IDs with no decoder. RTR is ignored.
 CAN FD is not implemented by this classic TWAI receiver.
 
+Every successful `twai_transmit_v2()` submission is copied into the same FIFO,
+for vehicle control. Failed submissions are not exported. A TX copy means
+the driver accepted the frame; it does **not** prove bus transmission, ACK or an
+ECU reply. TX copies do not enter the RX decoder. This
+legacy GVRET frame format has no RX/TX direction field: both appear on CAN0 as
+ordinary received capture records in SavvyCAN. Use the firmware log to distinguish
+submission failures and correlate local requests. CAN transmit from SavvyCAN
+remains disabled.
+
 `xQueueCreateStatic()` uses a static internal-DRAM control block and **64 ×24-byte
 records = 1536 bytes of internal RAM**. Every record holds a 64-bit timestamp,
 ID/extended flag, session/DLC tag and up to 8 data bytes. No pointer to a local
 TWAI message is retained. Synchronization uses the standard FreeRTOS queue.
+RX and TX taps both run in TaskCan, so the FIFO still has one producer and one
+consumer; no new task, lock or memory allocation is added.
 
 TaskCan calls `xQueueSend(...,0)`: no waiting for space, socket calls or per-frame
 heap allocation. Full FIFO drops the new diagnostic copy and increments
@@ -70,6 +89,9 @@ socket keepalive is enabled.
 Frame time is captured from `esp_timer_get_time()` immediately after TWAI dequeue.
 It is independent of FIFO/network delay, but is **not a hardware timestamp at the
 wire**; queued driver frames already include dequeue latency.
+Local TX timestamps are taken immediately after successful driver submission,
+not at hardware completion. Capture order is the order observed by TaskCan and
+is not guaranteed to be exact on-wire RX/TX order.
 
 The internal record keeps 64-bit microseconds. Legacy GVRET carries the low 32
 bits on the wire (wrap approximately every 71.6 minutes); time-sync replies use the
@@ -98,7 +120,7 @@ Values are raw int32 and cumulative counters saturate at INT32_MAX.
 | `gvret.state` |1 listening,2 client before binary negotiation,3 streaming,4 startup fault |
 | `gvret.queued` | Current FIFO frame count |
 | `gvret.queue_peak` | Sampled peak FIFO depth since boot |
-| `gvret.enqueued` | Physical data frames admitted during an active binary session |
+| `gvret.enqueued` | RX and driver-accepted local TX copies admitted during an active binary session |
 | `gvret.dropped` | New diagnostic copies lost because the FIFO was full |
 | `gvret.sent` | Complete CAN records accepted by the local TCP socket |
 | `gvret.discarded` | Queued/pending records flushed on disconnect or belonging to an old session |
@@ -126,14 +148,15 @@ python tests/build_gvret_host.py
 python tests/test_gvret.py
 ```
 
-Seventeen tests compile the actual C worker, protocol, native GW varstore and variable
+Eighteen tests compile the actual C worker, protocol, native GW varstore and variable
 definitions. Socket calls delegate to real loopback TCP; only IDF task/queue,
 clock and memory-capability APIs are host adapters. Coverage includes the
 fragmented SavvyCAN handshake, all 9520 frames of `info_start_jizda.csv` in order,
 standard/extended/DLC 0 records, RTR rejection, receive timestamps/wrap, partial
 writes, full-FIFO losses, slow-client timeout, second-client rejection,
-disconnect/reconnect, stale producer session tags, read-only command consumption
-and mixed control/data output. These tests do not establish FreeRTOS cross-core
+disconnect/reconnect, stale producer session tags, read-only command consumption,
+mixed control/data output and recovery after simulated socket-table exhaustion.
+These tests do not establish FreeRTOS cross-core
 timing, physical Wi-Fi performance or compatibility with the user's installed
 SavvyCAN build.
 
