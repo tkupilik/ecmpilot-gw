@@ -1,0 +1,78 @@
+type: markdown
+card_size: 5
+tap_action:
+  action: none
+hold_action:
+  action: none
+double_tap_action:
+  action: none
+content: |-
+  {# Change only this block if entities were renamed in HA. #}
+  {%- set e = dict(
+    soc='sensor.ecmpilot_gateway_battery_state_of_charge',
+    range='sensor.ecmpilot_gateway_estimated_range',
+    outside='sensor.ecmpilot_gateway_outside_temperature',
+    aux='sensor.ecmpilot_gateway_12v_battery_state_of_charge',
+    bsi='sensor.ecmpilot_gateway_bsi_state',
+    climate='sensor.ecmpilot_gateway_reported_preconditioning_state',
+    charge='sensor.ecmpilot_gateway_charging_state',
+    mode='sensor.ecmpilot_gateway_charging_mode',
+    cable='binary_sensor.ecmpilot_gateway_charging_cable',
+    start='sensor.ecmpilot_gateway_delayed_charging_start',
+    lock='sensor.ecmpilot_gateway_vehicle_locking_state',
+    age='sensor.ecmpilot_gateway_battery_data_age',
+    gateway='binary_sensor.ecmpilot_gateway_charge_limit_enabled'
+  ) -%}
+  {%- set age_keys = {
+    e.soc: 'soc_pct', e.range: 'range_km', e.outside: 'outside_c',
+    e.aux: 'aux_battery_soc_pct', e.bsi: 'bsi_state',
+    e.climate: 'climate_state', e.charge: 'charge_state',
+    e.mode: 'charge_mode', e.cable: 'charge_connected',
+    e.start: 'charge_start_local', e.lock: 'locking_state'
+  } -%}
+  {%- set grey = '#8b929a' -%}
+  {%- set green = '#37885b' -%}
+  {%- set blue = '#468dda' -%}
+  {%- set amber = '#d8842b' -%}
+  {%- macro age(entity) -%}
+    {%- set ages = state_attr(e.age, 'age_s') -%}
+    {%- set source_age = ages.get(age_keys.get(entity, ''), none) | float(-1) if ages is mapping else -1 -%}
+    {%- set received_at = state_attr(e.age, 'received_at') | float(0) -%}
+    {%- if has_value(entity) and source_age >= 0 and received_at > 0 -%}
+      {{- source_age + [0, as_timestamp(now()) - received_at] | max -}}
+    {%- else -%}-1{%- endif -%}
+  {%- endmacro -%}
+  {%- macro color(entity, active='') -%}
+    {%- set seconds = age(entity) | float(-1) -%}
+    {%- set shade = active if seconds >= 0 and seconds <= 300 else grey -%}
+    {{- ' color="' ~ shade ~ '"' if shade else '' -}}
+  {%- endmacro -%}
+  {%- macro number(entity, decimals=0, suffix='') -%}
+    {%- if has_value(entity) and is_number(states(entity)) -%}
+      {{- ('%.' ~ decimals ~ 'f') | format(states(entity) | float) -}}{{- suffix -}}
+    {%- else -%}—{%- endif -%}
+  {%- endmacro -%}
+  {# Local GW setting is available over MQTT even before any CAN observations. #}
+  {# Both on and off mean the gateway link is available. #}
+  {%- set online = has_value(e.gateway) or has_value(e.soc) or has_value(e.bsi) or has_value(e.aux) or has_value(e.charge) -%}
+  {%- set seconds = age(e.soc) | float(-1) -%}
+  {%- set charge_fresh = (age(e.charge) | float(-1)) >= 0 and (age(e.charge) | float(-1)) <= 300 -%}
+  {%- set mode_fresh = (age(e.mode) | float(-1)) >= 0 and (age(e.mode) | float(-1)) <= 300 -%}
+  {%- set cable_fresh = (age(e.cable) | float(-1)) >= 0 and (age(e.cable) | float(-1)) <= 300 -%}
+  {%- set charging = is_state(e.charge, 'charging') and charge_fresh -%}
+  {%- set delayed = is_state(e.mode, 'delayed') and not (cable_fresh and is_state(e.cable, 'off')) -%}
+  {%- set climate_on = is_state(e.climate, 'on') -%}
+  {%- set locked = states(e.lock) in ['locked', 'superlocked'] -%}
+  {%- set lock_known = states(e.lock) in ['locked', 'superlocked', 'unlocked', 'driver_unlocked', 'cab_unlocked', 'load_area_unlocked'] -%}
+  {%- set charge_text = 'Nabíjí' if charging else 'Odloženo' if delayed and mode_fresh else 'Nabíjí' if is_state(e.charge, 'charging') else 'Odpojeno' if is_state(e.cable, 'off') or is_state(e.charge, 'disconnected') else 'Dokončeno' if is_state(e.charge, 'complete') else 'Čeká' if is_state(e.charge, 'waiting') else 'Chyba' if is_state(e.charge, 'fault') else 'Odloženo' if delayed else 'Nedostupné' -%}
+  {%- set charge_color = green if charging else blue if delayed and mode_fresh else amber if is_state(e.charge, 'fault') and charge_fresh else grey -%}
+  <table role="presentation" width="100%"><tr><td><strong>Opel Corsa-e</strong></td><td align="right"><font color="{{ green if online else grey }}"><small>● GW {{ 'online' if online else 'nedostupná' }}</small></font></td></tr></table>
+  <small><font color="{{ grey }}">BSI {{ {'standby':'spí', 'normal':'normal', 'going_to_sleep':'usíná', 'waking':'probouzí se', 'communication_off':'komunikace vypnuta'}.get(states(e.bsi), 'nedostupné') }} · {{ 'Data nejsou k dispozici' if seconds < 0 else 'Data právě teď' if seconds < 60 else 'Data před ' ~ (seconds / 60) | int ~ ' min' if seconds < 3600 else 'Data před ' ~ (seconds / 3600) | int ~ ' h ' ~ ((seconds % 3600) / 60) | int ~ ' min' if seconds < 86400 else 'Data před ' ~ (seconds / 86400) | int ~ ' d' }}</font></small>
+  <br>
+  <table role="presentation" width="100%"><tr><td valign="bottom"><font{{ color(e.soc) }} size="7"><strong>{{ number(e.soc) }}</strong></font><font{{ color(e.soc) }} size="4"> %</font></td><td align="right" valign="bottom"><font{{ color(e.range) }} size="6"><strong>{{ number(e.range) }}</strong></font><font{{ color(e.range) }}> km</font><br><small><font color="{{ grey }}">Odhadovaný dojezd</font></small></td></tr></table>
+  <table role="presentation" width="100%"><tr><td><small><font{{ color(e.outside) }}>Okolní teplota {{ number(e.outside, 1, ' °C') }}</font></small></td><td align="right"><small><font{{ color(e.aux) }}>12V SOC {{ number(e.aux, 0, ' %') }}</font></small></td></tr></table>
+  <br>
+  <table role="presentation" width="100%"><tr><td width="33%" align="center"><font{{ color(e.climate, green if climate_on else grey) }}><ha-icon icon="mdi:fan"></ha-icon></font><br><small>Předehřev</small><br><small><font{{ color(e.climate, green if climate_on else grey) }}>{{ 'Běží' if climate_on else 'Vypnutý' if is_state(e.climate, 'off') else 'Nedostupné' }}</font></small></td><td width="34%" align="center"><font color="{{ charge_color }}"><ha-icon icon="mdi:lightning-bolt"></ha-icon></font><br><small>Nabíjení</small><br><small><font color="{{ charge_color }}">{{ charge_text }}</font></small></td><td width="33%" align="center"><font{{ color(e.lock, grey if locked or not lock_known else amber) }}><ha-icon icon="{{ 'mdi:lock' if locked or not lock_known else 'mdi:lock-open-variant' }}"></ha-icon></font><br><small>Dveře a zámky</small><br><small><font{{ color(e.lock, amber if lock_known and not locked else '') }}>{{ 'Zamčeno' if locked else 'Odemčeno' if lock_known else 'Nedostupné' }}</font></small></td></tr></table>
+  {%- if delayed and has_value(e.start) %}
+  <br><small><font{{ color(e.start, blue) }}>Odložený start · {{ states(e.start) | e }}</font></small>
+  {%- endif %}

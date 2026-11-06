@@ -2,6 +2,7 @@
 #include "gateway.h"
 #include "process_data.h"
 #include "udp_protocol.h"
+#include "ha_bridge.h"
 #include <errno.h>
 #include <limits.h>
 #include <stdio.h>
@@ -35,6 +36,7 @@ static void udp_task(void *unused)
         int n = recvfrom(udp_socket, input, sizeof(input), 0, (struct sockaddr *)&peer, &peer_length);
         uint64_t now = (uint64_t)esp_timer_get_time() / 1000;
         gw_udp_protocol_tick(now);
+        gw_ha_process_commands(now);
         if (n < 0) {
             if (errno != EAGAIN && errno != EWOULDBLOCK && errno != EINTR) {
                 ESP_LOGW("udp", "Receive error %d", errno);

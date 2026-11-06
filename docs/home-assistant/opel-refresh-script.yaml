@@ -1,0 +1,9 @@
+# Paste as one script in HA's script YAML editor.
+# Verify this button entity ID if HA renamed it.
+alias: Opel – refresh vozidla
+description: Explicitní refresh přes GW, stejná sekvence jako v telefonu.
+mode: single
+sequence:
+  - action: button.press
+    target:
+      entity_id: button.ecmpilot_gateway_refresh_vehicle

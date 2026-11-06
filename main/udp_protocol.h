@@ -2,9 +2,11 @@
 #pragma once
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 #define GW_UDP_PORT 42840
 #define GW_UDP_MAX_BYTES 1024
 #define GW_UDP_COMMAND_CAPACITY 256
+#define GW_MQTT_MAX_BYTES 512
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,6 +16,14 @@ void gw_udp_protocol_tick(uint64_t now_ms);
 // Returns response length, or zero to drop. Output needs MAX_BYTES + 1 bytes.
 size_t gw_udp_protocol_handle(const char *request, size_t length, uint64_t now_ms,
                               char response[GW_UDP_MAX_BYTES + 1]);
+// MQTT requests are queued to the same UDP owner; never call these from the
+// MQTT callback/publisher task. The boot ID is immutable after startup init.
+const char *gw_udp_protocol_boot_id(void);
+size_t gw_udp_protocol_mqtt_handle(const char *request, size_t length, bool retained,
+                                  uint64_t now_ms, char response[GW_UDP_MAX_BYTES + 1]);
+// Emit one changed command receipt, including terminal results. Caller must
+// reserve outbound queue space before calling so the receipt is not discarded.
+size_t gw_udp_protocol_mqtt_poll(uint64_t now_ms, char response[GW_UDP_MAX_BYTES + 1]);
 #ifdef __cplusplus
 }
 #endif

@@ -54,7 +54,7 @@ static struct {
     uint32_t revision, seen_soc, retry_tmr, requests;
 } limiter;
 
-#define source_name() (c.limited ? "charge_limit" : c.automatic ? "timer" : "phone")
+#define source_name() (c.limited ? "charge_limit" : c.automatic ? "timer" : "explicit")
 
 // Physical automatic decisions use actual, recent CAN samples. Force remains
 // useful for UI diagnostics but cannot fabricate a reason to stop charging.

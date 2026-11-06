@@ -14,11 +14,13 @@
 #define RETENTION_MS 600000
 #define CONFIRM_MS 30000
 #define MAX_SAFE_INTEGER 9007199254740991.0
+#define MQTT_CLIENT "686f6d65617373697374616e742d6d71"
 typedef enum { EMPTY, ACCEPTED, SUCCEEDED, FAILED, UNKNOWN, REJECTED } phase_t;
 typedef struct {
     char client[33], id[33];
     uint64_t created, terminal_at, deadline;
     uint32_t supplied_rev, domain_rev, revision;
+    uint32_t mqtt_revision;
     int target, minute;
     unsigned domain;
     uint32_t control_generation;
@@ -528,7 +530,7 @@ static void write_request(const cJSON *r, cJSON *reply, const char *id, const ch
     }
     if (!text_is(get(r, "boot"), boot_id)) error = "boot_changed";
     else if (deadline->valuedouble <= (double)now || deadline->valuedouble - (double)now > 5000) error = "expired";
-    else if (!test_enabled() && !gw_vehicle_control_available()) error = "unsupported_operation";
+    else if ((!strcmp(client, MQTT_CLIENT) || !test_enabled()) && !gw_vehicle_control_available()) error = "unsupported_operation";
     else if (edit_programs && test_enabled()) error = "unsupported_operation";
     else if (domain != 2 && (uint32_t)rev->valuedouble != generations[domain]) error = "conflict";
     // These refusals remain true for unchanged bytes throughout this boot.
@@ -685,4 +687,91 @@ size_t gw_udp_protocol_handle(const char *data, size_t length, uint64_t now, cha
     }
     cJSON_Delete(reply); cJSON_Delete(r);
     return fits ? strlen(output) : 0;
+}
+
+const char *gw_udp_protocol_boot_id(void) { return boot_id; }
+
+static cJSON *mqtt_reply(const char *id, const char *op)
+{
+    cJSON *reply = cJSON_CreateObject();
+    if (!reply) return NULL;
+    bool ok = cJSON_AddNumberToObject(reply, "v", 1) &&
+        cJSON_AddStringToObject(reply, "type", "status") &&
+        cJSON_AddStringToObject(reply, "boot", boot_id) &&
+        cJSON_AddStringToObject(reply, "reply_to", id) &&
+        cJSON_AddStringToObject(reply, "op", op);
+    if (!ok) { cJSON_Delete(reply); return NULL; }
+    return reply;
+}
+
+size_t gw_udp_protocol_mqtt_handle(const char *data, size_t length, bool retained,
+                                  uint64_t now, char output[GW_UDP_MAX_BYTES + 1])
+{
+    if (!data || !length || length > GW_MQTT_MAX_BYTES || !input_valid(data, length)) return 0;
+    char input[GW_UDP_MAX_BYTES + 1]; memcpy(input, data, length); input[length] = 0;
+    cJSON *r = cJSON_ParseWithLengthOpts(input, length + 1, NULL, true);
+    if (!cJSON_IsObject(r) || !tree_valid(r, 0) || !id_valid(get(r, "id"))) {
+        cJSON_Delete(r); return 0;
+    }
+    gw_udp_protocol_tick(now);
+    const char *id = get(r, "id")->valuestring;
+    const cJSON *op = get(r, "op"), *args = get(r, "args");
+    cJSON *reply = mqtt_reply(id, cJSON_IsString(op) ? op->valuestring : "");
+    if (!reply) { cJSON_Delete(r); return 0; }
+    static const char *const root_keys[] = {"v", "id", "boot", "op", "args"};
+    const char *error = NULL;
+    if (retained) error = "retained_command";
+    else if (!number(get(r, "v"), 1, 1)) error = "unsupported_version";
+    else if (!keys(r, root_keys, 5) || !cJSON_IsString(op) || !cJSON_IsObject(args)) error = "invalid_argument";
+    else if (!text_is(get(r, "boot"), boot_id)) error = "boot_changed";
+    if (error) reject(reply, id, true, error, NULL);
+    else if (text_is(op, "vehicle.refresh")) {
+        // Reuse the phone's admission, Busy cache, request generation, physical
+        // readback and terminal receipts. Retries retain the original deadline.
+        command_t *old = find(MQTT_CLIENT, id);
+        if (cJSON_AddNumberToObject(r, "deadline_ms", (double)(old ? old->deadline : now + 5000)) &&
+            cJSON_AddNumberToObject(r, "domain_rev", old ? old->supplied_rev : 0))
+            write_request(r, reply, id, MQTT_CLIENT, 2, now);
+        else reject(reply, id, true, "out_of_memory", NULL);
+    } else if (text_is(op, "command.get")) {
+        static const char *const query_keys[] = {"command_id"};
+        if (!keys(args, query_keys, 1) || !id_valid(get(args, "command_id")))
+            reject(reply, id, true, "invalid_argument", NULL);
+        else {
+            command_t *c = find(MQTT_CLIENT, get(args, "command_id")->valuestring);
+            if (c) cJSON_AddItemToObject(reply, "command", receipt(c));
+            else reject(reply, id, true, "result_unknown", NULL);
+        }
+    } else {
+        // Future operation names get explicit validation/adapters here. Do not
+        // expose all phone/UDP operations merely because the transport exists.
+        reject(reply, id, true, "unsupported_operation", NULL);
+    }
+    bool fits = cJSON_PrintPreallocated(reply, output, GW_UDP_MAX_BYTES + 1, false);
+    command_t *c = find(MQTT_CLIENT, id);
+    const cJSON *reported = get(reply, "command");
+    static const char *const phases[] = {"unknown", "accepted", "succeeded", "failed", "unknown", "rejected"};
+    if (fits && !error && c && text_is(op, "vehicle.refresh") &&
+        number(get(reported, "revision"), c->revision, c->revision) &&
+        text_is(get(reported, "phase"), phases[c->phase])) c->mqtt_revision = c->revision;
+    cJSON_Delete(reply); cJSON_Delete(r);
+    return fits ? strlen(output) : 0;
+}
+
+size_t gw_udp_protocol_mqtt_poll(uint64_t now, char output[GW_UDP_MAX_BYTES + 1])
+{
+    gw_udp_protocol_tick(now);
+    for (size_t i = 0; i < GW_UDP_COMMAND_CAPACITY; ++i) {
+        command_t *c = &commands[i];
+        if (c->phase == EMPTY || strcmp(c->client, MQTT_CLIENT) || c->revision == c->mqtt_revision) continue;
+        cJSON *reply = mqtt_reply(c->id, "vehicle.refresh");
+        if (!reply) return 0;
+        cJSON_AddItemToObject(reply, "command", receipt(c));
+        bool fits = cJSON_PrintPreallocated(reply, output, GW_UDP_MAX_BYTES + 1, false);
+        cJSON_Delete(reply);
+        if (!fits) return 0;
+        c->mqtt_revision = c->revision;
+        return strlen(output);
+    }
+    return 0;
 }

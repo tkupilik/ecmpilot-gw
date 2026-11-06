@@ -13,7 +13,7 @@ The development hardware is the **[Waveshare ESP32-S3-RS485-CAN](https://www.wav
 - **Automatic refresh:** persistent standby/charging periods and a minimum 12 V SOC. Off by default; initial settings are **60 min / 5 min / 50%**.
 - **Charge limit:** optional SOC target; requests delayed charging after an updated SOC reaches the limit. Requires automatic refresh, defaults off with an 80% target, and may resume at the vehicle's stored charging start time.
 - **Android UDP:** direct local communication on **42840**, with correlated requests, duplicate suppression and command-result tracking.
-- **Home Assistant:** optional MQTT Discovery and 54 telemetry entities; **GW → HA only**, with broker settings in the web UI. Disabled by default.
+- **Home Assistant:** optional MQTT Discovery with 47 observation/diagnostic entities and a Refresh vehicle button. Explicit HA refresh requests share the phone's controller and result tracking; broker settings are in the web UI. MQTT is disabled by default. See [HA commands](docs/home-assistant/commands.md).
 - **SavvyCAN:** GVRET over **TCP 23**, one client, vehicle RX plus local TX submissions, using a static 64-frame diagnostic queue. SavvyCAN-to-vehicle TX is disabled.
 - **Web tools:** Home, Varstore, Wi-Fi setup, OTA, Log, Tasks and Home Assistant configuration; runtime CPU/stack/heap diagnostics, reset reasons and a retained previous-boot log tail.
 - **Low power:** automatic CAN-wake deep sleep after configurable vehicle inactivity (default 48 hours), plus manual CPU/power controls.

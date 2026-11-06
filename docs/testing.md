@@ -24,6 +24,12 @@ controller PT timing and budgets, raw readback, RX→varstore→UDP conversions,
 automatic refresh/limiter policy, logging, task/heap JSON, HTTP varstore streaming
 and loopback GVRET. The JavaScript checks exercise actual embedded-page logic;
 they do not establish browser rendering or physical ESP scheduling.
+Install `tools/requirements-can.txt` for the Python suite, including the Jinja2
+vehicle-card checks. MQTT regression checks keep advancing source ages out of
+ordinary state/discovery payloads and render diagnostic freshness separately.
+`test_ha_commands.py` drives MQTT requests through the real shared admission
+cache and controller. It covers physical readback, duplicate/Busy retention,
+rejected stale/retained requests, isolation from phone receipts and button IDs.
 
 DBC checks require [CAN Python dependencies](../tools/requirements-can.txt):
 
@@ -52,7 +58,7 @@ establish electrical CAN compatibility or physical vehicle response.
 | Automation | Default off, 60 min standby/5 min charging/50% auxiliary SOC; manual refresh reloads timer at completion; low SOC inhibits further automatic work |
 | Charge limit | Requires refresh, fresh raw SOC/charging, delayed-mode readback; acceptance is not a measurement of physical charge cessation |
 | GVRET | TCP 23, single client, 64-frame queue; physical RX plus accepted local TX submissions; no remote TX/reconfiguration |
-| Network/HA | Reconnect and saved profiles/settings, HTTP/UDP reachability, MQTT discovery and original observation ages; MQTT remains publish-only |
+| Network/HA | Reconnect and saved profiles/settings, HTTP/UDP reachability, MQTT discovery, original observation ages and explicit refresh receipts; passive traffic never requests vehicle control |
 | Reset/log | Live cursor/loss markers, previous-boot retained entries and actual reset reason |
 | Power | Measure whole-board current independently; deep sleep removes Wi-Fi; CAN wake is owner-confirmed on the installed GW; verify the automatic inactivity sequence separately |
 | OTA/recovery | Validate images/slot selection; interruption and rollback tests belong on a bench with serial recovery |

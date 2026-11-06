@@ -1,0 +1,7 @@
+# Merge into configuration.yaml's existing recorder section, if present.
+# Verify the entity ID in Settings / Developer tools / States if renamed.
+# Restart Home Assistant after applying. Live values and the card still work.
+recorder:
+  exclude:
+    entities:
+      - sensor.ecmpilot_gateway_battery_data_age

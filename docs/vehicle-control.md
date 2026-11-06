@@ -7,12 +7,14 @@ and failure handling in the current implementation.
 ## Process boundary
 
 CAN RX handlers only validate and publish observations to the native GW
-varstore. CPU0 UDP validates/deduplicates explicit actions and publishes requests.
+varstore. CPU0's UDP task validates/deduplicates explicit phone and queued MQTT
+actions and publishes requests. MQTT callbacks never access the command cache.
 The existing CPU1 application process runs the controller every **20 ms**.
 **TaskCan is the sole physical transmitter**, consuming one varstore mailbox.
 
 ```text
 UDP explicit action ─┐
+MQTT explicit action ┤
 AutoRefresh timer ───┼─> serialized RunRequest
 ChargeLimit watcher ┘      ├─ RefreshVehicle → WakeBsi → SubmitFrame
                           ├─ SetChargeMode → RefreshVehicle / SubmitFrame
@@ -124,7 +126,7 @@ refresh completion, including failure, reloads the selected refresh interval.
 The timer only generates refresh events; it cannot independently send CAN.
 
 Filter Varstore for `control.`, `can.wake_tx`, `auto_refresh.` and `charge_limit.`.
-`control.source` is 1 phone, 2 timer, 3 charge limit. Logs carry correlation,
+`control.source` is 1 explicit phone/HA, 2 timer, 3 charge limit. Logs carry correlation,
 generation, phase, TX intent and final result. `control.timer_ms` is the shared
 step countdown and `control.remaining_ms` the whole-operation remainder.
 Results distinguish wake, hand-off, reply and operation timeouts, transport

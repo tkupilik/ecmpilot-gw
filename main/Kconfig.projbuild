@@ -42,5 +42,6 @@ menu "eCMPilot Home Assistant"
         default "ecmpilot"
         help
             Broker, credentials and enabling telemetry are configured on the web
-            Home Assistant tab and stored in NVS. MQTT only publishes observations.
+            Home Assistant tab and stored in NVS. MQTT publishes observations
+            and accepts explicit refresh requests through the shared controller.
 endmenu

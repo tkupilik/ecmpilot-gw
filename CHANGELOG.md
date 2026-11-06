@@ -1,5 +1,41 @@
 # Changelog
 
+## Unreleased — 2026-11-06 (firmware version unchanged)
+
+- Publish HA age diagnostics at 1 Hz while real BSI 036 frames have arrived
+  within 2 seconds, irrespective of their power-mode content. Fall back to
+  one minute of silence-period publication and interrupt the idle wait on
+  resumed BSI RX. Ignore Force for bus activity, preserve each field's own
+  age, and keep normal observation/history publication change-only.
+
+- Make the vehicle dashboard card non-clickable and use the theme's normal
+  text color for fresh observations. Remove legacy font color="inherit",
+  which HTML interprets as a color rather than CSS inheritance; mute BSI,
+  ages and inactive functions and reserve accents for active/warning states.
+
+- Fix Refresh vehicle button ID generation in HA's Jinja sandbox: use two
+  16-bit random draws instead of a blocked 2^32-element range. Preserve the
+  32-hex request ID and boot binding; test the real discovery template inside
+  an immutable sandbox, including same-time requests and random boundaries.
+
+- Fix HA MQTT JSON/template errors on reconnect: replace retained observations
+  with a legacy-compatible all-null JSON placeholder instead of an empty data
+  payload, publish live telemetry after discovery, and guard templates against
+  missing/non-object JSON. Preserve unknown booleans instead of reporting OFF.
+
+- Add explicit HA-to-GW MQTT vehicle.refresh requests, a discovered refresh
+  button, boot-bound versioned envelopes and correlated result/query messages.
+  Queue input to the existing UDP command owner, reuse phone admission/cache
+  and physical readback, and preserve TaskCan-only transmission. Do not expose
+  climate/schedule commands until their MQTT adapters are implemented.
+
+- Stop MQTT Recorder write amplification: publish changed observation snapshots
+  with an unchanged availability heartbeat, remove advancing JSON attributes
+  from ordinary entities, and move all source ages to the existing Battery data
+  age diagnostic on a separate minute-rate topic. Keep unique IDs, provide a
+  Recorder exclusion for live-only diagnostics and adapt the vehicle card to
+  calculate freshness from that single snapshot.
+
 ## Unreleased — 2026-11-04 (firmware version unchanged)
 
 - Remove the temporary INFO UDS web probes, their varstore signals and TX/RX

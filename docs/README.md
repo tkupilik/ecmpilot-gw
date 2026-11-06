@@ -24,7 +24,7 @@ Current state: **2026-11-04**. Start with the
 | [Preconditioning](preconditioning.md) / [weekly programs](preconditioning-programs.md) | HVAC state and program encoding |
 | [Vehicle details](vehicle-details.md) | Doors, locks, trips and consumption |
 | [Phone UDP](udp.md) / [correlation](udp-correlation.md) | Protocol and duplicate suppression |
-| [Home Assistant](ha.md) | Broker settings and read-only discovery/publishing |
+| [Home Assistant](ha.md) / [HA commands](home-assistant/commands.md) | MQTT observations, explicit refresh requests and results |
 | [SavvyCAN](gvret.md) | TCP 23, raw RX/local TX export, queue diagnostics |
 | [Reset diagnostics](reset-diagnostics.md) / [network sockets](network-sockets.md) | Retained logs, reset causes and connection budget |
 | [Testing](testing.md) | Current reproducible checks, without old test-run diaries |
