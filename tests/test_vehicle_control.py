@@ -107,6 +107,33 @@ class VehicleControlTests(unittest.TestCase):
         self.assertEqual(1,self.g.read('request.vehicle.generation'))
         stop=self.action('climate.set',{'enabled':False},rev=1)
         self.assertEqual('busy',self.g.call(stop)['command']['error'])
+    def test_precond_refusal_code_is_latched_before_bsi_clears_it_and_retained_per_command(self):
+        for feedback in range(4,8):
+            with self.subTest(feedback=feedback):
+                self.setUp()
+                req=self.precond_start();self.pump(500,programs=True)
+                self.frame(0x2E0,bytes([0x84|(feedback<<3)])+self.precond_data[1:])
+                self.lib.gw_vehicle_control_tick()
+                # Clear live BSI feedback before UDP has collected the result.
+                self.frame(0x2E0,self.precond_data)
+                result=self.receipt(req)
+                self.assertEqual('preconditioning_rejected',result['error'])
+                self.assertEqual(feedback,result['preconditioning_feedback'])
+                self.g.set('control.precond_feedback',15,force=False)
+                self.assertEqual(result,self.g.call(req)['command'])
+                self.assertEqual(result,self.receipt(req))
+                next_req=self.precond_start(rev=1);self.pump(500,programs=True)
+                self.precond_data=bytes.fromhex('8C 58 01 C2 00 07 FF')
+                self.pump(600,programs=True)
+                self.assertEqual('succeeded',self.receipt(next_req)['phase'])
+                self.assertNotIn('preconditioning_feedback',self.receipt(next_req))
+                self.assertEqual(result,self.receipt(req))
+    def test_precond_unavailable_has_no_fabricated_refusal_code(self):
+        self.precond_data=bytes.fromhex('00 58 01 C2 00 07 FF')
+        req=self.precond_start();self.pump(500,programs=True)
+        result=self.receipt(req)
+        self.assertEqual('preconditioning_unavailable',result['error'])
+        self.assertNotIn('preconditioning_feedback',result)
     def test_precond_capture_readback_timeline_uses_actual_2e0_feedback(self):
         count=0;changes=[];previous=None
         with (ROOT/'logs/info_precond.csv').open(newline='') as stream:

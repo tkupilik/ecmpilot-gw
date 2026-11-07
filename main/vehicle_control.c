@@ -23,7 +23,8 @@ static struct {
     int kind, minute, phase, result;
     bool active, automatic, limited, wake_ok, refresh_ok, charge_ok, need_refresh, mode_payload_valid;
     uint32_t limit_revision;
-    bool precond_ok, precond_pair_submitted;
+    bool precond_ok, precond_pair_submitted, precond_feedback_valid;
+    int precond_feedback;
     uint32_t programs12_hi, programs12_lo, programs34_hi, programs34_lo, precond_baseline;
     uint64_t precond_at;
     uint32_t program_base[4], program_target[4], programs34_baseline;
@@ -158,6 +159,8 @@ static void diagnostics(void)
     varstore_write(GW_VAR_CONTROL_REFRESH_ATTEMPTS, c.refresh_attempts);
     varstore_write(GW_VAR_CONTROL_MODE_ATTEMPTS, c.mode_attempts);
     varstore_write(GW_VAR_CONTROL_PRECOND_ATTEMPTS, c.precond_attempts);
+    if (c.precond_feedback_valid) varstore_write(GW_VAR_CONTROL_PRECOND_FEEDBACK, c.precond_feedback);
+    else varstore_invalidate(GW_VAR_CONTROL_PRECOND_FEEDBACK);
     varstore_write(GW_VAR_CONTROL_RESULT, c.result);
 }
 static void finish(int result)
@@ -402,8 +405,14 @@ static bool precond_complete(void)
 static bool precond_rejected(void)
 {
     int feedback = raw(GW_VAR_BSI_PRECOND_FEEDBACK, 1000, -1);
-    return precond_observation() &&
-        (raw(GW_VAR_BSI_PRECOND_AVAILABLE, 1000, -1) == 0 || (feedback >= 4 && feedback <= 7));
+    if (!precond_observation()) return false;
+    if (feedback >= 4 && feedback <= 7) {
+        // Retain the refusal with this operation: BSI clears it shortly afterwards.
+        c.precond_feedback = feedback;
+        c.precond_feedback_valid = true;
+        return true;
+    }
+    return raw(GW_VAR_BSI_PRECOND_AVAILABLE, 1000, -1) == 0;
 }
 
 // Updates all four slots atomically at the API level. Preserve reserved bits and

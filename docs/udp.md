@@ -118,6 +118,8 @@ the separate bench backend. The UDP task owns `request.*` and `udp.*`. The remov
 
 Unknown, invalid and out-of-range values become null/unknown. Valid old values keep their age. Group age is the oldest contributing known observation; a missing required group input gives unknown age. Request targets are written before generation. Protocol generations are authoritative private counters with diagnostic copies; forcing a displayed generation does not authorize an old command.
 
+Positive `charge.remaining_min` estimates have their own `remaining_age_ms`; they do not age the charging-state group. The separate age is omitted for zero/unavailable estimates to conserve the datagram budget. On INFO CAN the value reports the `0x31A` estimate in five-minute steps, up to 630 minutes. The phone shows a dash for a zero/unavailable estimate in Charging and omits the time on its home tile. Old positive estimates remain visible in the dialog, dimmed after five minutes; they are not extrapolated into a countdown.
+
 ## Protocol behaviour
 
 Operations: `info.get`, `state.get`, `command.get`, `climate.set`, `charge.mode.set`. See the Android repository's `docs/protocol/udp-v0.md` for envelopes and examples.

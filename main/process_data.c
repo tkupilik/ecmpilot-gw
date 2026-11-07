@@ -259,7 +259,7 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_BSI_PRECOND_STATUS_RAW] = {"bsi.precond.status_raw", "BSI 2E0 first byte; reference capture start/stop", "raw", 5000},
     [GW_VAR_BSI_PRECOND_AVAILABLE] = {"bsi.precond.available", "BSI 2E0 status availability, bit7", "bool", 5000},
     [GW_VAR_BSI_PRECOND_ASAP] = {"bsi.precond.asap", "BSI 2E0 accepted immediate request, bit2; not running confirmation", "bool", 5000},
-    [GW_VAR_BSI_PRECOND_FEEDBACK] = {"bsi.precond.feedback", "BSI 2E0 feedback nibble: 0 inactive 1 active observed; other codes unverified", "raw", 5000},
+    [GW_VAR_BSI_PRECOND_FEEDBACK] = {"bsi.precond.feedback", "BSI 2E0: 0 inactive 1 active; 4 doors open/unlocked verified; 5 low SOC 6 low fuel 7 unused sessions source-only", "raw", 5000},
     [GW_VAR_BSI_PRECOND_PROGRAMS12_HI24] = {"bsi.precond.programs12_hi24", "BSI 2E0 program1: bit23 enabled, bits22..16 Mon..Sun, low11 minutes", "u24", 1000},
     [GW_VAR_BSI_PRECOND_PROGRAMS12_LO24] = {"bsi.precond.programs12_lo24", "BSI 2E0 program2, same packed layout as program1", "u24", 1000},
     [GW_VAR_BSI_PRECOND_RX_GENERATION] = {"bsi.precond.rx_generation", "BSI 2E0 commit; invalid while fields are publishing", "count", 0},
@@ -269,6 +269,7 @@ static const varstore_definition_t definitions[GW_VAR_COUNT] = {
     [GW_VAR_CONTROL_TX_DATA_HI24] = {"control.tx.data_hi24", "Seven-byte TX mailbox bytes1..3; payload holds byte0", "u24", 200},
     [GW_VAR_CONTROL_TX_DATA_LO24] = {"control.tx.data_lo24", "Seven-byte TX mailbox bytes4..6", "u24", 200},
     [GW_VAR_CONTROL_PRECOND_ATTEMPTS] = {"control.precond_attempts", "Preconditioning request pairs in this operation; maximum3", "count", 0},
+    [GW_VAR_CONTROL_PRECOND_FEEDBACK] = {"control.precond_feedback", "BSI refusal code retained for this operation; invalid when no specific refusal", "raw", 0},
     [GW_VAR_REQUEST_PRECOND_BASE1] = {"request.precond.base1", "Expected vehicle program1 before edit", "u24", 30000},
     [GW_VAR_REQUEST_PRECOND_BASE2] = {"request.precond.base2", "Expected vehicle program2 before edit", "u24", 30000},
     [GW_VAR_REQUEST_PRECOND_BASE3] = {"request.precond.base3", "Expected vehicle program3 before edit", "u24", 30000},
@@ -305,7 +306,8 @@ bool gw_process_data_manual(size_t id)
     if (id == GW_VAR_SOC_PCT_X10 || id == GW_VAR_VOLTAGE_MV) return false;
 #if CONFIG_GW_CAN_INFO
     if (id == GW_VAR_CLIMATE_STATE || id == GW_VAR_CHARGE_MODE || id == GW_VAR_CHARGE_START_MINUTE ||
-        id == GW_VAR_CHARGE_STATE || id == GW_VAR_CHARGE_CONNECTED) return false;
+        id == GW_VAR_CHARGE_STATE || id == GW_VAR_CHARGE_CONNECTED ||
+        id == GW_VAR_CHARGE_REMAINING_MIN) return false;
 #endif
 #if CONFIG_GW_CAN_INFO
     if (id == GW_VAR_VEHICLE_AWAKE || id == GW_VAR_VEHICLE_PARKED ||

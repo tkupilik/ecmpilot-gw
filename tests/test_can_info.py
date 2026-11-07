@@ -69,6 +69,20 @@ class CanRxTests(unittest.TestCase):
         self.check('SOC_PCT_X10',700)
         self.assertEqual(123,self.g.call(self.g.request('state.get',{}))['state']['soc_pct']['age_ms'])
 
+    def test_remaining_time_cross_byte_layout_sentinel_and_reset(self):
+        for raw in range(128):
+            # Preserve neighbouring consumption/schedule fields.
+            data = [0, 0, 0, 0, 0, 0xE0 | (raw >> 2), 0x2D | ((raw & 3) << 6), 4]
+            self.frame(0x31A, data)
+            self.check('charge.remaining_min', raw * 5 if raw < 127 else None)
+            self.check('bsi.trip_charge_mode', 1)
+        self.frame(0x31A, [0, 0, 0, 0, 0, 6, 0xC0, 0])  # 135 minutes.
+        self.check('charge.remaining_min', 135)
+        self.assertEqual(-1, self.frame(0x31A, [0] * 7))
+        self.check('charge.remaining_min', 135)
+        self.lib.gw_can_info_reset()
+        self.check('charge.remaining_min', None)
+
     def test_sentinels_and_bounds_invalidate_instead_of_zeroing(self):
         for raw,expected in [(0,0),(100,1000),(101,None),(127,None),(255,None)]:
             self.frame(0x3E0,[raw]+[0]*7);self.check('SOC_PCT_X10',expected)

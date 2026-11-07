@@ -44,7 +44,7 @@ observations. Source unavailable/range codes invalidate their own fields.
 | `128` / 8 | `vehicle.gear`, `.parked`, `.drive_ready`, `.low_beam`, `.parking_brake`, `.seatbelt_warning`, `can.gear_code` | Gear enum 0 P / 1 R / 2 N / 3 D / 4 B; raw15 maps B, other unknowns invalid; READY independent of gear |
 | `1E7` / 8 | `battery.power_w`, `vehicle.drive_power_pct_x10`, `can.power_raw` | Battery candidate `(byte3>>1 −50)×1000 W`; drive gauge `raw9×5−500` in 0.1%, a separate quantity |
 | `160` / 2 | `bsi.charge_schedule_raw`, `.charge_schedule_available`, `charge.mode`, `.start_minute` | Preserve both bytes; bit15 availability, bit14 mode, low11 bits minutes; require time <1440 |
-| `31A` / 8 | `vehicle.range_km_x10`, `bsi.trip_charge_mode`, `.trip_charge_minute` | Corsa-e range: raw ×2 km, stored as raw ×20; secondary schedule mode/time for comparison. See [reference calibration](range-calibration.md). |
+| `31A` / 8 | `vehicle.range_km_x10`, `bsi.trip_charge_mode`, `.trip_charge_minute`, `charge.remaining_min` | Corsa-e range: raw ×2 km, stored as raw ×20; secondary schedule mode/time for comparison. Reported remaining time: Motorola 44/7, raw ×5 min, raw127 unavailable. Zero is not evidence of completion; active charging captures also contain zero estimates. See [reference calibration](range-calibration.md). |
 | `3E0` / 8 | `battery.soc_pct_x10` | Byte0 0–100% ×10; other codes invalid |
 
 Storage uses mC, W and percentage ×10. Range uses GW's existing **km ×10**;

@@ -32,6 +32,8 @@ typedef struct {
     phase_t phase;
     const char *error;
     const char *reason;
+    bool has_precond_feedback;
+    int precond_feedback;
 } command_t;
 static command_t commands[GW_UDP_COMMAND_CAPACITY];
 static char gateway_id[81], boot_id[33], firmware_version[81];
@@ -183,7 +185,14 @@ void gw_udp_protocol_tick(uint64_t now)
             if ((uint32_t)producer(GW_VAR_CONTROL_GENERATION, 0) == c->control_generation) {
                 int phase = producer(GW_VAR_CONTROL_PHASE, 0);
                 if (phase == GW_CONTROL_SUCCEEDED) finish(c, SUCCEEDED, NULL, now);
-                else if (phase == GW_CONTROL_FAILED) finish(c, FAILED, control_error(), now);
+                else if (phase == GW_CONTROL_FAILED) {
+                    if (producer(GW_VAR_CONTROL_RESULT, 0) == GW_CONTROL_RESULT_PRECOND_REJECTED) {
+                        int feedback = producer(GW_VAR_CONTROL_PRECOND_FEEDBACK, -1);
+                        c->has_precond_feedback = feedback >= 0 && feedback <= 15;
+                        c->precond_feedback = feedback;
+                    }
+                    finish(c, FAILED, control_error(), now);
+                }
                 else if (phase == GW_CONTROL_UNCONFIRMED) finish(c, UNKNOWN, control_error(), now);
             }
             if (c->phase == ACCEPTED && now - c->created >= 35000) finish(c, UNKNOWN, "unconfirmed", now);
@@ -231,6 +240,7 @@ static cJSON *receipt(const command_t *c)
     static const char *const phases[] = {"unknown", "accepted", "succeeded", "failed", "unknown", "rejected"};
     cJSON *r = result(c->id, c->revision, c->domain_rev, phases[c->phase], c->error);
     if (c->reason) cJSON_AddStringToObject(r, "reason", c->reason);
+    if (c->has_precond_feedback) cJSON_AddNumberToObject(r, "preconditioning_feedback", c->precond_feedback);
     if (c->correlation_id) {
         cJSON_AddNumberToObject(r, "correlation_id", c->correlation_id);
         cJSON_AddStringToObject(r, "client_session", c->client_session);
@@ -414,8 +424,12 @@ static cJSON *state(void)
     varstore_snapshot_t power = sample(GW_VAR_CHARGE_POWER_W), remaining = sample(GW_VAR_CHARGE_REMAINING_MIN);
     if (known(power, 0, 1000000)) { cJSON_AddNumberToObject(q, "power_kw", power.value / 1000.0); age = older(age, power.age_ms); }
     else cJSON_AddNullToObject(q, "power_kw");
-    if (known(remaining, 0, 100000)) { cJSON_AddNumberToObject(q, "remaining_min", remaining.value); age = older(age, remaining.age_ms); }
-    else cJSON_AddNullToObject(q, "remaining_min");
+    if (known(remaining, 0, 100000)) {
+        cJSON_AddNumberToObject(q, "remaining_min", remaining.value);
+        if (remaining.value > 0) cJSON_AddNumberToObject(q, "remaining_age_ms", remaining.age_ms);
+    } else {
+        cJSON_AddNullToObject(q, "remaining_min");
+    }
     if (known(mode, 0, 1)) cJSON_AddNumberToObject(q, "mode_age_ms", mode.age_ms);
     varstore_snapshot_t available = sample(GW_VAR_BSI_CHARGE_SCHEDULE_AVAILABLE);
     if (known(available, 0, 1)) boolean(q, "schedule_available", available);

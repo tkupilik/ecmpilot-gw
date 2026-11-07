@@ -57,6 +57,21 @@ class TelemetryParityTests(unittest.TestCase):
         self.assertEqual(81.5, state['aux_battery_soc_pct']['value'])
         self.assertIsNone(state['voltage_v']['value'])  # Never overwrite HV voltage.
 
+    def test_remaining_time_has_independent_observation_age(self):
+        self.frame(0x31A, [0, 0, 0, 0, 0, 6, 0xC0, 0])
+        self.g.advance(6000)
+        self.g.set('charge.state', 2)
+        self.g.set('charge.mode', 0)
+        self.g.set('charge.connected', 1)
+        charge = self.g.call(self.g.request('state.get', {}))['state']['charge']
+        self.assertEqual(135, charge['remaining_min'])
+        self.assertEqual(6000, charge['remaining_age_ms'])
+        self.assertEqual(0, charge['age_ms'])
+        self.frame(0x31A, [0, 0, 0, 0, 0, 31, 0xC0, 0])
+        charge = self.g.call(self.g.request('state.get', {}))['state']['charge']
+        self.assertIsNone(charge['remaining_min'])
+        self.assertNotIn('remaining_age_ms', charge)
+
     def test_climate_derived_age_force_and_non_numeric_codes(self):
         self.climate()
         state = self.g.call(self.g.request('state.get', {}))['state']

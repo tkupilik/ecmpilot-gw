@@ -38,6 +38,7 @@ static const uint32_t outputs[] = {
   GW_VAR_BSI_DAYNIGHT_STATUS, GW_VAR_BSI_BRIGHTNESS,
   GW_VAR_ICSV_CLIMATE_LEFT_TEMP_CODE, GW_VAR_ICSV_CLIMATE_RIGHT_TEMP_CODE,
   GW_VAR_ICSV_EVAPORATOR_MC, GW_VAR_CHARGE_MODE, GW_VAR_CHARGE_START_MINUTE,
+  GW_VAR_CHARGE_REMAINING_MIN,
   GW_VAR_BSI_CHARGE_SCHEDULE_RAW, GW_VAR_BSI_CHARGE_SCHEDULE_AVAILABLE,
   GW_VAR_BSI_TRIP_CHARGE_MODE, GW_VAR_BSI_TRIP_CHARGE_MINUTE,
   GW_VAR_BSI_STATUS_RX_GENERATION, GW_VAR_SOC_RX_GENERATION, GW_VAR_BSI_SCHEDULE_RX_GENERATION,
@@ -192,6 +193,9 @@ static void On31A(const uint8_t * data)
   // This Corsa-e uses 2 km/count: raw60 in info_soc57_refresh.csv matches
   // MyOpel 120 km at 57% SOC. Store tenths of km; upstream factor1 is wrong here.
   Reading(GW_VAR_RANGE_KM_X10, range * 20, range <= 500);
+  unsigned remaining = Bits(data, 44, 7);
+  // Five-minute units; raw127 is unavailable. Zero is not completion proof.
+  Reading(GW_VAR_CHARGE_REMAINING_MIN, remaining * 5, remaining < 127);
   varstore_write(GW_VAR_BSI_TRIP_CHARGE_MODE, (data[7] >> 2) & 1U);
   unsigned minute = ((data[6] & 0x3FU) << 5) | (data[7] >> 3);
   Reading(GW_VAR_BSI_TRIP_CHARGE_MINUTE, minute, minute < 1440);

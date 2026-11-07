@@ -42,7 +42,20 @@ older source `002` layout; the canonical upstream `2E0` instead calls bits 6-0
 unused. A scoped vehicle-review overlay fixes the exported DBC and preserves
 the upstream source JSON. Candidate rejection codes 4-7 are handled as a generic
 failed request; their individual door/battery/fuel/session descriptions have
-not been validated on this car.
+not all been validated on this car. Owner-confirmed on2026-11-07: `info_precond_fail.csv`
+shows Start at0.439714 s, ASAP acknowledgement at0.923039 s, then `2E0/A4`
+(feedback4) at1.422995 s. Lock state is3 (unlocked), with the five monitored
+door/trunk openings closed. Locking the vehicle allowed preconditioning to start.
+This validates code4 as the door-open/unlocked refusal group on this vehicle;
+the open-door case itself was not separately tested. Codes5 low battery SOC,
+6 low fuel and7 too many unused sessions remain source-defined interpretations.
+
+The controller latches a specific refusal with its operation before BSI clears
+the live feedback. The command receipt includes optional numeric
+`preconditioning_feedback` (0..15) with `preconditioning_rejected`; retries and
+later `command.get` return the same retained code. The phone translates it into
+an actionable message and shows the code. No code is invented when only
+availability is false or the operation times out.
 
 ## Control architecture
 
